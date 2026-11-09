@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="cpns">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAT CPNS — Materi, Latihan SKD &amp; SKB</title>
+  <meta name="description" content="Belajar materi, latihan paket soal SKD dan SKB CPNS dengan simulasi CAT.">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="min-h-screen font-sans antialiased">
+  <div id="app"></div>
+
+  <!-- Dialog bersama (diisi lewat JS) -->
+  <dialog id="dlg-confirm" class="modal">
+    <div class="modal-box max-w-sm">
+      <h3 class="text-lg font-bold" id="confirm-title"></h3>
+      <p class="py-3 text-sm text-base-content/75" id="confirm-text"></p>
+      <div class="modal-action">
+        <button class="btn btn-ghost" id="confirm-cancel">Batal</button>
+        <button class="btn btn-primary" id="confirm-ok">Ya</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>
+  </dialog>
+
+  <dialog id="dlg-start" class="modal modal-bottom sm:modal-middle"></dialog>
+  <dialog id="dlg-result" class="modal modal-bottom sm:modal-middle"></dialog>
+  <dialog id="dlg-nums" class="modal modal-bottom"></dialog>
+  <dialog id="dlg-db" class="modal modal-bottom sm:modal-middle"></dialog>
+
+  <!-- 1) inti bank soal  2) file bank soal  3) materi  4) aplikasi -->
+  <script src="js/db-core.js"></script>
+  <script src="db/skd/db_skd_twk.js"></script>
+  <script src="db/skd/db_skd_tiu.js"></script>
+  <script src="db/skd/db_skd_tkp.js"></script>
+  <script src="db/skb/db_skb_prakom.js"></script>
+  <script src="db/skb/db_skb_kesehatan.js"></script>
+  <script src="db/skb/db_skb_hukum.js"></script>
+  <script src="db/skb/db_skb_keuangan.js"></script>
+  <script src="db/skb/db_skb_pendidikan.js"></script>
+  <script src="js/materi.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: theme('colors.base-200');
+    background-image:
+      radial-gradient(900px 420px at 12% -8%, rgba(56,189,248,.20), transparent 60%),
+      radial-gradient(800px 380px at 95% 4%, rgba(91,95,224,.12), transparent 60%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  /* Opsi jawaban */
+  .opt {
+    display: flex; width: 100%; align-items: flex-start; gap: .75rem;
+    border: 2px solid theme('colors.base-300'); background: #fff;
+    border-radius: 0.9rem; padding: .8rem .95rem; text-align: left;
+    transition: border-color .15s, background-color .15s, transform .05s;
+  }
+  .opt:not(:disabled):hover { border-color: theme('colors.primary'); background: rgba(11,127,212,.05); }
+  .opt:not(:disabled):active { transform: scale(.995); }
+  .opt:disabled { cursor: default; }
+  .opt .letter {
+    display: grid; place-items: center; flex: none; height: 2rem; width: 2rem;
+    border-radius: 9999px; background: theme('colors.base-200'); color: theme('colors.neutral');
+    font-weight: 700; font-size: .85rem;
+  }
+  .opt.is-selected { border-color: theme('colors.primary'); background: rgba(11,127,212,.09); }
+  .opt.is-selected .letter { background: theme('colors.primary'); color: #fff; }
+  .opt.is-correct { border-color: theme('colors.success'); background: rgba(22,163,74,.09); }
+  .opt.is-correct .letter { background: theme('colors.success'); color: #fff; }
+  .opt.is-wrong { border-color: theme('colors.error'); background: rgba(224,54,79,.08); }
+  .opt.is-wrong .letter { background: theme('colors.error'); color: #fff; }
+  .opt.is-mid { border-color: theme('colors.warning'); background: rgba(245,158,11,.10); }
+  .opt.is-mid .letter { background: theme('colors.warning'); color: #3a2400; }
+
+  /* Kotak nomor soal */
+  .num {
+    height: 2.4rem; border-radius: .65rem; border: 1.5px solid theme('colors.base-300');
+    background: #fff; font-weight: 600; font-size: .85rem; color: theme('colors.base-content');
+    transition: background-color .12s, border-color .12s;
+  }
+  .num:hover { border-color: theme('colors.primary'); }
+  .num.ans { background: rgba(11,127,212,.14); border-color: theme('colors.primary'); color: theme('colors.primary'); }
+  .num.ok  { background: theme('colors.success'); border-color: theme('colors.success'); color: #fff; }
+  .num.mid { background: #fde7b0; border-color: theme('colors.warning'); color: #5a3a00; }
+  .num.no  { background: theme('colors.error'); border-color: theme('colors.error'); color: #fff; }
+  .num.dbt { background: theme('colors.warning'); border-color: theme('colors.warning'); color: #3a2400; }
+  .num.curr { box-shadow: 0 0 0 2px #fff, 0 0 0 4px theme('colors.primary'); }
+
+  /* Materi */
+  .materi-body { @apply prose prose-slate max-w-none; }
+  .materi-body h3 { margin-top: 1.1rem; margin-bottom: .4rem; font-size: 1.05rem; }
+  .materi-body p, .materi-body li { font-size: .95rem; line-height: 1.65; }
+  .materi-body table { font-size: .88rem; }
+  .materi-body th { background: theme('colors.base-200'); }
+  .materi-body code { background: theme('colors.base-200'); padding: .1rem .35rem; border-radius: .35rem; font-size: .85em; }
+  .materi-body code::before, .materi-body code::after { content: none; }
+  .callout { border-left: 4px solid theme('colors.primary'); background: rgba(11,127,212,.07); padding: .7rem 1rem; border-radius: 0 .75rem .75rem 0; margin: .9rem 0; }
+
+  .fade-in { animation: fadeIn .22s ease-out both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
