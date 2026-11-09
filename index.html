@@ -2,20 +2,26 @@
 <html lang="id" data-theme="cpns">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="CAT CPNS">
+  <meta name="format-detection" content="telephone=no">
   <title>CAT CPNS — Materi, Latihan SKD &amp; SKB</title>
   <meta name="description" content="Belajar materi, latihan paket soal SKD dan SKB CPNS dengan simulasi CAT.">
   <link rel="stylesheet" href="css/app.css">
 </head>
-<body class="min-h-screen font-sans antialiased">
+<body class="min-h-dvh font-sans antialiased">
   <div id="app"></div>
 
   <!-- Dialog bersama (diisi lewat JS) -->
-  <dialog id="dlg-confirm" class="modal">
+  <dialog id="dlg-confirm" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box max-w-sm">
       <h3 class="text-lg font-bold" id="confirm-title"></h3>
       <p class="py-3 text-sm text-base-content/75" id="confirm-text"></p>
-      <div class="modal-action">
+      <div class="modal-action act-stack">
         <button class="btn btn-ghost" id="confirm-cancel">Batal</button>
         <button class="btn btn-primary" id="confirm-ok">Ya</button>
       </div>
@@ -27,6 +33,7 @@
   <dialog id="dlg-result" class="modal modal-bottom sm:modal-middle"></dialog>
   <dialog id="dlg-nums" class="modal modal-bottom"></dialog>
   <dialog id="dlg-db" class="modal modal-bottom sm:modal-middle"></dialog>
+  <dialog id="dlg-menu" class="modal modal-bottom sm:modal-middle"></dialog>
 
   <!-- 1) inti bank soal  2) file bank soal  3) materi  4) aplikasi -->
   <script src="js/db-core.js"></script>

@@ -1,5 +1,7 @@
 /** Tailwind + DaisyUI. Build: npm run build  (hasil: css/app.css) */
 module.exports = {
+  // hover hanya aktif di perangkat yang punya kursor (bukan layar sentuh)
+  future: { hoverOnlyWhenSupported: true },
   content: ["./index.html", "./js/**/*.js"],
   theme: {
     extend: {

@@ -215,6 +215,7 @@ function route() {
   const parts = location.hash.replace(/^#\/?/, '').split('/');
   const view = ROUTES[parts[0]] ? parts[0] : '';
   if (view !== 'ujian') { const d = $('#dlg-nums'); if (d && d.open) d.close(); }
+  document.documentElement.classList.toggle('in-exam', view === 'ujian');
   ROUTES[view](parts[1] ? decodeURIComponent(parts[1]) : null);
   window.scrollTo(0, 0);
 }
@@ -222,15 +223,13 @@ window.addEventListener('hashchange', route);
 const go = h => { if (location.hash === h) route(); else location.hash = h; };
 
 /* ---------- kerangka halaman ---------- */
+const NAV_LINKS = [['', 'Beranda', 'home'], ['materi', 'Materi', 'book'], ['skd', 'SKD', 'clipboard'], ['skb', 'SKB', 'briefcase']];
 function navbar(active) {
-  const links = [['', 'Beranda'], ['materi', 'Materi'], ['skd', 'SKD'], ['skb', 'SKB']];
-  const li = links.map(([h, t]) =>
+  const li = NAV_LINKS.map(([h, t]) =>
     `<li><a href="#/${h}" class="${active === h ? 'bg-primary/10 font-semibold text-primary' : ''}">${t}</a></li>`).join('');
-  const tabs = links.map(([h, t]) =>
-    `<a href="#/${h}" class="tab ${active === h ? 'tab-active font-semibold' : ''}">${t}</a>`).join('');
   return `
-  <header class="sticky top-0 z-30 border-b border-base-300/70 bg-base-100/85 backdrop-blur">
-    <div class="navbar mx-auto max-w-6xl px-4">
+  <header class="app-top sticky top-0 z-30 border-b border-base-300/70 bg-base-100/90 backdrop-blur">
+    <div class="navbar mx-auto min-h-14 max-w-6xl px-3 sm:px-4 md:min-h-16">
       <div class="navbar-start">
         <a href="#/" class="flex items-center gap-2.5 text-lg font-extrabold tracking-tight text-neutral">
           <span class="grid h-9 w-9 place-items-center rounded-xl bg-primary text-sm font-black text-primary-content shadow-sm">CAT</span>
@@ -239,27 +238,32 @@ function navbar(active) {
       </div>
       <div class="navbar-center hidden md:flex"><ul class="menu menu-horizontal gap-1 px-1">${li}</ul></div>
       <div class="navbar-end">
-        <button class="btn btn-ghost btn-sm gap-2" onclick="App.openDb()" aria-label="Kelola database soal">${icon('db', 'h-4 w-4')}<span class="hidden sm:inline">Database</span></button>
+        <button class="btn btn-ghost btn-sm gap-2" onclick="App.openDb()" aria-label="Kelola database soal">${icon('db', 'h-5 w-5 sm:h-4 sm:w-4')}<span class="hidden sm:inline">Database</span></button>
       </div>
     </div>
-    <div role="tablist" class="tabs tabs-bordered mx-auto max-w-6xl justify-center md:hidden">${tabs}</div>
   </header>`;
+}
+/* navigasi bawah ala aplikasi (hanya tampil di layar kecil) */
+function bottomNav(active) {
+  return `<nav class="bnav" aria-label="Menu utama">${NAV_LINKS.map(([h, t, ic]) =>
+    `<a href="#/${h}" class="${active === h ? 'on' : ''}" ${active === h ? 'aria-current="page"' : ''}>${icon(ic, 'h-6 w-6')}<span>${t}</span></a>`).join('')}</nav>`;
 }
 function shell(active, inner) {
   $('#app').innerHTML = `
     ${navbar(active)}
-    <main class="fade-in mx-auto w-full max-w-6xl px-4 pb-16">${inner}</main>
-    <footer class="mx-auto max-w-6xl px-4 pb-10 text-center text-xs text-base-content/50">
+    <main class="page-main fade-in mx-auto w-full max-w-6xl px-4">${inner}</main>
+    <footer class="page-foot mx-auto max-w-6xl px-4 text-center text-xs text-base-content/50">
       Simulasi belajar mandiri — bukan produk resmi BKN. Selalu cek regulasi terbaru pada sumber resmi.
-    </footer>`;
+    </footer>
+    ${bottomNav(active)}`;
 }
 function breadcrumb(items) {
-  return `<div class="breadcrumbs pt-5 text-sm"><ul>${items.map(([h, t]) =>
+  return `<div class="breadcrumbs pt-3 text-sm sm:pt-5"><ul>${items.map(([h, t]) =>
     h ? `<li><a href="${h}">${t}</a></li>` : `<li class="font-semibold">${t}</li>`).join('')}</ul></div>`;
 }
 function pageHead(title, sub, extra = '') {
-  return `<div class="mb-6 mt-1 flex flex-wrap items-end justify-between gap-3">
-    <div><h1 class="text-2xl font-extrabold tracking-tight text-neutral sm:text-3xl">${title}</h1>
+  return `<div class="mb-5 mt-1 flex flex-wrap items-end justify-between gap-3 sm:mb-6">
+    <div><h1 class="text-[1.65rem] font-extrabold leading-tight tracking-tight text-neutral sm:text-3xl">${title}</h1>
     <p class="mt-1 max-w-2xl text-sm text-base-content/70">${sub}</p></div>${extra}</div>`;
 }
 
@@ -269,7 +273,7 @@ function renderHome() {
   const skbTot = skbKeys().reduce((a, k) => a + bankLen(k), 0);
   const done = Object.keys(results).length;
   const resume = exam && !exam.finished
-    ? `<div role="alert" class="alert mx-auto mb-8 max-w-2xl border-primary/30 bg-primary/10">
+    ? `<div role="alert" class="alert mx-auto mb-6 max-w-2xl border-primary/30 bg-primary/10 sm:mb-8">
          ${icon('clock', 'h-5 w-5 text-primary')}
          <div><div class="font-semibold">Sesi ujian belum selesai</div><div class="text-xs">${esc(exam.pack.title)} — ${exam.answers.filter(a => a !== null).length}/${exam.qs.length} terjawab</div></div>
          <a href="#/ujian" class="btn btn-primary btn-sm">Lanjutkan</a>
@@ -277,9 +281,9 @@ function renderHome() {
 
   const card = (href, color, ic, label, title, text, chips, cta) => `
     <a href="${href}" class="group card border border-base-300 bg-base-100 shadow-md transition duration-200 hover:-translate-y-1 hover:shadow-xl">
-      <div class="card-body gap-4 p-7">
+      <div class="card-body gap-4 p-5 sm:p-7">
         <div class="flex items-center justify-between">
-          <span class="grid h-14 w-14 place-items-center rounded-2xl ${color.icon}">${icon(ic, 'h-7 w-7')}</span>
+          <span class="grid h-12 w-12 place-items-center rounded-2xl sm:h-14 sm:w-14 ${color.icon}">${icon(ic, 'h-6 w-6 sm:h-7 sm:w-7')}</span>
           <span class="badge badge-outline ${color.badge}">${label}</span>
         </div>
         <div>
@@ -292,22 +296,22 @@ function renderHome() {
     </a>`;
 
   shell('', `
-    <section class="pb-10 pt-12 text-center sm:pt-16">
-      <span class="badge badge-primary badge-outline mb-5 px-4 py-3 font-semibold">Belajar • Latihan • Simulasi CAT</span>
-      <h1 class="mx-auto max-w-3xl text-4xl font-extrabold tracking-tight text-neutral sm:text-5xl">
+    <section class="pb-7 pt-7 text-center sm:pb-10 sm:pt-16">
+      <span class="badge badge-primary badge-outline mb-4 h-auto max-w-full whitespace-normal px-3 py-1.5 text-xs font-semibold sm:mb-5 sm:px-4 sm:py-3 sm:text-sm">Belajar • Latihan • Simulasi CAT</span>
+      <h1 class="mx-auto max-w-3xl text-[2rem] font-extrabold leading-tight tracking-tight text-neutral sm:text-5xl">
         Siap lolos seleksi <span class="text-primary">CPNS</span>?
       </h1>
-      <p class="mx-auto mt-4 max-w-xl text-base text-base-content/70">
+      <p class="mx-auto mt-3 max-w-xl text-[0.95rem] text-base-content/70 sm:mt-4 sm:text-base">
         Mulai dari materi dan trik cepat, lanjut latihan per paket, lalu uji kemampuanmu lewat simulasi ujian.
       </p>
-      <div class="stats mx-auto mt-8 border border-base-300 bg-base-100 shadow-sm">
-        <div class="stat px-6 py-3"><div class="stat-title text-xs">Bank soal</div><div class="stat-value text-2xl text-primary">${fmtNum(bankTotal())}</div></div>
-        <div class="stat px-6 py-3"><div class="stat-title text-xs">Soal dikerjakan</div><div class="stat-value text-2xl text-secondary">${fmtNum(seen.size)}</div></div>
-        <div class="stat px-6 py-3"><div class="stat-title text-xs">Paket selesai</div><div class="stat-value text-2xl text-accent">${fmtNum(done)}</div></div>
+      <div class="mx-auto mt-6 grid max-w-md grid-cols-3 divide-x divide-base-300 overflow-hidden rounded-2xl border border-base-300 bg-base-100 shadow-sm sm:mt-8">
+        <div class="px-2 py-3"><div class="text-[11px] text-base-content/60 sm:text-xs">Bank soal</div><div class="text-xl font-extrabold text-primary sm:text-2xl">${fmtNum(bankTotal())}</div></div>
+        <div class="px-2 py-3"><div class="text-[11px] text-base-content/60 sm:text-xs">Soal dikerjakan</div><div class="text-xl font-extrabold text-secondary sm:text-2xl">${fmtNum(seen.size)}</div></div>
+        <div class="px-2 py-3"><div class="text-[11px] text-base-content/60 sm:text-xs">Paket selesai</div><div class="text-xl font-extrabold text-accent sm:text-2xl">${fmtNum(done)}</div></div>
       </div>
     </section>
     ${resume}
-    <section class="grid gap-6 md:grid-cols-3" aria-label="Pilih jalur belajar">
+    <section class="grid gap-4 md:grid-cols-3 md:gap-6" aria-label="Pilih jalur belajar">
       ${card('#/materi', { icon: 'bg-teal-100 text-teal-700', badge: 'border-teal-300 text-teal-700', btn: 'btn-accent' }, 'book', 'Belajar',
         'Materi', 'Ringkasan materi, cara menjawab cepat, contoh soal, dan latihan per topik.',
         [`${MATERI.length} topik`, 'TWK · TIU · TKP · SKB'], 'Mulai belajar')}
@@ -318,7 +322,7 @@ function renderHome() {
         'SKB', 'Seleksi Kompetensi Bidang untuk lima rumpun formasi, dibagi per paket latihan.',
         [`${fmtNum(skbTot)} soal`, `${skbKeys().length} formasi`], 'Pilih formasi SKB')}
     </section>
-    <p class="mt-10 text-center text-sm text-base-content/60">Tips: mulai dari <b>Materi</b> → kerjakan <b>latihan topik</b> → ukur dengan <b>tryout SKD</b>.</p>
+    <p class="mt-8 text-center text-sm text-base-content/60 sm:mt-10">Tips: mulai dari <b>Materi</b> → kerjakan <b>latihan topik</b> → ukur dengan <b>tryout SKD</b>.</p>
   `);
 }
 
@@ -346,7 +350,7 @@ function packCard(p) {
           <progress class="progress progress-primary h-2 w-full" value="${pct}" max="100"></progress>
           <div class="mt-1 text-[11px] text-base-content/50">${r.attempts}x dikerjakan</div>
         </div>` : ''}
-      <button class="btn btn-primary btn-sm mt-1 w-full" onclick="App.openStart('${p.key}')">${r ? 'Ulangi paket' : 'Mulai paket'}</button>
+      <button class="btn btn-primary mt-1 w-full" onclick="App.openStart('${p.key}')">${r ? 'Ulangi paket' : 'Mulai paket'}</button>
     </div>
   </div>`;
 }
@@ -354,16 +358,16 @@ function packCard(p) {
 /* ---------- SKD ---------- */
 function renderSkd() {
   const tabs = Object.entries(SKD_GROUPS).map(([id, g]) =>
-    `<button role="tab" class="tab h-10 ${ui.skdTab === id ? 'tab-active !bg-primary !text-primary-content' : ''}" onclick="App.setSkdTab('${id}')">${g.label}</button>`).join('');
+    `<button role="tab" class="tab h-11 px-1 text-sm ${ui.skdTab === id ? 'tab-active !bg-primary !text-primary-content' : ''}" onclick="App.setSkdTab('${id}')"><span class="sm:hidden">${g.short}</span><span class="hidden sm:inline">${g.label}</span></button>`).join('');
   const g = SKD_GROUPS[ui.skdTab];
   const packs = packsFor(ui.skdTab);
   shell('skd', `
     ${breadcrumb([['#/', 'Beranda'], [null, 'SKD']])}
     ${pageHead('Seleksi Kompetensi Dasar (SKD)', 'Pilih jenis latihan, lalu pilih paket soal. Tiap paket berisi soal yang tetap, sehingga progresmu bisa dibandingkan.')}
-    <div role="tablist" class="tabs tabs-boxed mb-4 inline-flex bg-base-100 p-1.5 shadow-sm">${tabs}</div>
+    <div role="tablist" class="tabs tabs-boxed mb-4 grid w-full grid-cols-4 bg-base-100 p-1.5 shadow-sm sm:inline-grid sm:w-auto">${tabs}</div>
     <p class="mb-5 text-sm text-base-content/70">${g.desc}</p>
     ${packs.length
-      ? `<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">${packs.map(packCard).join('')}</div>`
+      ? `<div class="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">${packs.map(packCard).join('')}</div>`
       : `<div class="alert">Belum ada soal pada kategori ini. Tambahkan lewat menu Database.</div>`}
   `);
 }
@@ -376,7 +380,7 @@ function renderSkb(key) {
       const done = packsFor(k).filter(p => results[p.key]).length;
       return `
       <a href="#/skb/${k}" class="group card border border-base-300 bg-base-100 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-        <div class="card-body gap-3 p-6">
+        <div class="card-body gap-3 p-5 sm:p-6">
           <div class="flex items-center justify-between">
             <span class="grid h-11 w-11 place-items-center rounded-xl bg-indigo-100 text-indigo-700">${icon('briefcase', 'h-6 w-6')}</span>
             <span class="badge badge-ghost">${done}/${np} paket</span>
@@ -393,7 +397,7 @@ function renderSkb(key) {
     shell('skb', `
       ${breadcrumb([['#/', 'Beranda'], [null, 'SKB']])}
       ${pageHead('Seleksi Kompetensi Bidang (SKB)', 'Pilih rumpun formasi, lalu pilih paket latihan di dalamnya.')}
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>`);
+      <div class="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>`);
     return;
   }
   const m = skbMeta(key), packs = packsFor(key);
@@ -401,7 +405,7 @@ function renderSkb(key) {
     ${breadcrumb([['#/', 'Beranda'], ['#/skb', 'SKB'], [null, esc(m.short)]])}
     ${pageHead('SKB ' + esc(m.name), esc(m.desc) + ` Setiap paket berisi ${SKB_SIZE} soal.`,
       `<a href="#/skb" class="btn btn-ghost btn-sm gap-2">${icon('back', 'h-4 w-4')} Ganti formasi</a>`)}
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">${packs.map(packCard).join('')}</div>
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">${packs.map(packCard).join('')}</div>
     ${(() => { const t = MATERI.find(x => x.buckets && x.buckets.length === 1 && x.buckets[0] === key && !x.subs); return t
       ? `<div class="mt-8 rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm"><div class="flex flex-wrap items-center justify-between gap-3"><div><div class="font-bold text-neutral">Belum hafal kisi-kisinya?</div><div class="text-sm text-base-content/70">Baca ringkasan materi ${esc(m.short)} sebelum mulai paket.</div></div><a class="btn btn-accent btn-sm" href="#/materi/${t.id}">Buka materi</a></div></div>` : ''; })()}
   `);
@@ -413,7 +417,7 @@ function renderMateri(id) {
   if (topic) return renderMateriDetail(topic);
 
   const chips = [{ id: 'ALL', name: 'Semua' }].concat(MATERI_GROUPS).map(g =>
-    `<button class="btn btn-sm ${ui.materiGroup === g.id ? 'btn-primary' : 'btn-ghost bg-base-100'}" onclick="App.setMateriGroup('${g.id}')">${g.name}</button>`).join('');
+    `<button class="btn btn-sm shrink-0 ${ui.materiGroup === g.id ? 'btn-primary' : 'btn-ghost bg-base-100'}" onclick="App.setMateriGroup('${g.id}')">${g.name}</button>`).join('');
   const list = MATERI.filter(t => ui.materiGroup === 'ALL' || t.group === ui.materiGroup);
   const cur = MATERI_GROUPS.find(g => g.id === ui.materiGroup);
   const cards = list.map(t => {
@@ -435,9 +439,9 @@ function renderMateri(id) {
   shell('materi', `
     ${breadcrumb([['#/', 'Beranda'], [null, 'Materi']])}
     ${pageHead('Materi & Cara Menjawab Cepat', 'Ringkasan inti, trik cepat, contoh soal dari bank soal, dan latihan khusus untuk tiap topik.')}
-    <div class="mb-3 flex flex-wrap gap-2">${chips}</div>
+    <div class="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">${chips}</div>
     ${cur ? `<p class="mb-5 text-sm text-base-content/70"><b>${cur.full}</b> — ${cur.desc}</p>` : '<div class="mb-5"></div>'}
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>
   `);
 }
 
@@ -448,6 +452,20 @@ function optionsStatic(q) {
     return `<div class="opt ${best ? 'is-correct' : mid ? 'is-mid' : ''} !cursor-default"><span class="letter">${LETTERS[i]}</span><span class="pt-1 text-sm">${esc(o.replace(/^[A-E]\.\s*/, ''))}</span>${q.category === 'TKP' ? `<span class="badge badge-sm ml-auto shrink-0">${q.scores[i]} poin</span>` : ''}</div>`;
   }).join('');
 }
+/* Tabel materi: di HP tabel 3 kolom+ ditampilkan sebagai kartu bertumpuk (label di atas tiap nilai),
+   tabel 2 kolom tetap tabel biasa tetapi bisa digeser bila perlu. Di layar lebar tampil normal. */
+function wrapTables(html) {
+  return String(html).replace(/<table\b[\s\S]*?<\/table>/g, tb => {
+    const heads = [...tb.matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/g)].map(m => m[1].replace(/<[^>]+>/g, '').trim());
+    if (heads.length < 3) return `<div class="tbl-wrap">${tb}</div>`;
+    const labelled = tb.replace(/<tr\b[^>]*>[\s\S]*?<\/tr>/g, row => {
+      if (!/<td\b/.test(row)) return row;
+      let i = 0;
+      return row.replace(/<td\b([^>]*)>/g, (m, attrs) => `<td${attrs} data-label="${esc(heads[i++] || '')}">`);
+    });
+    return `<div class="tbl-wrap stack">${labelled}</div>`;
+  });
+}
 function renderMateriDetail(t) {
   const st = GROUP_STYLE[t.group] || GROUP_STYLE.SKB;
   const idx = MATERI.indexOf(t);
@@ -457,15 +475,15 @@ function renderMateriDetail(t) {
   const toc = [...t.sections.map((s, i) => [`s${i}`, s.title]), ['tips', 'Cara menjawab cepat'], ['contoh', 'Contoh soal'], ['latihan', 'Latihan']];
 
   const sections = t.sections.map((s, i) => `
-    <section id="s${i}" class="card border border-base-300 bg-base-100 shadow-sm scroll-mt-24">
+    <section id="s${i}" class="card border border-base-300 bg-base-100 shadow-sm scroll-mt-28">
       <div class="card-body gap-2 p-5 sm:p-6">
         <h2 class="text-lg font-bold text-neutral">${esc(s.title)}</h2>
-        <div class="materi-body">${s.html}</div>
+        <div class="materi-body">${wrapTables(s.html)}</div>
       </div>
     </section>`).join('');
 
   const tips = (t.tips || []).length ? `
-    <section id="tips" class="scroll-mt-24 overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white shadow-sm">
+    <section id="tips" class="scroll-mt-28 overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white shadow-sm">
       <div class="p-5 sm:p-6">
         <h2 class="mb-3 flex items-center gap-2 text-lg font-bold text-amber-900">${icon('bolt', 'h-5 w-5')} Cara menjawab cepat</h2>
         <ol class="space-y-2.5">${t.tips.map((x, i) => `<li class="flex gap-3 text-[0.95rem] leading-relaxed"><span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-amber-400 text-xs font-bold text-amber-950">${i + 1}</span><span>${x}</span></li>`).join('')}</ol>
@@ -479,7 +497,7 @@ function renderMateriDetail(t) {
       <div class="card-body gap-3 p-5">
         <div class="flex items-center justify-between gap-2"><span class="badge badge-primary badge-outline">Contoh ${i + 1}</span><span class="truncate text-xs text-base-content/50">${esc(q.sub)}</span></div>
         <div class="whitespace-pre-line text-[0.97rem] font-medium leading-relaxed">${esc(q.q)}</div>
-        ${q.svg ? `<div class="overflow-auto rounded-xl bg-base-200/60 p-3">${q.svg}</div>` : ''}
+        ${q.svg ? `<div class="q-svg overflow-auto rounded-xl bg-base-200/60 p-3">${q.svg}</div>` : ''}
         <div class="space-y-2">${optionsStatic(q)}</div>
         <div class="collapse collapse-arrow rounded-xl border border-base-300 bg-base-200/50">
           <input type="checkbox" aria-label="Tampilkan kunci dan pembahasan">
@@ -493,19 +511,19 @@ function renderMateriDetail(t) {
     </div>`;
   }).join('') : `<div class="alert text-sm">Belum ada contoh soal untuk topik ini. Tambahkan lewat <code>questions</code> di <code>js/materi.js</code>.</div>`;
 
-  const nav = `<div class="mt-2 grid gap-3 sm:grid-cols-2">
-      ${prev ? `<a href="#/materi/${prev.id}" class="btn btn-ghost justify-start gap-2 bg-base-100 normal-case">${icon('back', 'h-4 w-4 shrink-0')}<span class="truncate">${esc(prev.title)}</span></a>` : '<span></span>'}
-      ${next ? `<a href="#/materi/${next.id}" class="btn btn-ghost justify-end gap-2 bg-base-100 normal-case"><span class="truncate">${esc(next.title)}</span>${icon('arrowR', 'h-4 w-4 shrink-0')}</a>` : ''}
+  const nav = `<div class="mt-2 grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2">
+      ${prev ? `<a href="#/materi/${prev.id}" class="btn btn-ghost w-full min-w-0 flex-nowrap justify-start gap-2 bg-base-100 normal-case">${icon('back', 'h-4 w-4 shrink-0')}<span class="min-w-0 truncate">${esc(prev.title)}</span></a>` : '<span></span>'}
+      ${next ? `<a href="#/materi/${next.id}" class="btn btn-ghost w-full min-w-0 flex-nowrap justify-end gap-2 bg-base-100 normal-case"><span class="min-w-0 truncate">${esc(next.title)}</span>${icon('arrowR', 'h-4 w-4 shrink-0')}</a>` : ''}
     </div>`;
 
   shell('materi', `
     ${breadcrumb([['#/', 'Beranda'], ['#/materi', 'Materi'], [null, esc(t.title)]])}
-    <div class="mb-6 mt-1">
+    <div class="mb-4 mt-1 sm:mb-6">
       <span class="badge mb-2 border-0 font-bold ${st.badge}">${t.group}</span>
-      <h1 class="text-2xl font-extrabold tracking-tight text-neutral sm:text-3xl">${esc(t.title)}</h1>
+      <h1 class="text-[1.5rem] font-extrabold leading-tight tracking-tight text-neutral sm:text-3xl">${esc(t.title)}</h1>
       <p class="mt-1 max-w-2xl text-sm text-base-content/70">${esc(t.summary)}</p>
     </div>
-    <div class="grid gap-6 lg:grid-cols-[230px_minmax(0,1fr)]">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[230px_minmax(0,1fr)]">
       <aside class="hidden lg:block">
         <nav class="sticky top-24 rounded-2xl border border-base-300 bg-base-100 p-3 shadow-sm" aria-label="Daftar isi">
           <div class="px-2 pb-1 text-xs font-bold uppercase tracking-wide text-base-content/50">Di halaman ini</div>
@@ -513,16 +531,17 @@ function renderMateriDetail(t) {
         </nav>
       </aside>
       <div class="space-y-5">
+        <nav class="sub-sticky no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 py-2 lg:hidden" aria-label="Daftar isi">${toc.map(([h, x]) => `<button class="btn btn-sm shrink-0 rounded-full border border-base-300 bg-base-100 font-medium" onclick="App.scrollTo('${h}')">${esc(x)}</button>`).join('')}</nav>
         ${sections}
         ${tips}
-        <section id="contoh" class="scroll-mt-24 space-y-4">
+        <section id="contoh" class="scroll-mt-28 space-y-4">
           <h2 class="text-lg font-bold text-neutral">Contoh soal</h2>${examples}
         </section>
-        <section id="latihan" class="scroll-mt-24 rounded-2xl bg-gradient-to-br from-primary to-secondary p-6 text-primary-content shadow-md">
+        <section id="latihan" class="scroll-mt-28 rounded-2xl bg-gradient-to-br from-primary to-secondary p-5 text-primary-content shadow-md sm:p-6">
           <div class="flex flex-wrap items-center justify-between gap-4">
             <div><h2 class="text-xl font-extrabold">Latihan soal topik ini</h2>
             <p class="mt-1 text-sm text-white/85">${pool.length ? `Kerjakan ${Math.min(10, pool.length)} soal acak dari ${fmtNum(pool.length)} soal terkait, lengkap dengan pembahasan instan.` : 'Belum ada soal untuk topik ini.'}</p></div>
-            ${pool.length ? `<button class="btn border-0 bg-white text-primary hover:bg-white/90" onclick="App.startMateriPractice('${t.id}')">Mulai latihan ${icon('arrowR', 'h-4 w-4')}</button>` : ''}
+            ${pool.length ? `<button class="btn w-full border-0 bg-white text-primary hover:bg-white/90 sm:w-auto" onclick="App.startMateriPractice('${t.id}')">Mulai latihan ${icon('arrowR', 'h-4 w-4')}</button>` : ''}
           </div>
         </section>
         ${nav}
@@ -563,36 +582,29 @@ function paintTimer() {
   const sec = exam.remaining != null ? exam.remaining : exam.elapsed;
   el.innerHTML = `${icon('clock', 'h-4 w-4')}<span class="font-mono">${fmtClock(Math.max(0, sec))}</span>`;
   const urgent = exam.remaining != null && exam.remaining <= 600 && !exam.finished;
-  el.className = 'badge badge-lg gap-2 border-0 ' + (exam.finished ? 'badge-ghost' : urgent ? 'badge-error text-white' : 'bg-base-200 text-neutral');
+  el.className = 'badge badge-lg shrink-0 gap-2 border-0 ' + (exam.finished ? 'badge-ghost' : urgent ? 'badge-error text-white' : 'bg-base-200 text-neutral');
 }
 const showKey = () => exam.finished || exam.instant;
 
 function renderExam() {
   if (!exam) { go('#/'); return; }
   $('#app').innerHTML = `
-  <div class="flex min-h-screen flex-col">
-    <header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/90 backdrop-blur">
-      <div class="mx-auto flex max-w-7xl items-center gap-2 px-3 py-2">
-        <button class="btn btn-ghost btn-sm gap-1" onclick="App.leaveExam()" aria-label="Keluar dari ujian">${icon('back', 'h-4 w-4')}<span class="hidden sm:inline">Keluar</span></button>
+  <div class="flex min-h-dvh flex-col">
+    <header class="app-top sticky top-0 z-30 border-b border-base-300 bg-base-100/95 backdrop-blur">
+      <div class="mx-auto flex max-w-7xl items-center gap-1.5 px-2 py-2 sm:gap-2 sm:px-3">
+        <button class="btn btn-ghost btn-sm gap-1 px-2.5 sm:px-3" onclick="App.leaveExam()" aria-label="Keluar dari ujian">${icon('back', 'h-5 w-5 sm:h-4 sm:w-4')}<span class="hidden sm:inline">Keluar</span></button>
         <div class="min-w-0 flex-1">
           <div class="truncate text-sm font-bold text-neutral sm:text-base">${esc(exam.pack.title)}</div>
           <div class="truncate text-xs text-base-content/60" id="x-sub"></div>
         </div>
-        <div id="x-timer" class="badge badge-lg gap-2 border-0 bg-base-200"></div>
-        <div class="dropdown dropdown-end">
-          <button tabindex="0" class="btn btn-ghost btn-sm btn-square" aria-label="Menu ujian">${icon('dots', 'h-5 w-5')}</button>
-          <ul tabindex="0" class="menu dropdown-content z-50 mt-2 w-64 rounded-box border border-base-300 bg-base-100 p-2 shadow-lg">
-            <li ${exam.finished || exam.remaining == null ? 'class="hidden"' : ''}><a onclick="App.togglePause()"><span id="x-pause-lbl">${exam.paused ? 'Lanjutkan waktu' : 'Jeda waktu'}</span></a></li>
-            <li ${exam.finished ? 'class="hidden"' : ''}><label class="flex cursor-pointer justify-between"><span>Bahas instan</span><input type="checkbox" class="toggle toggle-primary toggle-sm" ${exam.instant ? 'checked' : ''} onchange="App.toggleInstant(this.checked)"></label></li>
-            <li><a onclick="App.restartExam()">Mulai ulang paket</a></li>
-          </ul>
-        </div>
-        <button class="btn btn-primary btn-sm" id="x-finish" onclick="App.finish()"></button>
+        <div id="x-timer" class="badge badge-lg shrink-0 gap-2 border-0 bg-base-200"></div>
+        <button class="btn btn-ghost btn-sm btn-square shrink-0" onclick="App.openMenu()" aria-label="Menu ujian">${icon('dots', 'h-5 w-5')}</button>
+        <button class="btn btn-primary btn-sm hidden sm:inline-flex" id="x-finish" onclick="App.finish()"></button>
       </div>
-      <div id="x-scores" class="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-3 pb-2"></div>
+      <div id="x-scores" class="no-scrollbar mx-auto flex max-w-7xl gap-2 overflow-x-auto px-2 pb-2 sm:px-3"></div>
     </header>
-    <main class="mx-auto grid w-full max-w-7xl flex-1 gap-4 px-3 py-4 lg:grid-cols-[minmax(0,1fr)_330px]">
-      <section id="x-q" class="card relative overflow-hidden border border-base-300 bg-base-100 shadow-sm"></section>
+    <main class="mx-auto grid w-full max-w-7xl flex-1 grid-cols-[minmax(0,1fr)] gap-4 px-2 pb-0 pt-3 sm:px-3 lg:grid-cols-[minmax(0,1fr)_330px] lg:py-4">
+      <section id="x-q" class="card relative min-h-[calc(100dvh-7.5rem)] overflow-clip border border-base-300 bg-base-100 shadow-sm max-lg:rounded-b-none lg:min-h-0"></section>
       <aside class="hidden lg:block"><div id="x-side" class="card sticky top-28 border border-base-300 bg-base-100 shadow-sm"></div></aside>
     </main>
   </div>`;
@@ -661,6 +673,9 @@ function feedbackHtml(q, chosen) {
     ${mt ? `<div class="border-t border-base-300 bg-base-100 px-4 py-2 text-xs"><a class="link link-primary" href="#/materi/${mt.id}" onclick="App.leaveToMateri()">Pelajari materi: ${esc(mt.title)} →</a></div>` : ''}
   </div>`;
 }
+/* tombol bilah aksi: ikon + label pendek di mobile, label lengkap di desktop */
+const xb = (cls, ic, short, long, onclick, dis) =>
+  `<button class="xbtn ${cls}" onclick="${onclick}" ${dis ? 'disabled' : ''}>${icon(ic, 'h-5 w-5 lg:h-4 lg:w-4')}<span class="lg:hidden">${short}</span><span class="hidden lg:inline">${long}</span></button>`;
 function paintQuestion() {
   const box = $('#x-q'); if (!box || !exam) return;
   const q = exam.qs[exam.idx], chosen = exam.answers[exam.idx];
@@ -688,32 +703,30 @@ function paintQuestion() {
   const last = exam.idx === exam.qs.length - 1;
 
   box.innerHTML = `
-    <div class="flex flex-col gap-4 p-4 sm:p-6">
+    <div class="flex flex-1 flex-col gap-4 p-4 sm:p-6">
       <div class="flex flex-wrap items-center gap-2">
         <span class="badge badge-primary font-semibold">Soal ${q.no} / ${exam.qs.length}</span>
         <span class="badge border-0 font-semibold ${cs.badge}">${catLabel}</span>
-        <span class="badge badge-ghost max-w-[16rem] truncate">${esc(q.sub)}</span>
+        <span class="badge badge-ghost max-w-full truncate sm:max-w-[16rem]">${esc(q.sub)}</span>
         <span class="ml-auto hidden text-xs text-base-content/50 sm:inline">${rule}</span>
       </div>
       <div class="whitespace-pre-line text-[1.02rem] font-medium leading-relaxed text-neutral">${esc(q.q)}</div>
-      ${q.svg ? `<div class="overflow-auto rounded-xl bg-base-200/60 p-3">${q.svg}</div>` : ''}
+      ${q.svg ? `<div class="q-svg overflow-auto rounded-xl bg-base-200/60 p-3">${q.svg}</div>` : ''}
       <div class="space-y-2.5" role="group" aria-label="Pilihan jawaban">${opts}</div>
       ${key && (chosen !== null || exam.finished) ? feedbackHtml(q, chosen) : ''}
     </div>
-    <div class="sticky bottom-0 flex flex-wrap items-center gap-2 border-t border-base-300 bg-base-100/95 p-3 backdrop-blur">
-      <button class="btn btn-sm gap-1" onclick="App.prev()" ${exam.idx === 0 ? 'disabled' : ''}>${icon('back', 'h-4 w-4')}<span class="hidden sm:inline">Sebelumnya</span></button>
-      ${exam.finished ? '' : `
-      <button class="btn btn-sm gap-1 ${exam.doubts[exam.idx] ? 'btn-warning' : 'btn-outline'}" onclick="App.toggleDoubt()">${icon('flag', 'h-4 w-4')}Ragu</button>
-      <button class="btn btn-ghost btn-sm" onclick="App.clearAnswer()" ${chosen === null ? 'disabled' : ''} aria-label="Hapus jawaban">${icon('trash', 'h-4 w-4')}<span class="hidden md:inline">Hapus</span></button>`}
-      <button class="btn btn-ghost btn-sm gap-1 lg:hidden" onclick="App.openNums()">${icon('grid', 'h-4 w-4')}Nomor</button>
-      <span class="hidden flex-1 text-center text-xs text-base-content/50 xl:block">Pintasan: A–E • ← → • R (ragu)</span>
-      <span class="flex-1 xl:hidden"></span>
+    <div class="xnav">
+      ${xb('', 'back', 'Sebelum', 'Sebelumnya', 'App.prev()', exam.idx === 0)}
+      ${exam.finished ? '' : xb(exam.doubts[exam.idx] ? 'warn' : '', 'flag', 'Ragu', 'Ragu', 'App.toggleDoubt()')}
+      ${exam.finished ? '' : xb('', 'trash', 'Hapus', 'Hapus', 'App.clearAnswer()', chosen === null)}
+      ${xb('hide-lg', 'grid', 'Nomor', 'Nomor', 'App.openNums()')}
+      <span class="xhint">Pintasan: A–E • ← → • R (ragu)</span>
       ${last
-        ? `<button class="btn btn-primary btn-sm" onclick="${exam.finished ? 'App.openResult()' : 'App.finish()'}">${exam.finished ? 'Lihat hasil' : 'Selesai'}</button>`
-        : `<button class="btn btn-primary btn-sm gap-1" onclick="App.next()"><span class="hidden sm:inline">Selanjutnya</span>${icon('arrowR', 'h-4 w-4')}</button>`}
+        ? xb('pri', 'check', exam.finished ? 'Hasil' : 'Selesai', exam.finished ? 'Lihat hasil' : 'Selesai', exam.finished ? 'App.openResult()' : 'App.finish()')
+        : xb('pri', 'arrowR', 'Lanjut', 'Selanjutnya', 'App.next()')}
     </div>
     ${exam.paused && !exam.finished ? `
-    <div class="absolute inset-0 z-10 grid place-items-center bg-base-100/95 backdrop-blur-md">
+    <div class="absolute inset-0 z-30 grid place-items-center bg-base-100/95 backdrop-blur-md">
       <div class="text-center"><div class="mb-3 text-lg font-bold text-neutral">Ujian dijeda</div>
       <button class="btn btn-primary gap-2" onclick="App.togglePause()">${icon('play', 'h-4 w-4')} Lanjutkan</button></div>
     </div>` : ''}`;
@@ -751,7 +764,7 @@ function sideHtml() {
         ${fbtn('ALL', 'Semua')}${multiCat ? fbtn('TWK', 'TWK') + fbtn('TIU', 'TIU') + fbtn('TKP', 'TKP') : ''}
         ${fbtn('UNANSWERED', 'Belum')}${fbtn('WRONG', 'Kurang tepat')}${exam.finished ? '' : fbtn('DOUBT', 'Ragu')}
       </div>
-      <div class="grid max-h-[46vh] grid-cols-6 gap-1.5 overflow-y-auto p-1">${cells || '<div class="col-span-6 py-4 text-center text-sm text-base-content/50">Tidak ada soal.</div>'}</div>
+      <div class="grid max-h-[50dvh] grid-cols-5 gap-2 overflow-y-auto p-1 sm:grid-cols-8 lg:max-h-[46vh] lg:grid-cols-6 lg:gap-1.5">${cells || '<div class="col-span-full py-4 text-center text-sm text-base-content/50">Tidak ada soal.</div>'}</div>
       <div class="grid grid-cols-2 gap-x-3 gap-y-1 border-t border-base-300 pt-3 text-[11px] text-base-content/70">
         <span><i class="mr-1 inline-block h-2.5 w-2.5 rounded bg-success"></i>Benar / skor 5</span>
         <span><i class="mr-1 inline-block h-2.5 w-2.5 rounded bg-error"></i>Salah</span>
@@ -826,24 +839,24 @@ function openResult() {
   const d = $('#dlg-result');
   d.innerHTML = `
   <div class="modal-box max-w-2xl p-0">
-    <div class="bg-gradient-to-br from-primary to-secondary p-6 text-primary-content">
-      <div class="flex items-center gap-5">
-        <div class="radial-progress bg-white/15 text-white" style="--value:${pct};--size:6.5rem;--thickness:.6rem" role="img" aria-label="${pct} persen">${pct}%</div>
+    <div class="bg-gradient-to-br from-primary to-secondary p-5 text-primary-content sm:p-6">
+      <div class="flex items-center gap-4 sm:gap-5">
+        <div class="radial-progress shrink-0 bg-white/15 text-white" style="--value:${pct};--size:5.75rem;--thickness:.55rem" role="img" aria-label="${pct} persen">${pct}%</div>
         <div><div class="text-sm text-white/80">${esc(exam.pack.title)}</div>
           <div class="text-3xl font-extrabold">${r.total} <span class="text-lg font-semibold text-white/80">/ ${r.max}</span></div>
           <div class="text-xs text-white/80">Waktu terpakai ${fmtClock(exam.elapsed)}</div></div>
       </div>
     </div>
-    <div class="space-y-4 p-5 sm:p-6">
+    <div class="safe-pad space-y-4">
       ${verdict}
       <div class="grid gap-3 ${Object.keys(r.sum).length > 1 ? 'sm:grid-cols-3' : ''}">${bars}</div>
-      <div class="stats w-full border border-base-300 bg-base-100">
-        <div class="stat px-4 py-2"><div class="stat-title text-xs">Benar / skor 5</div><div class="stat-value text-xl text-success">${r.correct}</div></div>
-        <div class="stat px-4 py-2"><div class="stat-title text-xs">Kurang tepat</div><div class="stat-value text-xl text-error">${r.wrong}</div></div>
-        <div class="stat px-4 py-2"><div class="stat-title text-xs">Kosong</div><div class="stat-value text-xl">${r.empty}</div></div>
+      <div class="grid grid-cols-3 divide-x divide-base-300 rounded-2xl border border-base-300 bg-base-100 text-center">
+        <div class="px-2 py-2.5"><div class="text-[11px] text-base-content/60 sm:text-xs">Benar / skor 5</div><div class="text-xl font-extrabold text-success">${r.correct}</div></div>
+        <div class="px-2 py-2.5"><div class="text-[11px] text-base-content/60 sm:text-xs">Kurang tepat</div><div class="text-xl font-extrabold text-error">${r.wrong}</div></div>
+        <div class="px-2 py-2.5"><div class="text-[11px] text-base-content/60 sm:text-xs">Kosong</div><div class="text-xl font-extrabold text-neutral">${r.empty}</div></div>
       </div>
       ${weakHtml}
-      <div class="modal-action mt-2 flex-wrap">
+      <div class="modal-action act-stack mt-2">
         <button class="btn btn-ghost" onclick="App.exitToList()">Daftar paket</button>
         <button class="btn btn-outline" onclick="App.restartExam(true)">${icon('refresh', 'h-4 w-4')} Ulangi</button>
         <button class="btn btn-primary" onclick="$('#dlg-result').close()">Tinjau pembahasan</button>
@@ -885,7 +898,7 @@ function ask(o) {
 }
 function toast(msg) {
   let t = $('#toast'); if (t) t.remove();
-  t = document.createElement('div'); t.id = 'toast'; t.className = 'toast toast-center toast-bottom z-50';
+  t = document.createElement('div'); t.id = 'toast'; t.className = 'toast toast-center toast-bottom z-50 mb-16 md:mb-0';
   t.innerHTML = `<div class="alert alert-info py-2 text-sm shadow-lg"><span>${esc(msg)}</span></div>`;
   document.body.appendChild(t); setTimeout(() => t.remove(), 2600);
 }
@@ -901,21 +914,21 @@ function openStart(key) {
   <div class="modal-box max-w-md">
     <h3 class="text-xl font-extrabold text-neutral">${esc(p.title)}</h3>
     <p class="mt-1 text-sm text-base-content/70">${esc(p.compose)}</p>
-    <div class="stats stats-vertical mt-4 w-full border border-base-300 sm:stats-horizontal">
-      <div class="stat px-4 py-2"><div class="stat-title text-xs">Jumlah soal</div><div class="stat-value text-xl text-primary">${p.questions.length}</div></div>
-      <div class="stat px-4 py-2"><div class="stat-title text-xs">Waktu</div><div class="stat-value text-xl text-primary">${p.minutes}<span class="text-sm font-semibold"> mnt</span></div></div>
-      <div class="stat px-4 py-2"><div class="stat-title text-xs">Skor maks</div><div class="stat-value text-xl text-primary">${p.questions.length * 5}</div></div>
+    <div class="mt-4 grid grid-cols-3 divide-x divide-base-300 rounded-2xl border border-base-300 text-center">
+      <div class="px-2 py-2.5"><div class="text-xs text-base-content/60">Jumlah soal</div><div class="text-xl font-extrabold text-primary">${p.questions.length}</div></div>
+      <div class="px-2 py-2.5"><div class="text-xs text-base-content/60">Waktu</div><div class="text-xl font-extrabold text-primary">${p.minutes}<span class="text-sm font-semibold"> mnt</span></div></div>
+      <div class="px-2 py-2.5"><div class="text-xs text-base-content/60">Skor maks</div><div class="text-xl font-extrabold text-primary">${p.questions.length * 5}</div></div>
     </div>
     <ul class="mt-4 space-y-1.5 text-sm text-base-content/80">
       <li class="flex gap-2">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>${rules}</span></li>
-      <li class="flex gap-2">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Waktu bisa dijeda dari menu titik tiga.</span></li>
-      <li class="flex gap-2">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Pintasan keyboard: A–E untuk memilih, ← → untuk pindah soal.</span></li>
+      <li class="flex gap-2">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Waktu bisa dijeda dari menu titik tiga (⋮) di pojok kanan atas.</span></li>
+      <li class="hidden gap-2 md:flex">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Pintasan keyboard: A–E untuk memilih, ← → untuk pindah soal.</span></li>
     </ul>
-    <label class="mt-4 flex cursor-pointer items-center justify-between rounded-xl bg-base-200 px-4 py-3">
+    <label class="mt-4 flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-base-200 px-4 py-3">
       <span><span class="block text-sm font-semibold text-neutral">Bahas instan</span><span class="text-xs text-base-content/60">Kunci &amp; pembahasan langsung tampil setelah menjawab. Matikan untuk suasana ujian sebenarnya.</span></span>
-      <input type="checkbox" id="st-instant" class="toggle toggle-primary" ${store.get('cpns_instant', true) ? 'checked' : ''}>
+      <input type="checkbox" id="st-instant" class="toggle toggle-primary shrink-0" ${store.get('cpns_instant', true) ? 'checked' : ''}>
     </label>
-    <div class="modal-action">
+    <div class="modal-action act-stack">
       <button class="btn btn-ghost" onclick="$('#dlg-start').close()">Batal</button>
       <button class="btn btn-primary" onclick="App.confirmStart('${p.key}')">Mulai ujian ${icon('arrowR', 'h-4 w-4')}</button>
     </div>
@@ -945,7 +958,7 @@ function openDb() {
         ${icon('upload', 'h-6 w-6 text-primary')}<span class="text-sm font-semibold">Pilih file</span><span class="text-xs text-base-content/60">Boleh banyak file</span>
         <input type="file" multiple accept=".js,.json" class="hidden" onchange="App.uploadDb(this.files)">
       </label>
-      <label class="flex cursor-pointer flex-col items-center gap-1 rounded-2xl border-2 border-dashed border-base-300 bg-base-200/50 p-4 text-center transition hover:border-primary">
+      <label class="hidden cursor-pointer flex-col items-center gap-1 rounded-2xl border-2 border-dashed border-base-300 bg-base-200/50 p-4 text-center transition hover:border-primary sm:flex">
         ${icon('db', 'h-6 w-6 text-primary')}<span class="text-sm font-semibold">Pilih folder db/</span><span class="text-xs text-base-content/60">Muat seluruh isi folder</span>
         <input type="file" webkitdirectory directory multiple class="hidden" onchange="App.uploadDb(this.files)">
       </label>
@@ -970,6 +983,27 @@ function openDb() {
    AKSI PUBLIK (dipanggil dari atribut onclick)
    ========================================================================== */
 const App = {
+  openMenu() {
+    if (!exam) return;
+    const d = $('#dlg-menu');
+    const row = (ic, label, act) => `<button class="flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-[0.95rem] font-semibold active:bg-base-200" onclick="${act}">${icon(ic, 'h-5 w-5 shrink-0 text-neutral')}<span>${label}</span></button>`;
+    const timed = !exam.finished && exam.remaining != null;
+    d.innerHTML = `
+    <div class="modal-box max-w-sm">
+      <div class="mb-2 flex items-center justify-between">
+        <h3 class="text-lg font-extrabold text-neutral">Menu ujian</h3>
+        <button class="btn btn-ghost btn-sm btn-circle" onclick="$('#dlg-menu').close()" aria-label="Tutup">${icon('x', 'h-4 w-4')}</button>
+      </div>
+      <div class="divide-y divide-base-200">
+        ${timed ? row(exam.paused ? 'play' : 'pause', exam.paused ? 'Lanjutkan waktu' : 'Jeda waktu', "$('#dlg-menu').close();App.togglePause()") : ''}
+        ${exam.finished ? '' : `<label class="flex cursor-pointer items-center justify-between gap-3 px-3 py-3.5"><span class="flex items-center gap-3 text-[0.95rem] font-semibold">${icon('bulb', 'h-5 w-5 shrink-0 text-neutral')}Bahas instan</span><input type="checkbox" class="toggle toggle-primary shrink-0" ${exam.instant ? 'checked' : ''} onchange="App.toggleInstant(this.checked)"></label>`}
+        ${row('refresh', 'Mulai ulang paket', "$('#dlg-menu').close();App.restartExam()")}
+      </div>
+      <button class="btn btn-primary mt-4 w-full" onclick="$('#dlg-menu').close();${exam.finished ? 'App.openResult()' : 'App.finish()'}">${exam.finished ? 'Lihat hasil' : 'Akhiri ujian'}</button>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
+    d.showModal();
+  },
   setSkdTab(id) { ui.skdTab = id; renderSkd(); },
   setMateriGroup(id) { ui.materiGroup = id; renderMateri(null); },
   scrollTo(id) { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
@@ -1001,7 +1035,7 @@ const App = {
     exam.answers[exam.idx] = i;
     markSeen(exam.qs[exam.idx].id);
     paintScores(); paintQuestion(); paintSide();
-    if (exam.instant) setTimeout(() => { const f = $('#x-q .fade-in'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 40);
+    if (exam.instant) setTimeout(() => { const f = $('#x-q .fade-in'); if (f) f.scrollIntoView({ behavior: 'smooth', block: window.innerWidth < 1024 ? 'start' : 'nearest' }); }, 40);
   },
   clearAnswer() { if (!exam || exam.finished) return; exam.answers[exam.idx] = null; paintScores(); paintQuestion(); paintSide(); },
   toggleDoubt() { if (!exam || exam.finished) return; exam.doubts[exam.idx] = !exam.doubts[exam.idx]; paintQuestion(); paintSide(); },
@@ -1009,7 +1043,7 @@ const App = {
   prev() { if (exam.idx > 0) App.goto(exam.idx - 1); },
   next() { if (exam.idx < exam.qs.length - 1) App.goto(exam.idx + 1); },
   setFilter(f) { exam.filter = f; paintSide(); },
-  openNums() { const d = $('#dlg-nums'); d.innerHTML = `<div class="modal-box">${numsDialogInner()}</div><form method="dialog" class="modal-backdrop"><button>tutup</button></form>`; d.showModal(); },
+  openNums() { const d = $('#dlg-nums'); d.innerHTML = `<div class="modal-box p-3 sm:p-6">${numsDialogInner()}</div><form method="dialog" class="modal-backdrop"><button>tutup</button></form>`; d.showModal(); },
 
   /* kontrol ujian */
   togglePause() { if (!exam || exam.finished) return; exam.paused = !exam.paused; if (document.activeElement) document.activeElement.blur(); paintQuestion(); const l = $('#x-pause-lbl'); if (l) l.textContent = exam.paused ? 'Lanjutkan waktu' : 'Jeda waktu'; },
@@ -1117,6 +1151,11 @@ window.registerCPNSQuestions({
   }
 };
 window.App = App;
+
+/* ---------- pengaman: jangan sampai sesi ujian hilang karena refresh/tutup tab tak sengaja ---------- */
+window.addEventListener('beforeunload', e => {
+  if (exam && !exam.finished && location.hash === '#/ujian') { e.preventDefault(); e.returnValue = ''; }
+});
 
 /* ---------- keyboard ---------- */
 document.addEventListener('keydown', e => {
