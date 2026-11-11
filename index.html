@@ -75,6 +75,7 @@
       function ditunda() { try { return Date.now() < Number(localStorage.getItem(KEY) || 0); } catch (e) { return false; } }
       function tunda(hari) { try { localStorage.setItem(KEY, String(Date.now() + hari * 864e5)); } catch (e) {} }
       function diUjian() { return location.hash.indexOf('#/ujian') === 0; }
+      function diBeranda() { var h = location.hash; return h === '' || h === '#' || h === '#/'; }
       function tawarkan() {
         if (standalone || ditunda() || diUjian() || document.querySelector('dialog[open]')) return;
         if (!evt && !ios) return;
@@ -83,11 +84,11 @@
       if (ios) { $('pwa-ios').hidden = false; go.hidden = true; $('pwa-later').textContent = 'Mengerti'; }
       window.addEventListener('beforeinstallprompt', function (e) {
         e.preventDefault(); evt = e;
-        if (!diUjian()) btn.hidden = false;
+        btn.hidden = !diBeranda();
         setTimeout(tawarkan, 2500);
       });
       if (ios && !standalone) setTimeout(tawarkan, 3500);
-      window.addEventListener('hashchange', function () { btn.hidden = !evt || diUjian(); });
+      window.addEventListener('hashchange', function () { btn.hidden = !evt || !diBeranda(); });
       function pasang() {
         if (!evt) return;
         if (dlg.open) dlg.close();
