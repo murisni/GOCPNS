@@ -51,15 +51,54 @@
   <script src="js/materi.js"></script>
   <script src="js/app.js"></script>
 
-  <!-- PWA: tombol "Pasang aplikasi" + pendaftaran service worker (hanya jalan di HTTPS / localhost) -->
+  <!-- PWA: modal ajakan pasang aplikasi + tombol cadangan + service worker (hanya jalan di HTTPS / localhost) -->
+  <dialog id="dlg-pwa" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box max-w-sm text-center outline-none" tabindex="-1" autofocus>
+      <img src="icons/icon-192.png" alt="" class="mx-auto h-16 w-16 rounded-2xl shadow-md">
+      <h3 class="mt-4 text-lg font-extrabold text-neutral">Pasang CAT CPNS di perangkatmu</h3>
+      <p class="mt-1 text-sm text-base-content/70">Buka lebih cepat dari layar utama, tampil layar penuh, dan tetap bisa dipakai tanpa internet.</p>
+      <p id="pwa-ios" hidden class="mt-3 rounded-xl bg-base-200 p-3 text-left text-sm">Ketuk ikon <b>Bagikan</b> (kotak dengan panah ke atas) di browser, lalu pilih <b>Tambah ke Layar Utama</b>.</p>
+      <div class="modal-action act-stack">
+        <button id="pwa-later" class="btn btn-ghost">Nanti saja</button>
+        <button id="pwa-go" class="btn btn-primary">Pasang sekarang</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>
+  </dialog>
   <button id="pwa-install" hidden class="btn btn-primary btn-sm fixed z-50 rounded-full shadow-lg" style="right:1rem;bottom:calc(5.25rem + env(safe-area-inset-bottom))">Pasang aplikasi</button>
   <script>
     (function () {
-      var btn = document.getElementById('pwa-install'), evt = null;
-      window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); evt = e; if (location.hash.indexOf('#/ujian') !== 0) btn.hidden = false; });
-      window.addEventListener('hashchange', function () { btn.hidden = !evt || location.hash.indexOf('#/ujian') === 0; });
-      btn.addEventListener('click', function () { if (!evt) return; evt.prompt(); evt.userChoice.then(function () { evt = null; btn.hidden = true; }); });
-      window.addEventListener('appinstalled', function () { evt = null; btn.hidden = true; });
+      var $ = function (id) { return document.getElementById(id); };
+      var btn = $('pwa-install'), dlg = $('dlg-pwa'), go = $('pwa-go'), evt = null, KEY = 'pwa-tunda';
+      var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+      var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      function ditunda() { try { return Date.now() < Number(localStorage.getItem(KEY) || 0); } catch (e) { return false; } }
+      function tunda(hari) { try { localStorage.setItem(KEY, String(Date.now() + hari * 864e5)); } catch (e) {} }
+      function diUjian() { return location.hash.indexOf('#/ujian') === 0; }
+      function tawarkan() {
+        if (standalone || ditunda() || diUjian() || document.querySelector('dialog[open]')) return;
+        if (!evt && !ios) return;
+        dlg.showModal();
+      }
+      if (ios) { $('pwa-ios').hidden = false; go.hidden = true; $('pwa-later').textContent = 'Mengerti'; }
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault(); evt = e;
+        if (!diUjian()) btn.hidden = false;
+        setTimeout(tawarkan, 2500);
+      });
+      if (ios && !standalone) setTimeout(tawarkan, 3500);
+      window.addEventListener('hashchange', function () { btn.hidden = !evt || diUjian(); });
+      function pasang() {
+        if (!evt) return;
+        if (dlg.open) dlg.close();
+        evt.prompt();
+        evt.userChoice.then(function (r) { if (r && r.outcome !== 'accepted') tunda(7); evt = null; btn.hidden = true; });
+      }
+      go.addEventListener('click', pasang);
+      btn.addEventListener('click', pasang);
+      $('pwa-later').addEventListener('click', function () { dlg.close(); });
+      dlg.addEventListener('close', function () { tunda(3); });   // ditutup lewat tombol/latar -> jangan muncul lagi 3 hari
+      window.addEventListener('appinstalled', function () { evt = null; btn.hidden = true; if (dlg.open) dlg.close(); });
       if ('serviceWorker' in navigator && location.protocol !== 'file:') {
         window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
       }

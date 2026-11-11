@@ -53,7 +53,7 @@
   }
   .safe-pad { padding: 1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom)); }
   @media (min-width: 640px) { .safe-pad { padding: 1.5rem; } }
-  .act-stack { flex-direction: column-reverse; align-items: stretch; }
+  .act-stack { flex-direction: column-reverse; align-items: stretch; gap: .6rem; }
   .act-stack > .btn { width: 100%; margin-left: 0 !important; margin-right: 0 !important; }
   @media (min-width: 640px) {
     .act-stack { flex-direction: row; align-items: center; }
