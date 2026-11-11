@@ -85,6 +85,14 @@
     .page-foot { padding-bottom: 2.5rem; }
   }
   .app-top { padding-top: env(safe-area-inset-top); }
+  /* HP: header disembunyikan, diganti tombol garis tiga di pojok kanan (ikut tergulung, tidak menempel) */
+  .mrow { display: flex; justify-content: flex-end; padding: calc(.7rem + env(safe-area-inset-top)) 1rem .15rem; }
+  .mburger {
+    display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 9999px;
+    background: #fff; border: 1px solid theme('colors.base-300'); color: theme('colors.neutral');
+    box-shadow: 0 2px 10px rgba(20,40,70,.08); transition: transform .08s, background-color .15s;
+  }
+  .mburger:active { transform: scale(.94); background: theme('colors.base-200'); }
 
   /* ---------- Opsi jawaban ---------- */
   .opt {
@@ -209,8 +217,8 @@
   .chip-dot.chip-latihan { --dot: #0d9f6e; }
   .chip-dot { display: flex; align-items: center; gap: .55rem; }
 
-  /* bar daftar isi materi: menempel tepat di bawah header (mobile) */
-  .sub-sticky { position: sticky; top: calc(3.5rem + env(safe-area-inset-top)); z-index: 20; background: rgba(238,246,254,.94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  /* bar daftar isi materi: menempel di tepi atas layar (mobile; header sudah disembunyikan) */
+  .sub-sticky { position: sticky; top: env(safe-area-inset-top); z-index: 20; background: rgba(238,246,254,.94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
   .q-svg svg { max-width: 100%; height: auto; }
   .breadcrumbs li:last-child { max-width: 60vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 

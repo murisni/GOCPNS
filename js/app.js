@@ -18,6 +18,7 @@ function fmtClock(sec) {
 
 /* ---------- ikon (gaya outline) ---------- */
 const ICON = {
+  menu: 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5',
   puzzle: 'M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z',
   book: 'M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25',
   clipboard: 'M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3l1.5 1.5 3-3.75',
@@ -229,7 +230,7 @@ function navbar(active) {
   const li = NAV_LINKS.map(([h, t]) =>
     `<li><a href="#/${h}" class="${active === h ? 'bg-primary/10 font-semibold text-primary' : ''}">${t}</a></li>`).join('');
   return `
-  <header class="app-top sticky top-0 z-30 border-b border-base-300/70 bg-base-100/90 backdrop-blur">
+  <header class="app-top sticky top-0 z-30 hidden border-b border-base-300/70 bg-base-100/90 backdrop-blur md:block">
     <div class="navbar mx-auto min-h-14 max-w-6xl px-3 sm:px-4 md:min-h-16">
       <div class="navbar-start">
         <a href="#/" class="flex items-center gap-2.5 text-lg font-extrabold tracking-tight text-neutral">
@@ -252,6 +253,7 @@ function bottomNav(active) {
 function shell(active, inner) {
   $('#app').innerHTML = `
     ${navbar(active)}
+    <div class="mrow md:hidden"><button class="mburger" onclick="App.openDb()" aria-label="Menu database">${icon('menu', 'h-6 w-6')}</button></div>
     <main class="page-main fade-in mx-auto w-full max-w-6xl px-4">${inner}</main>
     <footer class="page-foot mx-auto max-w-6xl px-4 text-center text-xs text-base-content/50">
       Simulasi belajar mandiri — bukan produk resmi BKN. Selalu cek regulasi terbaru pada sumber resmi.
@@ -297,7 +299,7 @@ function renderHome() {
     </a>`;
 
   shell('', `
-    <section class="pb-7 pt-7 text-center sm:pb-10 sm:pt-16">
+    <section class="pb-7 pt-1 text-center sm:pb-10 sm:pt-16">
       <span class="badge badge-primary badge-outline mb-4 h-auto max-w-full whitespace-normal px-3 py-1.5 text-xs font-semibold sm:mb-5 sm:px-4 sm:py-3 sm:text-sm">Belajar • Latihan • Simulasi CAT</span>
       <h1 class="mx-auto max-w-3xl text-[2rem] font-extrabold leading-tight tracking-tight text-neutral sm:text-5xl">
         Siap lolos seleksi <span class="text-primary">CPNS</span>?
@@ -476,7 +478,7 @@ function renderMateriDetail(t) {
   const toc = [...t.sections.map((s, i) => [`s${i}`, s.title, 'materi']), ...((t.tips || []).length ? [['tips', 'Cara menjawab cepat', 'tips']] : []), ['contoh', 'Contoh soal', 'contoh'], ['latihan', 'Tes soal', 'latihan']];
 
   const sections = t.sections.map((s, i) => `
-    <section id="s${i}" class="blk blk-materi scroll-mt-28">
+    <section id="s${i}" class="blk blk-materi scroll-mt-20 lg:scroll-mt-28">
       <div class="blk-head"><span class="blk-tag">${icon('book', 'h-4 w-4')} Materi ${i + 1}<span class="opacity-60">/${t.sections.length}</span></span></div>
       <div class="p-5 pt-4 sm:p-6 sm:pt-4">
         <h2 class="mb-2 text-lg font-extrabold leading-snug text-neutral">${esc(s.title)}</h2>
@@ -485,7 +487,7 @@ function renderMateriDetail(t) {
     </section>`).join('');
 
   const tips = (t.tips || []).length ? `
-    <section id="tips" class="blk blk-tips scroll-mt-28">
+    <section id="tips" class="blk blk-tips scroll-mt-20 lg:scroll-mt-28">
       <div class="blk-head"><span class="blk-tag">${icon('bolt', 'h-4 w-4')} Cara menjawab cepat</span></div>
       <div class="p-5 pt-4 sm:p-6 sm:pt-4">
         <ol class="space-y-3">${t.tips.map((x, i) => `<li class="flex gap-3 text-[0.95rem] leading-relaxed"><span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-amber-400 text-xs font-bold text-amber-950">${i + 1}</span><span class="min-w-0">${x}</span></li>`).join('')}</ol>
@@ -536,8 +538,8 @@ function renderMateriDetail(t) {
         <nav class="sub-sticky no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 py-2 lg:hidden" aria-label="Daftar isi">${toc.map(([h, x, k]) => `<button class="chip-nav chip-${k}" onclick="App.scrollTo('${h}')">${esc(x)}</button>`).join('')}</nav>
         ${sections}
         ${tips}
-        <section id="contoh" class="scroll-mt-28 space-y-4">${examples}</section>
-        <section id="latihan" class="blk-latihan scroll-mt-28">
+        <section id="contoh" class="scroll-mt-20 lg:scroll-mt-28 space-y-4">${examples}</section>
+        <section id="latihan" class="blk-latihan scroll-mt-20 lg:scroll-mt-28">
           <span class="blk-tag-on-dark">${icon('flag', 'h-4 w-4')} Uji dirimu</span>
           <h2 class="mt-3 text-xl font-extrabold leading-snug">Tes soal topik ini</h2>
           <p class="mt-1 text-sm text-white/90">${pool.length ? `Kerjakan ${Math.min(10, pool.length)} soal acak dari ${fmtNum(pool.length)} soal terkait, lengkap dengan pembahasan instan.` : 'Belum ada soal untuk topik ini.'}</p>
