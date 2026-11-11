@@ -11,6 +11,9 @@
   <meta name="format-detection" content="telephone=no">
   <title>CAT CPNS — Materi, Latihan SKD &amp; SKB</title>
   <meta name="description" content="Belajar materi, latihan paket soal SKD dan SKB CPNS dengan simulasi CAT.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body class="min-h-dvh font-sans antialiased">
@@ -47,5 +50,20 @@
   <script src="db/skb/db_skb_pendidikan.js"></script>
   <script src="js/materi.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- PWA: tombol "Pasang aplikasi" + pendaftaran service worker (hanya jalan di HTTPS / localhost) -->
+  <button id="pwa-install" hidden class="btn btn-primary btn-sm fixed z-50 rounded-full shadow-lg" style="right:1rem;bottom:calc(5.25rem + env(safe-area-inset-bottom))">Pasang aplikasi</button>
+  <script>
+    (function () {
+      var btn = document.getElementById('pwa-install'), evt = null;
+      window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); evt = e; if (location.hash.indexOf('#/ujian') !== 0) btn.hidden = false; });
+      window.addEventListener('hashchange', function () { btn.hidden = !evt || location.hash.indexOf('#/ujian') === 0; });
+      btn.addEventListener('click', function () { if (!evt) return; evt.prompt(); evt.userChoice.then(function () { evt = null; btn.hidden = true; }); });
+      window.addEventListener('appinstalled', function () { evt = null; btn.hidden = true; });
+      if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+        window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+      }
+    })();
+  </script>
 </body>
 </html>
