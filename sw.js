@@ -1,7 +1,7 @@
 /* Service worker CAT CPNS — agar bisa dipasang & dibuka offline.
    Strategi: jaringan dulu (selalu dapat versi terbaru), cadangan dari cache saat offline.
    Naikkan VERSI jika menambah/mengganti file agar cache lama dibersihkan. */
-const VERSI = 'cat-cpns-v4';
+const VERSI = 'cat-cpns-v8';
 const INTI = [
   './', './index.html', './manifest.webmanifest',
   './css/app.css',
@@ -9,7 +9,13 @@ const INTI = [
   './db/skd/db_skd_twk.js', './db/skd/db_skd_tiu.js', './db/skd/db_skd_tkp.js',
   './db/skb/db_skb_prakom.js', './db/skb/db_skb_kesehatan.js', './db/skb/db_skb_hukum.js',
   './db/skb/db_skb_keuangan.js', './db/skb/db_skb_pendidikan.js',
-  './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
+  './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png',
+  './img/garuda-pancasila.png', './img/sila-1-bintang.png', './img/sila-2-rantai.png', './img/sila-3-pohon-beringin.png',
+  './img/sila-4-kepala-banteng.png', './img/sila-5-padi-kapas.png', './img/struktur-lembaga-negara.png',
+  './img/hierarki-peraturan.png', './img/wilayah-laut-indonesia.png', './img/osi-7-layer.png',
+  './img/topologi-jaringan.png', './img/arsitektur-spbe.png', './img/triase-igd.png',
+  './img/segitiga-epidemiologi.png', './img/transformasi-kesehatan.png', './img/diagram-venn-tiu.png',
+  './img/kecepatan-papasan-tiu.png'
 ];
 
 self.addEventListener('install', e => {

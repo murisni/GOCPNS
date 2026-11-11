@@ -206,7 +206,7 @@ function materiExamples(t, n = 3) {
 }
 
 /* ---------- state & router ---------- */
-const ui = { skdTab: 'SKD_FULL', materiGroup: 'ALL' };
+const ui = { skdTab: 'SKD_FULL', materiTab: 'SKD', materiGroup: 'ALL', materiSkbGroup: 'ALL' };
 let exam = null;         // sesi ujian aktif
 let timerHandle = null;
 
@@ -218,6 +218,20 @@ function route() {
   const view = ROUTES[parts[0]] ? parts[0] : '';
   if (view !== 'ujian') { const d = $('#dlg-nums'); if (d && d.open) d.close(); }
   document.documentElement.classList.toggle('in-exam', view === 'ujian');
+  if (view === 'materi') {
+    const sub = parts[1] ? decodeURIComponent(parts[1]) : null;
+    if (sub === 'skd') {
+      ui.materiTab = 'SKD';
+      renderMateri(null);
+    } else if (sub === 'skb') {
+      ui.materiTab = 'SKB';
+      renderMateri(null);
+    } else {
+      renderMateri(sub);
+    }
+    window.scrollTo(0, 0);
+    return;
+  }
   ROUTES[view](parts[1] ? decodeURIComponent(parts[1]) : null);
   window.scrollTo(0, 0);
 }
@@ -316,8 +330,8 @@ function renderHome() {
     ${resume}
     <section class="grid gap-4 md:grid-cols-3 md:gap-6" aria-label="Pilih jalur belajar">
       ${card('#/materi', { icon: 'bg-teal-100 text-teal-700', badge: 'border-teal-300 text-teal-700', btn: 'btn-accent' }, 'book', 'Belajar',
-        'Materi', 'Ringkasan materi, cara menjawab cepat, contoh soal, dan latihan per topik.',
-        [`${MATERI.length} topik`, 'TWK · TIU · TKP · SKB'], 'Mulai belajar')}
+        'Materi CPNS', '2 Opsi materi: MATERI SKD & MATERI SKB lengkap dengan rumus kilat, jembatan keledai, dan infografis visual.',
+        [`${MATERI.length} topik`, 'SKD & SKB Lengkap'], 'Buka materi')}
       ${card('#/skd', { icon: 'bg-sky-100 text-sky-700', badge: 'border-sky-300 text-sky-700', btn: 'btn-primary' }, 'clipboard', 'Simulasi',
         'SKD', 'Seleksi Kompetensi Dasar: TWK, TIU, dan TKP. Pilih paket tryout lengkap atau latihan per bagian.',
         [`${fmtNum(skdTot)} soal`, `${packsFor('SKD_FULL').length} paket tryout`], 'Pilih paket SKD')}
@@ -416,34 +430,108 @@ function renderSkb(key) {
 
 /* ---------- MATERI ---------- */
 function renderMateri(id) {
-  const topic = id && MATERI.find(t => t.id === id);
+  const topic = id && id !== 'skd' && id !== 'skb' && MATERI.find(t => t.id === id);
   if (topic) return renderMateriDetail(topic);
 
-  const chips = [{ id: 'ALL', name: 'Semua' }].concat(MATERI_GROUPS).map(g =>
-    `<button class="btn btn-sm shrink-0 ${ui.materiGroup === g.id ? 'btn-primary' : 'btn-ghost bg-base-100'}" onclick="App.setMateriGroup('${g.id}')">${g.name}</button>`).join('');
-  const list = MATERI.filter(t => ui.materiGroup === 'ALL' || t.group === ui.materiGroup);
-  const cur = MATERI_GROUPS.find(g => g.id === ui.materiGroup);
+  const isSkd = ui.materiTab !== 'SKB';
+
+  const skdChipsData = [
+    { id: 'ALL', name: 'Semua SKD' },
+    { id: 'TWK', name: 'TWK (Wawasan Kebangsaan)' },
+    { id: 'TIU', name: 'TIU (Intelegensia Umum)' },
+    { id: 'TKP', name: 'TKP (Karakteristik Pribadi)' }
+  ];
+
+  const skbChipsData = [
+    { id: 'ALL', name: 'Semua Bidang SKB' },
+    { id: 'PRAKOM', name: 'Pranata Komputer' },
+    { id: 'KESEHATAN', name: 'Tenaga Kesehatan' },
+    { id: 'HUKUM', name: 'Hukum & Kebijakan' },
+    { id: 'KEUANGAN', name: 'Keuangan & Pajak' },
+    { id: 'PENDIDIKAN', name: 'Pendidikan & Guru' }
+  ];
+
+  const chips = isSkd
+    ? skdChipsData.map(g =>
+        `<button class="btn btn-sm shrink-0 ${ui.materiGroup === g.id ? 'btn-primary shadow-sm' : 'btn-ghost bg-base-100 border border-base-300'}" onclick="App.setMateriGroup('${g.id}')">${g.name}</button>`
+      ).join('')
+    : skbChipsData.map(g =>
+        `<button class="btn btn-sm shrink-0 ${ui.materiSkbGroup === g.id ? 'btn-accent text-accent-content shadow-sm' : 'btn-ghost bg-base-100 border border-base-300'}" onclick="App.setMateriSkbGroup('${g.id}')">${g.name}</button>`
+      ).join('');
+
+  let list = [];
+  if (isSkd) {
+    list = MATERI.filter(t => t.group !== 'SKB' && (ui.materiGroup === 'ALL' || t.group === ui.materiGroup));
+  } else {
+    list = MATERI.filter(t => t.group === 'SKB' && (ui.materiSkbGroup === 'ALL' || t.skbCategory === ui.materiSkbGroup || (!t.skbCategory && ui.materiSkbGroup === 'ALL')));
+  }
+
   const cards = list.map(t => {
     const st = GROUP_STYLE[t.group] || GROUP_STYLE.SKB;
     const n = materiPool(t).length;
+    const badgeLabel = t.group === 'SKB' ? (t.skbCategory ? `SKB ${t.skbCategory}` : 'SKB') : t.group;
     return `
     <a href="#/materi/${t.id}" class="group card border border-base-300 bg-base-100 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
       <div class="card-body gap-3 p-5">
         <div class="flex items-center justify-between">
-          <span class="badge border-0 font-bold ${st.badge}">${t.group}</span>
+          <span class="badge border-0 font-bold ${st.badge}">${badgeLabel}</span>
           <span class="text-xs text-base-content/50">${n} soal latihan</span>
         </div>
         <h3 class="card-title text-base leading-snug text-neutral">${esc(t.title)}</h3>
         <p class="text-sm leading-relaxed text-base-content/70">${esc(t.summary)}</p>
-        <div class="mt-auto flex items-center gap-1 pt-1 text-sm font-semibold text-accent">Pelajari ${icon('arrowR', 'h-4 w-4 transition group-hover:translate-x-1')}</div>
+        <div class="mt-auto flex items-center justify-between pt-2">
+          <span class="text-xs font-semibold text-base-content/50">${(t.sections || []).length} Bagian Inti</span>
+          <span class="flex items-center gap-1 text-sm font-semibold text-accent">Pelajari ${icon('arrowR', 'h-4 w-4 transition group-hover:translate-x-1')}</span>
+        </div>
       </div>
     </a>`;
   }).join('');
+
+  const banner = isSkd
+    ? `<div class="mb-5 rounded-2xl border border-sky-200 bg-sky-50/80 p-4 text-sky-950 shadow-sm">
+        <div class="flex items-start sm:items-center gap-3">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-sky-500 text-white shadow-sm">${icon('book', 'h-5 w-5')}</span>
+          <div>
+            <div class="text-sm font-extrabold sm:text-base">Materi SKD: Ringkas, Padat, dan Berbobot Tinggi</div>
+            <div class="text-xs sm:text-sm text-sky-900/80">Kuasai konsep kunci, jembatan keledai, dan rumus kilat TWK, TIU, &amp; TKP tanpa harus menghafal ribuan halaman materi tebal.</div>
+          </div>
+        </div>
+      </div>`
+    : `<div class="mb-5 rounded-2xl border border-teal-200 bg-teal-50/80 p-4 text-teal-950 shadow-sm">
+        <div class="flex items-start sm:items-center gap-3">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-teal-600 text-white shadow-sm">${icon('briefcase', 'h-5 w-5')}</span>
+          <div>
+            <div class="text-sm font-extrabold sm:text-base">Materi SKB: Penentu 60% Kelulusan Akhir CPNS</div>
+            <div class="text-xs sm:text-sm text-teal-900/80">Rangkuman inti materi formasi teknis (Pranata Komputer, Tenaga Kesehatan, Hukum, dll) langsung ke sasaran soal CAT BKN.</div>
+          </div>
+        </div>
+      </div>`;
+
   shell('materi', `
-    ${breadcrumb([['#/', 'Beranda'], [null, 'Materi']])}
-    ${pageHead('Materi & Cara Menjawab Cepat', 'Ringkasan inti, trik cepat, contoh soal dari bank soal, dan latihan khusus untuk tiap topik.')}
+    ${breadcrumb([['#/', 'Beranda'], [null, isSkd ? 'Materi SKD' : 'Materi SKB']])}
+    ${pageHead('Materi & Trik Cepat CPNS', 'Materi ringkas padat jelas berbobot tinggi, dilengkapi infografis lambang & rumus kilat.')}
+
+    <!-- 2 Pilihan Utama: MATERI SKD vs MATERI SKB -->
+    <div class="mb-5 grid grid-cols-2 gap-2 rounded-2xl border border-base-300 bg-base-200/60 p-1.5 shadow-sm sm:gap-3 sm:p-2">
+      <button type="button" onclick="App.setMateriTab('SKD')" class="flex items-center justify-center gap-2.5 rounded-xl py-3 px-3 transition sm:px-5 ${isSkd ? 'bg-primary text-primary-content shadow-md font-extrabold' : 'hover:bg-base-100 text-base-content/75 font-semibold'}">
+        <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg ${isSkd ? 'bg-white/20' : 'bg-base-300/70'}">${icon('book', 'h-4 w-4 sm:h-5 sm:w-5')}</span>
+        <div class="text-left leading-tight">
+          <div class="text-xs sm:text-sm">MATERI SKD</div>
+          <div class="text-[0.68rem] opacity-85 font-normal sm:text-xs">TWK · TIU · TKP</div>
+        </div>
+      </button>
+      <button type="button" onclick="App.setMateriTab('SKB')" class="flex items-center justify-center gap-2.5 rounded-xl py-3 px-3 transition sm:px-5 ${!isSkd ? 'bg-accent text-accent-content shadow-md font-extrabold' : 'hover:bg-base-100 text-base-content/75 font-semibold'}">
+        <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg ${!isSkd ? 'bg-white/20' : 'bg-base-300/70'}">${icon('briefcase', 'h-4 w-4 sm:h-5 sm:w-5')}</span>
+        <div class="text-left leading-tight">
+          <div class="text-xs sm:text-sm">MATERI SKB</div>
+          <div class="text-[0.68rem] opacity-85 font-normal sm:text-xs">Prakom · Kesehatan · dll</div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Sub-filter Chip -->
     <div class="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">${chips}</div>
-    ${cur ? `<p class="mb-5 text-sm text-base-content/70"><b>${cur.full}</b> — ${cur.desc}</p>` : '<div class="mb-5"></div>'}
+    ${banner}
     <div class="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>
   `);
 }
@@ -470,16 +558,18 @@ function wrapTables(html) {
   });
 }
 function renderMateriDetail(t) {
+  const isSkb = t.group === 'SKB';
   const st = GROUP_STYLE[t.group] || GROUP_STYLE.SKB;
-  const idx = MATERI.indexOf(t);
-  const prev = MATERI[idx - 1], next = MATERI[idx + 1];
+  const sameGroupList = MATERI.filter(x => (isSkb ? x.group === 'SKB' : x.group !== 'SKB'));
+  const idx = sameGroupList.indexOf(t);
+  const prev = sameGroupList[idx - 1], next = sameGroupList[idx + 1];
   const pool = materiPool(t);
   const ex = materiExamples(t, 3);
   const toc = [...t.sections.map((s, i) => [`s${i}`, s.title, 'materi']), ...((t.tips || []).length ? [['tips', 'Cara menjawab cepat', 'tips']] : []), ['contoh', 'Contoh soal', 'contoh'], ['latihan', 'Tes soal', 'latihan']];
 
   const sections = t.sections.map((s, i) => `
     <section id="s${i}" class="blk blk-materi scroll-mt-20 lg:scroll-mt-28">
-      <div class="blk-head"><span class="blk-tag">${icon('book', 'h-4 w-4')} Materi ${i + 1}<span class="opacity-60">/${t.sections.length}</span></span></div>
+      <div class="blk-head"><span class="blk-tag">${icon('book', 'h-4 w-4')} Bagian ${i + 1}<span class="opacity-60">/${t.sections.length}</span></span></div>
       <div class="p-5 pt-4 sm:p-6 sm:pt-4">
         <h2 class="mb-2 text-lg font-extrabold leading-snug text-neutral">${esc(s.title)}</h2>
         <div class="materi-body">${wrapTables(s.html)}</div>
@@ -521,9 +611,12 @@ function renderMateriDetail(t) {
     </div>`;
 
   shell('materi', `
-    ${breadcrumb([['#/', 'Beranda'], ['#/materi', 'Materi'], [null, esc(t.title)]])}
+    ${breadcrumb([['#/', 'Beranda'], [isSkb ? '#/materi/skb' : '#/materi/skd', isSkb ? 'Materi SKB' : 'Materi SKD'], [null, esc(t.title)]])}
     <div class="mb-4 mt-1 sm:mb-6">
-      <span class="badge mb-2 border-0 font-bold ${st.badge}">${t.group}</span>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="badge border-0 font-bold ${st.badge}">${isSkb ? (t.skbCategory ? `SKB ${t.skbCategory}` : 'SKB') : t.group}</span>
+        <a href="${isSkb ? '#/materi/skb' : '#/materi/skd'}" class="text-xs font-semibold text-primary hover:underline flex items-center gap-1">${icon('back', 'h-3.5 w-3.5')} Kembali ke ${isSkb ? 'Materi SKB' : 'Materi SKD'}</a>
+      </div>
       <h1 class="text-[1.5rem] font-extrabold leading-tight tracking-tight text-neutral sm:text-3xl">${esc(t.title)}</h1>
       <p class="mt-1 max-w-2xl text-sm text-base-content/70">${esc(t.summary)}</p>
     </div>
@@ -1006,7 +1099,9 @@ const App = {
     d.showModal();
   },
   setSkdTab(id) { ui.skdTab = id; renderSkd(); },
+  setMateriTab(tab) { ui.materiTab = tab; renderMateri(null); },
   setMateriGroup(id) { ui.materiGroup = id; renderMateri(null); },
+  setMateriSkbGroup(id) { ui.materiSkbGroup = id; renderMateri(null); },
   scrollTo(id) { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
   openStart, openDb,
 
