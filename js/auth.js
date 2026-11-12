@@ -2,7 +2,8 @@
    Progres tetap ditulis ke localStorage seperti biasa (app tetap jalan offline);
    salinannya dikirim ke server (api/sync.php) agar bisa dibuka di browser / HP lain. */
 (function () {
-  const API = 'api/sync.php', SK = 'cpns_session_v1', GUEST = 'cpns_guest_v1';
+  /* >>> GANTI dengan alamat Cloudflare Worker Anda (lihat worker/PANDUAN.md) <<< */
+  const API = 'https://cpns-akun.GANTI-USERNAME.workers.dev', SK = 'cpns_session_v1', GUEST = 'cpns_guest_v1';
   const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3'];
   const rd = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
   const wr = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* abaikan */ } };
@@ -11,10 +12,11 @@
   const snapshot = () => KEYS.reduce((o, k) => { const v = rd(k); if (v != null) o[k] = v; return o; }, {});
 
   async function call(body) {
+    if (API.indexOf('GANTI') >= 0) throw new Error('Alamat server akun belum diisi di js/auth.js (lihat worker/PANDUAN.md).');
     let r;
     try { r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); }
     catch (e) { throw new Error('Tidak bisa terhubung ke server. Periksa koneksi internet.'); }
-    let j = {}; try { j = await r.json(); } catch (e) { throw new Error('Server akun belum aktif (api/sync.php tidak berjalan).'); }
+    let j = {}; try { j = await r.json(); } catch (e) { throw new Error('Server akun tidak merespons dengan benar. Periksa alamat Worker di js/auth.js.'); }
     if (!r.ok) throw new Error(j.error || 'Terjadi kesalahan.');
     return j;
   }

@@ -1,0 +1,11 @@
+# Hanya dipakai bila deploy lewat CLI (npx wrangler deploy). Lewat dashboard, file ini boleh diabaikan.
+name = "cpns-akun"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+[[kv_namespaces]]
+binding = "AKUN"
+id = "ISI_ID_KV_NAMESPACE"
+
+[vars]
+ALLOWED_ORIGIN = "https://USERNAME.github.io"
