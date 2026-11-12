@@ -2,8 +2,7 @@
    Progres tetap ditulis ke localStorage seperti biasa (app tetap jalan offline);
    salinannya dikirim ke server (api/sync.php) agar bisa dibuka di browser / HP lain. */
 (function () {
-  /* >>> GANTI dengan alamat Cloudflare Worker Anda (lihat worker/PANDUAN.md) <<< */
-  const API = 'https://cpns-akun.GANTI-USERNAME.workers.dev', SK = 'cpns_session_v1', GUEST = 'cpns_guest_v1';
+  const API = window.CPNS_API || 'https://GANTI-USERNAME.workers.dev', SK = 'cpns_session_v1', GUEST = 'cpns_guest_v1';
   const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3'];
   const rd = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
   const wr = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* abaikan */ } };
@@ -131,7 +130,7 @@
           const r = await call({ action: 'register', username: u, pin, data: snapshot() });
           wr(SK, { u, t: r.token }); del(GUEST); forced = false; d.close();
           if (window.toast) window.toast('Akun dibuat. Progres otomatis tersimpan.');
-          if (window.App && location.hash) { try { window.dispatchEvent(new HashChangeEvent('hashchange')); } catch (e) { /* abaikan */ } }
+          if (typeof window.route === 'function' && !document.documentElement.classList.contains('in-exam')) window.route();
         } else {
           const r = await call({ action: 'login', username: u, pin });
           const m = merge(r.data, snapshot());
@@ -163,7 +162,35 @@
       : `<div class="mb-3 flex items-center justify-between gap-2 rounded-xl border border-base-300 px-3 py-2 text-sm"><span>Belum masuk akun</span><button class="btn btn-primary btn-xs" onclick="Auth.open('masuk')">Masuk / Daftar</button></div>`;
   }
 
-  window.Auth = { touch, open, logout, menuHTML, user: () => (sess() || {}).u || null };
+  /* lembar profil: dibuka dari tab Profil (paling kanan) */
+  function openProfile() {
+    const u = (sess() || {}).u, dirty = !!rd('cpns_dirty');
+    let d = document.getElementById('dlg-profile');
+    if (!d) { d = document.createElement('dialog'); d.id = 'dlg-profile'; d.className = 'modal modal-bottom sm:modal-middle'; document.body.appendChild(d); }
+    d.innerHTML = `
+      <div class="modal-box max-w-sm text-center">
+        <div class="mx-auto grid h-16 w-16 place-items-center rounded-full ${u ? 'bg-primary text-white' : 'bg-base-200 text-base-content/50'} text-2xl font-black">${u ? esc(u[0].toUpperCase()) : '?'}</div>
+        <h3 class="mt-3 text-lg font-extrabold">${u ? esc(u) : 'Belum masuk akun'}</h3>
+        <p class="mt-1 text-sm text-base-content/70">${u
+          ? (dirty ? 'Ada progres yang menunggu tersinkron. Akan terkirim otomatis saat online.' : 'Progres belajarmu tersimpan otomatis di akun ini.')
+          : 'Progres hanya tersimpan di perangkat ini. Masuk agar bisa dibuka di HP atau browser lain.'}</p>
+        <div class="mt-5 flex flex-col gap-2">
+          ${u
+            ? '<button id="pf-out" class="btn btn-outline btn-error w-full">Keluar dari akun</button>'
+            : '<button id="pf-in" class="btn btn-primary w-full">Masuk</button><button id="pf-reg" class="btn btn-outline w-full">Daftar akun baru</button>'}
+          <button id="pf-close" class="btn btn-ghost w-full">Tutup</button>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
+    const q = s => d.querySelector(s);
+    q('#pf-close').onclick = () => d.close();
+    if (q('#pf-out')) q('#pf-out').onclick = () => { d.close(); logout(); };
+    if (q('#pf-in')) q('#pf-in').onclick = () => { d.close(); open('masuk'); };
+    if (q('#pf-reg')) q('#pf-reg').onclick = () => { d.close(); open('daftar'); };
+    d.showModal();
+  }
+
+  window.Auth = { touch, open, openProfile, logout, menuHTML, user: () => (sess() || {}).u || null };
 
   /* gerbang awal: tampil bila belum login dan belum memilih "tanpa akun" */
   if (!sess() && !rd(GUEST)) {

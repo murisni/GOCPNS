@@ -18,6 +18,7 @@ function fmtClock(sec) {
 
 /* ---------- ikon (gaya outline) ---------- */
 const ICON = {
+  user: 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z',
   lock: 'M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z',
   tick: 'M4.5 12.75l6 6 9-13.5',
   menu: 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5',
@@ -259,7 +260,8 @@ function navbar(active) {
         </a>
       </div>
       <div class="navbar-center flex"><ul class="menu menu-horizontal gap-1 px-1">${li}</ul></div>
-      <div class="navbar-end">
+      <div class="navbar-end gap-1">
+        ${window.Auth ? `<button class="btn btn-ghost btn-sm gap-2 rounded-xl text-slate-700 hover:bg-slate-100" onclick="Auth.openProfile()" aria-label="Profil dan akun">${icon('user', 'h-4 w-4')}<span class="font-semibold">${window.Auth.user() ? esc(window.Auth.user()) : 'Masuk'}</span></button>` : ''}
         <button class="btn btn-ghost btn-sm gap-2 text-slate-700 hover:bg-slate-100 rounded-xl" onclick="App.openDb()" aria-label="Kelola database soal">${icon('db', 'h-4 w-4')}<span class="font-semibold">Database</span></button>
       </div>
     </div>
@@ -270,7 +272,13 @@ function bottomNav(active) {
   return `<nav class="bnav" aria-label="Menu utama">${NAV_LINKS.map(([h, t, ic]) => {
     const on = active === h;
     return `<a href="#/${h}" class="border-2 ${on ? 'on border-primary/30 !bg-sky-50' : 'border-transparent'}" ${on ? 'aria-current="page"' : ''}><span class="bnav-icon">${icon(ic, on ? 'h-6 w-6' : 'h-5 w-5')}</span><span class="bnav-label ${on ? 'font-extrabold' : ''}">${t}</span></a>`;
-  }).join('')}</nav>`;
+  }).join('')}${profileTab()}</nav>`;
+}
+/* tab Profil (paling kanan): buka lembar akun — masuk / keluar / daftar */
+function profileTab() {
+  if (!window.Auth) return '';
+  const u = window.Auth.user();
+  return `<button type="button" class="relative border-2 border-transparent" onclick="Auth.openProfile()" aria-label="Profil dan akun"><span class="bnav-icon">${icon('user', 'h-5 w-5')}</span><span class="absolute left-1/2 top-1.5 ml-1.5 h-2.5 w-2.5 rounded-full ring-2 ring-white ${u ? 'bg-success' : 'bg-warning'}"></span><span class="bnav-label">${u ? 'Profil' : 'Masuk'}</span></button>`;
 }
 function shell(active, inner) {
   $('#app').innerHTML = `
