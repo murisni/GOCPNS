@@ -14,7 +14,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/app.css?v=14">
 </head>
 <body class="min-h-dvh font-sans antialiased">
   <div id="app"></div>
@@ -77,7 +77,7 @@
       function diUjian() { return location.hash.indexOf('#/ujian') === 0; }
       function diBeranda() { var h = location.hash; return h === '' || h === '#' || h === '#/'; }
       function tawarkan() {
-        if (standalone || ditunda() || diUjian() || document.querySelector('dialog[open]')) return;
+        if (standalone || ditunda() || diUjian() || window.innerWidth >= 640 || document.querySelector('dialog[open]')) return;
         if (!evt && !ios) return;
         dlg.showModal();
       }
