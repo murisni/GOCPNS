@@ -50,7 +50,7 @@ const icon = (n, cls = 'h-5 w-5') =>
 /* ---------- penyimpanan (localStorage, aman bila diblokir) ---------- */
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* abaikan */ } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* abaikan */ } if (window.Auth) window.Auth.touch(k); },
   del(k) { try { localStorage.removeItem(k); } catch (e) { /* abaikan */ } }
 };
 const seen = new Set(store.get('cpns_seen_qids_v2', []));
@@ -1314,6 +1314,7 @@ function openDb() {
         <input type="file" webkitdirectory directory multiple class="hidden" onchange="App.uploadDb(this.files)">
       </label>
     </div>
+    ${window.Auth ? window.Auth.menuHTML() : ''}
     <div id="db-status" class="alert alert-success mt-3 hidden py-2 text-sm"></div>
     <div class="mt-4 overflow-x-auto rounded-xl border border-base-300">
       <table class="table table-sm"><thead><tr><th>Bank soal</th><th>Jenis</th><th class="text-right">Soal</th></tr></thead><tbody id="db-tbody">${dbRows()}</tbody></table>
