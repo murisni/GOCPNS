@@ -261,7 +261,7 @@ function navbar(active) {
       </div>
       <div class="navbar-center flex"><ul class="menu menu-horizontal gap-1 px-1">${li}</ul></div>
       <div class="navbar-end gap-1">
-        ${window.Auth ? `<button class="btn btn-ghost btn-sm gap-2 rounded-xl text-slate-700 hover:bg-slate-100" onclick="Auth.openProfile()" aria-label="Profil dan akun">${icon('user', 'h-4 w-4')}<span class="font-semibold">${window.Auth.user() ? esc(window.Auth.user()) : 'Masuk'}</span></button>` : ''}
+        ${window.Auth ? `<button class="btn btn-ghost btn-sm gap-2 rounded-xl text-slate-700 hover:bg-slate-100" onclick="Auth.openProfile()" aria-label="Profil dan akun">${icon('user', 'h-4 w-4')}<span class="font-semibold">${window.Auth.user() ? esc(window.Auth.user()) : (window.Auth.hasServer ? 'Masuk' : 'Profil')}</span></button>` : ''}
         <button class="btn btn-ghost btn-sm gap-2 text-slate-700 hover:bg-slate-100 rounded-xl" onclick="App.openDb()" aria-label="Kelola database soal">${icon('db', 'h-4 w-4')}<span class="font-semibold">Database</span></button>
       </div>
     </div>
@@ -277,8 +277,8 @@ function bottomNav(active) {
 /* tab Profil (paling kanan): buka lembar akun — masuk / keluar / daftar */
 function profileTab() {
   if (!window.Auth) return '';
-  const u = window.Auth.user();
-  return `<button type="button" class="relative border-2 border-transparent" onclick="Auth.openProfile()" aria-label="Profil dan akun"><span class="bnav-icon">${icon('user', 'h-5 w-5')}</span><span class="absolute left-1/2 top-1.5 ml-1.5 h-2.5 w-2.5 rounded-full ring-2 ring-white ${u ? 'bg-success' : 'bg-warning'}"></span><span class="bnav-label">${u ? 'Profil' : 'Masuk'}</span></button>`;
+  const u = window.Auth.user(), srv = window.Auth.hasServer;
+  return `<button type="button" class="relative border-2 border-transparent" onclick="Auth.openProfile()" aria-label="Profil dan akun"><span class="bnav-icon">${icon('user', 'h-5 w-5')}</span>${srv ? `<span class="absolute left-1/2 top-1.5 ml-1.5 h-2.5 w-2.5 rounded-full ring-2 ring-white ${u ? 'bg-success' : 'bg-warning'}"></span>` : ''}<span class="bnav-label">${srv && !u ? 'Masuk' : 'Profil'}</span></button>`;
 }
 function shell(active, inner) {
   $('#app').innerHTML = `

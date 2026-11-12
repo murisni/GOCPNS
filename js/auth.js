@@ -2,7 +2,7 @@
    Progres tetap ditulis ke localStorage seperti biasa (app tetap jalan offline);
    salinannya dikirim ke server (api/sync.php) agar bisa dibuka di browser / HP lain. */
 (function () {
-  const API = window.CPNS_API || 'https://GANTI-USERNAME.workers.dev', SK = 'cpns_session_v1', GUEST = 'cpns_guest_v1';
+  const API = window.CPNS_API || '', HAS_SERVER = !!API && !/GANTI/.test(API), SK = 'cpns_session_v1', GUEST = 'cpns_guest_v1';
   const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3'];
   const rd = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
   const wr = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* abaikan */ } };
@@ -11,7 +11,6 @@
   const snapshot = () => KEYS.reduce((o, k) => { const v = rd(k); if (v != null) o[k] = v; return o; }, {});
 
   async function call(body) {
-    if (API.indexOf('GANTI') >= 0) throw new Error('Alamat server akun belum diisi di js/auth.js (lihat worker/PANDUAN.md).');
     let r;
     try { r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); }
     catch (e) { throw new Error('Tidak bisa terhubung ke server. Periksa koneksi internet.'); }
@@ -55,6 +54,28 @@
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && rd('cpns_dirty')) push(true); });
   window.addEventListener('online', () => { if (rd('cpns_dirty')) push(false); });
   if (rd('cpns_dirty')) setTimeout(() => push(false), 2000);
+
+
+  /* ---------- mode TANPA server: pindah perangkat lewat kode progres ---------- */
+  const b64 = u8 => { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+  const unb64 = t => { t = t.replace(/-/g, '+').replace(/_/g, '/'); while (t.length % 4) t += '='; const s = atob(t), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; };
+  async function toCode() {
+    const json = JSON.stringify(snapshot());
+    if (window.CompressionStream) {
+      const buf = new Uint8Array(await new Response(new Blob([json]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer());
+      return 'CPNS1.' + b64(buf);
+    }
+    return 'CPNS0.' + b64(new TextEncoder().encode(json));
+  }
+  async function fromCode(code) {
+    const m = /^CPNS([01])\.([A-Za-z0-9_-]+)$/.exec(String(code).replace(/\s+/g, ''));
+    if (!m) throw new Error('Kode tidak valid. Salin kode lengkap dari perangkat lama.');
+    let u8 = unb64(m[2]);
+    if (m[1] === '1') u8 = new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+    const d = JSON.parse(new TextDecoder().decode(u8)), o = {};
+    KEYS.forEach(k => { if (d && d[k] !== undefined) o[k] = d[k]; });
+    return o;
+  }
 
   /* ---------- UI ---------- */
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -156,10 +177,40 @@
     KEYS.forEach(del); del(SK); del(GUEST); del('cpns_dirty'); location.reload();
   }
   function menuHTML() {
+    if (!HAS_SERVER) return '';
     const s = sess();
     return s
       ? `<div class="mb-3 flex items-center justify-between gap-2 rounded-xl border border-base-300 px-3 py-2 text-sm"><span>Akun: <b>${esc(s.u)}</b></span><button class="btn btn-ghost btn-xs text-error" onclick="Auth.logout()">Keluar</button></div>`
       : `<div class="mb-3 flex items-center justify-between gap-2 rounded-xl border border-base-300 px-3 py-2 text-sm"><span>Belum masuk akun</span><button class="btn btn-primary btn-xs" onclick="Auth.open('masuk')">Masuk / Daftar</button></div>`;
+  }
+
+  function openBackup(d) {
+    d.innerHTML = `
+      <div class="modal-box max-w-sm">
+        <h3 class="text-center text-lg font-extrabold">Pindahkan progres</h3>
+        <p class="mt-1 text-center text-sm text-base-content/70">Progres tersimpan di perangkat ini. Untuk pindah HP atau browser, salin kode di sini lalu tempel di sana.</p>
+        <button id="bk-copy" class="btn btn-primary mt-4 w-full">Salin kode progres</button>
+        <textarea id="bk-out" readonly rows="3" class="textarea textarea-bordered mt-2 hidden w-full text-xs" aria-label="Kode progres"></textarea>
+        <div class="divider my-3 text-xs">atau pulihkan</div>
+        <textarea id="bk-in" rows="3" placeholder="Tempel kode progres dari perangkat lama…" class="textarea textarea-bordered w-full text-xs"></textarea>
+        <p id="bk-msg" class="mt-2 min-h-5 text-center text-sm font-semibold text-error" role="alert"></p>
+        <button id="bk-load" class="btn btn-outline w-full">Pulihkan progres</button>
+        <button id="bk-close" class="btn btn-ghost mt-1 w-full">Tutup</button>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
+    const q = s => d.querySelector(s), msg = (t, ok) => { const m = q('#bk-msg'); m.textContent = t || ''; m.className = 'mt-2 min-h-5 text-center text-sm font-semibold ' + (ok ? 'text-success' : 'text-error'); };
+    q('#bk-close').onclick = () => d.close();
+    q('#bk-copy').onclick = async () => {
+      const code = await toCode(), o = q('#bk-out'); o.value = code; o.classList.remove('hidden'); o.select();
+      try { await navigator.clipboard.writeText(code); msg('Kode disalin. Tempel di perangkat baru.', true); } catch (e) { msg('Tekan lama pada kotak lalu pilih Salin.', true); }
+    };
+    q('#bk-load').onclick = async () => {
+      try {
+        const inc = await fromCode(q('#bk-in').value), m = merge(inc, snapshot());
+        KEYS.forEach(k => wr(k, m[k])); msg('Berhasil. Memuat ulang…', true); setTimeout(() => location.reload(), 700);
+      } catch (e) { msg(e.message || 'Kode tidak valid.'); }
+    };
+    d.showModal();
   }
 
   /* lembar profil: dibuka dari tab Profil (paling kanan) */
@@ -167,6 +218,7 @@
     const u = (sess() || {}).u, dirty = !!rd('cpns_dirty');
     let d = document.getElementById('dlg-profile');
     if (!d) { d = document.createElement('dialog'); d.id = 'dlg-profile'; d.className = 'modal modal-bottom sm:modal-middle'; document.body.appendChild(d); }
+    if (!HAS_SERVER) return openBackup(d);
     d.innerHTML = `
       <div class="modal-box max-w-sm text-center">
         <div class="mx-auto grid h-16 w-16 place-items-center rounded-full ${u ? 'bg-primary text-white' : 'bg-base-200 text-base-content/50'} text-2xl font-black">${u ? esc(u[0].toUpperCase()) : '?'}</div>
@@ -190,10 +242,10 @@
     d.showModal();
   }
 
-  window.Auth = { touch, open, openProfile, logout, menuHTML, user: () => (sess() || {}).u || null };
+  window.Auth = { hasServer: HAS_SERVER, _toCode: toCode, _fromCode: fromCode, touch, open, openProfile, logout, menuHTML, user: () => (sess() || {}).u || null };
 
   /* gerbang awal: tampil bila belum login dan belum memilih "tanpa akun" */
-  if (!sess() && !rd(GUEST)) {
+  if (HAS_SERVER && !sess() && !rd(GUEST)) {
     const start = () => { forced = true; view('daftar'); };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
   }

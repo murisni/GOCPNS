@@ -1,7 +1,7 @@
 /* Service worker CAT CPNS — agar bisa dipasang & dibuka offline.
    Strategi: jaringan dulu (selalu dapat versi terbaru), cadangan dari cache saat offline.
    Naikkan VERSI jika menambah/mengganti file agar cache lama dibersihkan. */
-const VERSI = 'cat-cpns-v16';
+const VERSI = 'cat-cpns-v17';
 const INTI = [
   './', './index.html', './manifest.webmanifest',
   './css/app.css',
