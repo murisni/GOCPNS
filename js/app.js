@@ -8,6 +8,11 @@
 /* ---------- util ---------- */
 const $ = (s, r = document) => r.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// v21: dukungan gambar (SVG) pada soal figural. Opsi berformat "A. IMG:<svg ...>"; soal memakai properti q.img (string svg).
+const svgUri = v => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(v);
+const escO = o => { const t = String(o == null ? '' : o).replace(/^[A-E]\.\s*/, ''); return t.startsWith('IMG:') ? `<img src="${svgUri(t.slice(4))}" alt="gambar pilihan" style="height:72px;width:auto;max-width:100%;background:#fff;border-radius:6px">` : esc(t); };
+const escQ = q => esc(q.q) + (q.img ? `<div class="mt-3"><img src="${svgUri(q.img)}" alt="gambar soal" style="max-width:100%;height:auto;max-height:220px;background:#fff;border-radius:8px"></div>` : '');
 const fmtNum = n => Number(n).toLocaleString('id-ID');
 const LETTERS = ['A', 'B', 'C', 'D', 'E'];
 const pad2 = n => String(n).padStart(2, '0');
@@ -88,7 +93,13 @@ function ordered(bucket) {
   const arr = BANK[bucket] || [];
   const key = bucket + ':' + arr.length;
   if (!orderCache[key]) {
-    orderCache[key] = shuffle(arr.slice().sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)), 'pack:' + bucket);
+    /* Soal lama (id tanpa akhiran -Nxxxx) tetap di urutan semula, soal baru v18 ditambahkan di belakang,
+       sehingga isi Paket lama tidak berubah dan progres "selesai" tetap valid. */
+    const byId = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+    const isNew = q => /-N\d{4}$/.test(q.id);
+    const base = arr.filter(q => !isNew(q)).sort(byId);
+    const added = arr.filter(isNew).sort(byId);
+    orderCache[key] = shuffle(base, 'pack:' + bucket).concat(shuffle(added, 'pack2:' + bucket));
   }
   return orderCache[key];
 }
@@ -616,7 +627,7 @@ function optionsStatic(q) {
   return q.options.map((o, i) => {
     const best = q.scores[i] === 5;
     const mid = q.category === 'TKP' && q.scores[i] > 0 && !best;
-    return `<div class="opt ${best ? 'is-correct' : mid ? 'is-mid' : ''} !cursor-default"><span class="letter">${LETTERS[i]}</span><span class="pt-1 text-sm">${esc(o.replace(/^[A-E]\.\s*/, ''))}</span>${q.category === 'TKP' ? `<span class="badge badge-sm ml-auto shrink-0">${q.scores[i]} poin</span>` : ''}</div>`;
+    return `<div class="opt ${best ? 'is-correct' : mid ? 'is-mid' : ''} !cursor-default"><span class="letter">${LETTERS[i]}</span><span class="pt-1 text-sm">${escO(o)}</span>${q.category === 'TKP' ? `<span class="badge badge-sm ml-auto shrink-0">${q.scores[i]} poin</span>` : ''}</div>`;
   }).join('');
 }
 /* Tabel materi: di HP tabel 3 kolom+ ditampilkan sebagai kartu bertumpuk (label di atas tiap nilai),
@@ -832,11 +843,11 @@ function lessonPaint() {
       let c = '';
       if (L.checked) c = k === q.ans ? 'is-ok' : (k === L.picked ? 'is-bad' : '');
       else if (k === L.picked) c = 'is-pick';
-      return `<button type="button" class="lx-opt ${c}" ${L.checked ? 'disabled' : ''} onclick="App.lessonPick(${k})"><span class="lx-k">${LETTERS[k]}</span><span class="lx-t">${esc(String(o).replace(/^[A-E]\.\s*/, ''))}</span></button>`;
+      return `<button type="button" class="lx-opt ${c}" ${L.checked ? 'disabled' : ''} onclick="App.lessonPick(${k})"><span class="lx-k">${LETTERS[k]}</span><span class="lx-t">${escO(o)}</span></button>`;
     }).join('');
     main = `<div class="lx-wrap">
         <span class="lx-chip">${icon('puzzle', 'h-4 w-4')} Soal ${Math.min(L.solved + 1, L.total)} dari ${L.total}</span>
-        <div class="mt-3 mb-4 whitespace-pre-line text-[1.02rem] font-bold leading-relaxed text-slate-900">${esc(q.q)}</div>
+        <div class="mt-3 mb-4 whitespace-pre-line text-[1.02rem] font-bold leading-relaxed text-slate-900">${escQ(q)}</div>
         ${q.svg ? `<div class="q-svg mb-4 overflow-auto rounded-xl bg-base-200/60 p-3">${q.svg}</div>` : ''}
         <div role="group" aria-label="Pilihan jawaban">${opts}</div></div>`;
     if (!L.checked) {
@@ -844,7 +855,7 @@ function lessonPaint() {
     } else {
       foot = `<div class="lx-sheet ${L.ok ? 'ok' : 'bad'}" role="status" aria-live="polite"><div class="lx-sheet-in">
           <h3>${L.ok ? '🎉 Benar!' : '😅 Belum tepat'}</h3>
-          <div class="lx-why">${!L.ok ? `<div><b>Jawaban benar:</b> ${LETTERS[q.ans]}. ${esc(String(q.options[q.ans]).replace(/^[A-E]\.\s*/, ''))}</div>` : ''}${q.explanation ? `<div class="mt-1.5"><b>Pembahasan:</b> ${esc(q.explanation)}</div>` : ''}${q.trick && !String(q.explanation || '').includes(q.trick) ? `<div class="mt-1.5"><b>Trik:</b> ${esc(q.trick)}</div>` : ''}</div>
+          <div class="lx-why">${!L.ok ? `<div><b>Jawaban benar:</b> ${LETTERS[q.ans]}. ${escO(q.options[q.ans])}</div>` : ''}${q.explanation ? `<div class="mt-1.5"><b>Pembahasan:</b> ${esc(q.explanation)}</div>` : ''}${q.trick && !String(q.explanation || '').includes(q.trick) ? `<div class="mt-1.5"><b>Trik:</b> ${esc(q.trick)}</div>` : ''}</div>
           <button class="lx-btn ${L.ok ? 'lx-green' : 'lx-red'} mt-3" onclick="App.lessonNext()">${L.ok ? 'Lanjut' : 'Mengerti, lanjut'}</button>
         </div></div>`;
     }
@@ -1052,7 +1063,7 @@ function paintQuestion() {
         : (v === 5 ? `<span class="badge badge-success badge-sm ml-auto shrink-0 text-white">Benar</span>` : '');
     }
     return `<button class="opt ${cls} max-lg:min-h-[3.75rem] max-lg:items-center max-lg:py-3" ${exam.finished ? 'disabled' : ''} onclick="App.pick(${i})" aria-pressed="${chosen === i}">
-      <span class="letter max-lg:!h-9 max-lg:!w-9 max-lg:!text-base">${LETTERS[i]}</span><span class="min-w-0 flex-1 text-base leading-snug lg:pt-1 lg:text-[0.95rem]">${esc(o.replace(/^[A-E]\.\s*/, ''))}</span>${tag}</button>`;
+      <span class="letter max-lg:!h-9 max-lg:!w-9 max-lg:!text-base">${LETTERS[i]}</span><span class="min-w-0 flex-1 text-base leading-snug lg:pt-1 lg:text-[0.95rem]">${escO(o)}</span>${tag}</button>`;
   }).join('');
   const last = exam.idx === exam.qs.length - 1;
   const nAns = exam.answers.filter(a => a !== null).length;
@@ -1069,7 +1080,7 @@ function paintQuestion() {
         <span class="badge badge-ghost h-auto min-h-[1.25rem] max-w-full whitespace-normal break-words py-1 text-left">${esc(q.sub)}</span>
         <span class="w-full text-xs text-base-content/60 sm:ml-auto sm:w-auto sm:text-base-content/50">${rule}</span>
       </div>
-      <div class="whitespace-pre-line break-words text-[1.08rem] font-medium leading-relaxed text-neutral sm:text-[1.05rem]">${esc(q.q)}</div>
+      <div class="whitespace-pre-line break-words text-[1.08rem] font-medium leading-relaxed text-neutral sm:text-[1.05rem]">${escQ(q)}</div>
       ${q.svg ? `<div class="q-svg overflow-auto rounded-xl bg-base-200/60 p-3">${q.svg}</div>` : ''}
       <div class="space-y-3" role="group" aria-label="Pilihan jawaban">${opts}</div>
       ${key && (chosen !== null || exam.finished) ? feedbackHtml(q, chosen) : ''}

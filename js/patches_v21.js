@@ -1,0 +1,10 @@
+/* Patch v21: buang soal cacat hasil audit (opsi kembar / kunci tidak sah) & perbaiki skor TKP. Dimuat setelah semua db_*.js */
+(function(){var DEL=new Set(["SKD-TIU-0036","SKD-TIU-0037","SKD-TIU-0041","SKD-TIU-0042","SKD-TIU-0047","SKD-TIU-0054","SKD-TIU-0056","SKD-TIU-0059","SKD-TIU-0062","SKD-TIU-0069","SKD-TIU-0076","SKD-TIU-0077","SKD-TIU-0081","SKD-TIU-0086","SKD-TIU-0087","SKD-TIU-0091","SKD-TIU-0092","SKD-TIU-0101","SKD-TIU-0102","SKD-TIU-0145","SKD-TIU-0155","SKD-TWK-0233","SKD-TWK-0241","SKD-TWK-0244","SKD-TWK-0253","SKD-TWK-0261","SKD-TWK-0264","SKD-TWK-0273","SKD-TWK-0281","SKD-TWK-0284","SKD-TWK-0293","SKD-TWK-0301","SKD-TWK-0304","SKD-TWK-0313","SKD-TWK-0321","SKD-TWK-0324","SKD-TWK-0333","SKD-TWK-0341","SKD-TWK-0344","SKD-TWK-0353"]);
+var B=window.MASTER_DB||{};Object.keys(B).forEach(function(k){var a=B[k];for(var i=a.length-1;i>=0;i--){var q=a[i];if(DEL.has(q.id)||/Studi Logika/.test(q.q||"")&&/berhak mengikuti tahapan SKB/.test(q.q||""))a.splice(i,1);else if(q.id==="SKD-TKP-0032"){q.scores=[2,5,3,4,1];}}});
+/* SALINAN: soal yang pilihan jawabannya sama persis dengan soal lain (hanya kalimat pembuka berbeda) dibuang. Pilihan pendek (angka/X>Y) dikecualikan. */
+var nz=function(t){return String(t).toLowerCase().replace(/^[a-e]\.\s*/,'').replace(/[^a-z0-9]+/g,' ').trim()};
+Object.keys(B).forEach(function(k){var a=B[k],seen={};for(var i=0;i<a.length;i++){var q=a[i];if(q.img||!q.options)continue;var o=q.options.map(nz);var avg=o.join('').length/o.length;if(avg<=30)continue;var key=o.slice().sort().join('|');if(seen[key]){a.splice(i,1);i--}else seen[key]=1}});
+
+/* TEMPLAT-PRAKOM: soal templat subnetting/kode HTTP yang kuncinya sama dibuang (tersisa satu per kunci). */
+(function(){var a=B.SKB_PRAKOM||[],seen={};for(var i=0;i<a.length;i++){var q=a[i];if(!/Studi Kasus Jaringan Pemerintah|Kasus Integrasi/.test(q.q))continue;var k=q.options[q.ans].replace(/^[A-E]\.\s*/,'').replace(/\(terbentuk[^)]*\)/,'').trim()+(/Subnet/.test(q.q)?'S':'H');if(seen[k]){a.splice(i,1);i--}else seen[k]=1}})();
+})();

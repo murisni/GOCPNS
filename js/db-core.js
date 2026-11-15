@@ -3,6 +3,13 @@
 (function () {
   window.MASTER_DB = window.MASTER_DB || {};
   const loaded = new Set();
+  const seenFp = new Set();   /* sidik isi soal: membuang soal kembar (teks sama, opsi hanya diacak) */
+  const nz = t => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  function fingerprint(q) {
+    const stem = nz(String(q.q || '').replace(/\([^)]*#\d+[^)]*\)/g, '').replace(/\(?\s*variasi[^)\n]*\)?/gi, ''));
+    const opts = (q.options || []).map(o => nz(String(o).replace(/^[A-E]\.\s*/, ''))).sort().join('|');
+    return stem + '||' + opts;
+  }
 
   function normalize(q, packId, idx) {
     q.id = q.id || (packId + '_Q' + (idx + 1));
@@ -29,6 +36,9 @@
     pack.questions.forEach((q, idx) => {
       if (q.id && ids.has(q.id)) return;
       normalize(q, packId, idx);
+      const fp = (pack.bucket || q.examType || '') + '::' + fingerprint(q);
+      if (seenFp.has(fp)) return;
+      seenFp.add(fp);
       ids.add(q.id);
       let bucket = pack.bucket || q.examType || 'SKD_TWK';
       if (bucket === 'SKD') {
