@@ -386,3 +386,12 @@
     .lx-fill { transition: none; }
   }
 }
+
+/* Beranda: 2 kolom di layar besar (desktop >= 1024px). Mobile/tablet tetap 1 kolom. */
+@media (min-width: 1024px) {
+  .home-wrap.max-w-xl { max-width: 62rem; }
+  .home-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.75rem; align-items: start; }
+  .home-col { min-width: 0; }
+  .home-col-left > :last-child { margin-bottom: 0; }
+  .home-col-right > h2 { display: none; }  /* sejajarkan kartu kanan dengan kartu kiri */
+}

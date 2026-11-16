@@ -97,9 +97,11 @@ function ordered(bucket) {
        sehingga isi Paket lama tidak berubah dan progres "selesai" tetap valid. */
     const byId = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
     const isNew = q => /-N\d{4}$/.test(q.id);
-    const base = arr.filter(q => !isNew(q)).sort(byId);
-    const added = arr.filter(isNew).sort(byId);
-    orderCache[key] = shuffle(base, 'pack:' + bucket).concat(shuffle(added, 'pack2:' + bucket));
+    const isLate = q => /-X\d{4}$/.test(q.id);   /* soal v24: ditaruh paling belakang agar isi paket lama tidak bergeser */
+    const base = arr.filter(q => !isNew(q) && !isLate(q)).sort(byId);
+    const added = arr.filter(q => isNew(q)).sort(byId);
+    const late = arr.filter(isLate).sort(byId);
+    orderCache[key] = shuffle(base, 'pack:' + bucket).concat(shuffle(added, 'pack2:' + bucket), late);
   }
   return orderCache[key];
 }
@@ -401,15 +403,18 @@ function renderHome() {
     </a>`;
 
   shell('', `
-    <div class="mx-auto w-full max-w-xl pb-2 pt-1 sm:pt-8">
+    <div class="home-wrap mx-auto w-full max-w-xl pb-2 pt-1 sm:pt-8">
       <header class="mb-4 px-0.5">
         <h1 class="text-2xl font-extrabold leading-tight tracking-tight text-neutral">${sapa}!</h1>
         <p class="mt-0.5 text-sm text-slate-600">Yuk, belajar sedikit demi sedikit untuk CPNS.</p>
       </header>
+      <div class="home-grid">
+      <div class="home-col home-col-left">
       ${resume}
       ${cont}
       ${stats}
-      <section aria-label="Pilih jalur belajar">
+      </div>
+      <section class="home-col home-col-right" aria-label="Pilih jalur belajar">
         <h2 class="mb-2 px-0.5 text-sm font-extrabold text-slate-800">Mau belajar apa?</h2>
         <div class="grid gap-3">
           ${go3('#/materi', 'bg-teal-500', 'book', 'Materi', 'Baca ringkasan dan trik cepat, langkah demi langkah.', `${MATERI.length} topik`)}
@@ -417,6 +422,7 @@ function renderHome() {
           ${go3('#/skb', 'bg-indigo-500', 'briefcase', 'SKB', 'Latihan soal sesuai bidang formasi yang kamu pilih.', `${fmtNum(skbKeys().reduce((a, k) => a + bankLen(k), 0))} soal · ${skbKeys().length} bidang`)}
         </div>
       </section>
+      </div>
     </div>
   `);
 }
