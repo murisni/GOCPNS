@@ -1,11 +1,11 @@
 /* Service worker CAT CPNS — agar bisa dipasang & dibuka offline.
    Strategi: jaringan dulu (selalu dapat versi terbaru), cadangan dari cache saat offline.
    Naikkan VERSI jika menambah/mengganti file agar cache lama dibersihkan. */
-const VERSI = 'cat-cpns-v26';
+const VERSI = 'cat-cpns-v29';
 const INTI = [
   './', './index.html', './manifest.webmanifest',
   './css/app.css',
-  './js/db-core.js', './js/materi.js', './js/materi_extra.js', './js/materi_extra2.js', './js/materi_extra3.js', './js/materi_fix_v23.js', './js/materi_uud_pasal_v23.js', './db/skd/db_skd_tkp_v4.js', './db/skd/db_skd_tkp_v5.js', './db/skd/db_skd_twk_v4.js', './db/skb/db_skb_prakom_v4.js', './js/patches_v21.js', './js/patches_v24.js', './db/skd/db_skd_tiu_v4.js', './db/skd/db_skd_tiu_figural.js', './db/skb/db_skb_prakom_v3.js', './js/config.js', './js/auth.js', './js/app.js',
+  './js/db-core.js', './js/materi.js', './js/materi_extra.js', './js/materi_extra2.js', './js/materi_extra3.js', './js/materi_fix_v23.js', './js/materi_uud_pasal_v23.js', './db/skd/db_skd_tkp_v4.js', './db/skd/db_skd_tkp_v5.js', './db/skd/db_skd_twk_v4.js', './db/skb/db_skb_prakom_v4.js', './js/patches_v21.js', './js/patches_v24.js', './js/materi_tiu_v25.js', './js/materi_tiu_studi_v27.js', './js/patches_v25.js', './db/skd/db_skd_tiu_v4.js', './db/skd/db_skd_tiu_figural.js', './db/skb/db_skb_prakom_v3.js', './js/config.js', './js/auth.js', './js/app.js',
   './db/skd/db_skd_twk.js', './db/skd/db_skd_tiu.js', './db/skd/db_skd_tkp.js',
   './db/skd/db_skd_twk_v2.js', './db/skd/db_skd_twk_v3.js', './db/skd/db_skd_tiu_v2.js', './db/skd/db_skd_tiu_v3.js', './db/skd/db_skd_tkp_v2.js', './db/skd/db_skd_tkp_v3.js', './db/skb/db_skb_prakom_v2.js',
   './db/skb/db_skb_prakom.js', './db/skb/db_skb_kesehatan.js', './db/skb/db_skb_hukum.js',

@@ -7,7 +7,9 @@
 
 /* ---------- util ---------- */
 const $ = (s, r = document) => r.querySelector(s);
-const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  /* v25: penanda pecahan ⟦pembilang|penyebut⟧ (dibuat js/patches_v25.js) ditampilkan bertingkat */
+  .replace(/\u27E6([^|\u27E7]*)\|([^\u27E7]*)\u27E7/g, '<span class="frac"><span class="fn">$1</span><span class="fd">$2</span></span>');
 
 // v21: dukungan gambar (SVG) pada soal figural. Opsi berformat "A. IMG:<svg ...>"; soal memakai properti q.img (string svg).
 const svgUri = v => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(v);
@@ -348,7 +350,7 @@ function renderHome() {
     const steps = lessonSteps(cur.t), done = lessonDone(cur.t);
     const ni = steps.findIndex((_, i) => !done[i]);
     const nextTitle = ni >= 0 && steps[ni] ? steps[ni].title : '';
-    const started = cur.p.done > 0;
+    const started = cur.p.done > 0 || !!cur.p.cur;
     cont = `
     <section class="lx-hero mb-4" aria-label="${label}">
       <div class="flex items-center justify-between gap-2">
@@ -358,8 +360,8 @@ function renderHome() {
       <h2 class="mt-2.5 line-clamp-2 text-lg font-extrabold leading-snug">${esc(cur.t.title)}</h2>
       ${nextTitle ? `<p class="mt-1 break-words text-xs text-white/85">Selanjutnya: ${esc(nextTitle)}</p>` : ''}
       <div class="mt-3 flex items-center gap-3">
-        <div class="lx-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${cur.p.pct}"><div class="lx-fill" style="width:${Math.max(cur.p.pct, 4)}%"></div></div>
-        <span class="shrink-0 text-xs font-bold text-white">${cur.p.done} dari ${cur.p.total}</span>
+        <div class="lx-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${cur.p.live}"><div class="lx-fill" style="width:${Math.max(cur.p.live, 4)}%"></div></div>
+        <span class="shrink-0 text-xs font-bold text-white">${cur.p.done} dari ${cur.p.total}${cur.p.cur ? ` · soal ${cur.p.cur.solved}/${cur.p.cur.total}` : ''}</span>
       </div>
       <a href="#/materi/${cur.t.id}" class="lx-btn lx-green mt-4">${icon('play', 'h-5 w-5')} ${started ? 'Lanjutkan' : 'Mulai'}</a>
     </section>`;
@@ -591,7 +593,7 @@ function renderMateri(id) {
           ${fin ? `<span class="inline-flex items-center gap-1 rounded-full bg-green-500 px-2 py-0.5 text-[0.65rem] font-extrabold text-white">${icon('tick', 'h-3 w-3')} Selesai</span>` : ''}
         </span>
         <span class="mt-1 block text-[0.95rem] font-extrabold leading-snug text-slate-900">${esc(t.title)}</span>
-        <span class="mt-2 flex items-center gap-2.5"><span class="lx-track !h-2.5" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pr.pct}"><span class="lx-fill block" style="width:${pr.pct}%"></span></span><span class="shrink-0 text-[0.7rem] font-bold text-slate-600">${pr.done}/${pr.total} langkah</span></span>
+        <span class="mt-2 flex items-center gap-2.5"><span class="lx-track !h-2.5" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pr.live}"><span class="lx-fill block" style="width:${pr.live}%"></span></span><span class="shrink-0 text-[0.7rem] font-bold text-slate-600">${pr.done}/${pr.total} langkah${pr.cur ? ` · soal ${pr.cur.solved}/${pr.cur.total}` : ''}</span></span>
         <span class="mt-1 block text-[0.7rem] text-slate-500">${n} soal latihan</span>
       </span>
       ${icon('arrowR', 'h-5 w-5 shrink-0 text-slate-400')}
@@ -664,6 +666,17 @@ const lessonDone = t => (lessonStore[t.id] && lessonStore[t.id].done) || {};
 function lessonMarkDone(t, i) {
   const e = lessonStore[t.id] || (lessonStore[t.id] = { done: {} });
   e.done[i] = 1; e.at = Date.now();
+  if (e.part) delete e.part[i];
+  store.set(LESSON_KEY, lessonStore);
+}
+/* v26: kemajuan SEBAGIAN satu langkah = materi sudah dibaca, soal baru terjawab benar `solved` dari `total` (mis. 2/3).
+   Langkah baru dianggap selesai (centang) hanya setelah semua soalnya benar. */
+const lessonPart = (t, i) => ((lessonStore[t.id] && lessonStore[t.id].part) || {})[i] || null;
+function lessonSetPart(t, i, solved, total) {
+  if (lessonDone(t)[i]) return;
+  const e = lessonStore[t.id] || (lessonStore[t.id] = { done: {} });
+  (e.part || (e.part = {}))[i] = { solved, total };
+  e.at = Date.now();
   store.set(LESSON_KEY, lessonStore);
 }
 function lessonSteps(t) {
@@ -674,8 +687,9 @@ function lessonSteps(t) {
 /* ringkasan progres topik: dipakai juga oleh halaman daftar / beranda */
 function lessonProgress(t) {
   const total = lessonSteps(t).length, d = lessonDone(t);
-  let done = 0; for (let i = 0; i < total; i++) if (d[i]) done++;
-  return { done, total, pct: total ? Math.round(done / total * 100) : 0 };
+  let done = 0, cur = null; for (let i = 0; i < total; i++) { if (d[i]) done++; else if (!cur) { const pt = lessonPart(t, i); if (pt && pt.total) cur = { i, solved: pt.solved, total: pt.total }; } }
+  const live = total ? Math.round((done + (cur ? cur.solved / cur.total : 0)) / total * 100) : 0;   // untuk bar; pct tetap = langkah selesai penuh
+  return { done, total, pct: total ? Math.round(done / total * 100) : 0, cur, live };
 }
 
 /* --- pemilihan soal per langkah: yang paling nyambung dengan isi langkah, tanpa duplikat --- */
@@ -747,14 +761,15 @@ function renderMateriDetail(t) {
 
   const nodes = steps.map((s, i) => {
     const isDone = !!done[i], isNow = i === nowIdx, locked = !isDone && !isNow;
-    const cls = isDone ? 'done' : isNow ? 'now' : 'lock';
+    const pt = isNow ? lessonPart(t, i) : null;                  // materi sudah dibaca, soal belum tuntas
+    const cls = isDone ? 'done' : isNow ? (pt ? 'now part' : 'now') : 'lock';
     const ic = isDone ? 'tick' : locked ? 'lock' : (s.kind === 'tips' ? 'bolt' : 'book');
     return `
       <div class="lx-step" style="--x:${XS[i % XS.length]}px">
-        <button type="button" class="lx-node ${cls}" onclick="App.lessonOpen('${t.id}',${i})" aria-label="Langkah ${i + 1}: ${esc(s.title)}${isDone ? ' (selesai)' : locked ? ' (terkunci)' : ''}">
-          ${isNow ? '<span class="lx-bubble">MULAI</span>' : ''}${icon(ic, 'h-8 w-8')}
+        <button type="button" class="lx-node ${cls}" onclick="App.lessonOpen('${t.id}',${i})" aria-label="Langkah ${i + 1}: ${esc(s.title)}${isDone ? ' (selesai)' : locked ? ' (terkunci)' : pt ? ` (soal ${pt.solved} dari ${pt.total})` : ''}">
+          ${isNow ? `<span class="lx-bubble">${pt ? pt.solved + '/' + pt.total : 'MULAI'}</span>` : ''}${icon(ic, 'h-8 w-8')}
         </button>
-        <div class="lx-label ${locked ? 'dim' : ''}">${esc(s.title)}</div>
+        <div class="lx-label ${locked ? 'dim' : ''}">${esc(s.title)}</div>${pt ? `<div class="lx-sub">Materi dibaca · soal ${pt.solved}/${pt.total}</div>` : ''}
       </div>`;
   }).join('');
 
@@ -768,7 +783,7 @@ function renderMateriDetail(t) {
 
   const cta = allDone
     ? `<button class="lx-btn lx-gold mt-4" onclick="App.lessonFinal('${t.id}')">${icon('trophy', 'h-5 w-5')} Mulai Tantangan Akhir</button>`
-    : `<button class="lx-btn lx-green mt-4" onclick="App.lessonOpen('${t.id}',${nowIdx})">${icon('play', 'h-5 w-5')} ${prog.done ? 'Lanjutkan' : 'Mulai Belajar'}</button>`;
+    : `<button class="lx-btn lx-green mt-4" onclick="App.lessonOpen('${t.id}',${nowIdx})">${icon('play', 'h-5 w-5')} ${prog.done || prog.cur ? 'Lanjutkan' : 'Mulai Belajar'}</button>`;
 
   const navBtn = (x, dir) => x
     ? `<a href="#/materi/${x.id}" class="btn btn-ghost h-auto min-h-12 w-full min-w-0 flex-nowrap justify-${dir === 'p' ? 'start' : 'end'} gap-2 rounded-xl border border-slate-200/90 bg-white py-2 normal-case text-slate-700">
@@ -783,11 +798,11 @@ function renderMateriDetail(t) {
       <div class="lx-hero mt-3">
         <div class="flex items-center justify-between gap-2">
           <span class="badge border-0 bg-white/20 font-bold text-white">${badgeLabel}</span>
-          <span class="text-xs font-bold text-white/90">${prog.done}/${prog.total} langkah</span>
+          <span class="text-xs font-bold text-white/90">${prog.done}/${prog.total} langkah${prog.cur ? ` · soal ${prog.cur.solved}/${prog.cur.total}` : ''}</span>
         </div>
         <h1 class="mt-2 text-xl font-extrabold leading-snug">${esc(t.title)}</h1>
         <p class="mt-1 text-xs leading-relaxed text-white/85">${esc(t.summary)}</p>
-        <div class="lx-track mt-3" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${prog.pct}"><div class="lx-fill" style="width:${Math.max(prog.pct, 4)}%"></div></div>
+        <div class="lx-track mt-3" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${prog.live}"><div class="lx-fill" style="width:${Math.max(prog.live, 4)}%"></div></div>
         ${cta}
       </div>
       <div class="lx-path" aria-label="Jalur belajar">${nodes}${finalNode}</div>
@@ -802,7 +817,9 @@ function lessonOpen(id, i) {
   const steps = lessonSteps(t); if (!steps[i]) return;
   if (i > 0 && !lessonDone(t)[i - 1]) { toast('Selesaikan langkah sebelumnya dulu ya 🔒'); return; }
   const qs = (lessonPlan(t)[i] || []).slice();
-  lesson = { t, steps, i, phase: 'read', queue: qs, total: qs.length, solved: 0, picked: null, checked: false, ok: false, wrongIds: new Set() };
+  const pt = lessonDone(t)[i] ? null : lessonPart(t, i);
+  const resume = !!(pt && pt.total === qs.length && pt.solved < qs.length);      // materi sudah dibaca -> lanjut ke soal sisa
+  lesson = { t, steps, i, phase: resume ? 'quiz' : 'read', queue: resume ? qs.slice(pt.solved) : qs, total: qs.length, solved: resume ? pt.solved : 0, picked: null, checked: false, ok: false, wrongIds: new Set() };
   document.documentElement.classList.add('lx-open');
   let el = $('#lesson');
   if (!el) {
@@ -852,7 +869,7 @@ function lessonPaint() {
       return `<button type="button" class="lx-opt ${c}" ${L.checked ? 'disabled' : ''} onclick="App.lessonPick(${k})"><span class="lx-k">${LETTERS[k]}</span><span class="lx-t">${escO(o)}</span></button>`;
     }).join('');
     main = `<div class="lx-wrap">
-        <span class="lx-chip">${icon('puzzle', 'h-4 w-4')} Soal ${Math.min(L.solved + 1, L.total)} dari ${L.total}</span>
+        <div class="flex items-center justify-between gap-2"><span class="lx-chip">${icon('puzzle', 'h-4 w-4')} Soal ${Math.min(L.solved + 1, L.total)} dari ${L.total}</span><button type="button" class="lx-reread" onclick="App.lessonReread()">${icon('book', 'h-4 w-4')} Baca ulang materi</button></div>
         <div class="mt-3 mb-4 whitespace-pre-line text-[1.02rem] font-bold leading-relaxed text-slate-900">${escQ(q)}</div>
         ${q.svg ? `<div class="q-svg mb-4 overflow-auto rounded-xl bg-base-200/60 p-3">${q.svg}</div>` : ''}
         <div role="group" aria-label="Pilihan jawaban">${opts}</div></div>`;
@@ -892,9 +909,10 @@ const lessonApi = {
   lessonStartQuiz() {
     if (!lesson) return;
     if (!lesson.total) { lessonMarkDone(lesson.t, lesson.i); lesson.phase = 'result'; }
-    else lesson.phase = 'quiz';
+    else { lesson.phase = 'quiz'; lessonSetPart(lesson.t, lesson.i, lesson.solved, lesson.total); }   // materi selesai dibaca = tersimpan
     lessonPaint();
   },
+  lessonReread() { if (!lesson || lesson.phase !== 'quiz') return; lesson.phase = 'read'; lesson.picked = null; lesson.checked = false; lessonPaint(); },
   lessonPick(k) { if (!lesson || lesson.checked) return; lesson.picked = k; lessonPaint(); },
   lessonCheck() {
     if (!lesson || lesson.checked || lesson.picked === null) return;
@@ -906,7 +924,7 @@ const lessonApi = {
   },
   lessonNext() {
     if (!lesson || !lesson.checked) return;
-    if (lesson.ok) { lesson.queue.shift(); lesson.solved++; }
+    if (lesson.ok) { lesson.queue.shift(); lesson.solved++; if (lesson.queue.length) lessonSetPart(lesson.t, lesson.i, lesson.solved, lesson.total); }
     else lesson.queue.push(lesson.queue.shift());           // salah -> diulang di akhir sampai benar
     lesson.picked = null; lesson.checked = false; lesson.ok = false;
     if (!lesson.queue.length) { lessonMarkDone(lesson.t, lesson.i); lesson.phase = 'result'; }
