@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 454" width="480" height="454" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Tujuh nilai dasar ASN BerAKHLAK">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="454" fill="#ffffff"/>
+<rect x="8" y="10" width="228" height="92" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.5"/>
+<rect x="18" y="22" width="50" height="50" rx="12" fill="#7c5cf0"/>
+<text x="43" y="57" font-size="21" fill="#fff" font-weight="800" text-anchor="middle">Ber</text>
+<text x="78" y="31.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Berorientasi</text>
+<text x="78" y="51.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Pelayanan</text>
+<text x="78" y="71.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">ramah, cekatan,</text>
+<text x="78" y="88.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">solutif</text>
+<rect x="244" y="10" width="228" height="92" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.5"/>
+<rect x="254" y="22" width="50" height="50" rx="12" fill="#2563eb"/>
+<text x="279" y="57" font-size="28" fill="#fff" font-weight="800" text-anchor="middle">A</text>
+<text x="314" y="31.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Akuntabel</text>
+<text x="314" y="51.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">bertanggung jawab,</text>
+<text x="314" y="68.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">tidak menyalahgunakan</text>
+<text x="314" y="85.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">wewenang</text>
+<rect x="8" y="110" width="228" height="92" rx="10" fill="#e6f7f5" stroke="#0d9488" stroke-width="1.5"/>
+<rect x="18" y="122" width="50" height="50" rx="12" fill="#0d9488"/>
+<text x="43" y="157" font-size="28" fill="#fff" font-weight="800" text-anchor="middle">K</text>
+<text x="78" y="131.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Kompeten</text>
+<text x="78" y="151.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">terus meningkatkan</text>
+<text x="78" y="168.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">kompetensi</text>
+<rect x="244" y="110" width="228" height="92" rx="10" fill="#fff4e0" stroke="#d97706" stroke-width="1.5"/>
+<rect x="254" y="122" width="50" height="50" rx="12" fill="#d97706"/>
+<text x="279" y="157" font-size="28" fill="#fff" font-weight="800" text-anchor="middle">H</text>
+<text x="314" y="131.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Harmonis</text>
+<text x="314" y="151.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">peduli, menghargai</text>
+<text x="314" y="168.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">perbedaan</text>
+<rect x="8" y="210" width="228" height="92" rx="10" fill="#feecec" stroke="#dc2626" stroke-width="1.5"/>
+<rect x="18" y="222" width="50" height="50" rx="12" fill="#dc2626"/>
+<text x="43" y="257" font-size="28" fill="#fff" font-weight="800" text-anchor="middle">L</text>
+<text x="78" y="231.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Loyal</text>
+<text x="78" y="251.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">setia pada Pancasila,</text>
+<text x="78" y="268.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">UUD, NKRI &amp; pimpinan</text>
+<text x="78" y="285.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">yang sah</text>
+<rect x="244" y="210" width="228" height="92" rx="10" fill="#fdebf4" stroke="#db2777" stroke-width="1.5"/>
+<rect x="254" y="222" width="50" height="50" rx="12" fill="#db2777"/>
+<text x="279" y="257" font-size="28" fill="#fff" font-weight="800" text-anchor="middle">A</text>
+<text x="314" y="231.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Adaptif</text>
+<text x="314" y="251.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">cepat menyesuaikan</text>
+<text x="314" y="268.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">perubahan, inovatif</text>
+<rect x="8" y="310" width="464" height="92" rx="10" fill="#eceeff" stroke="#4f46e5" stroke-width="1.5"/>
+<rect x="18" y="322" width="50" height="50" rx="12" fill="#4f46e5"/>
+<text x="43" y="357" font-size="28" fill="#fff" font-weight="800" text-anchor="middle">K</text>
+<text x="78" y="331.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Kolaboratif</text>
+<text x="78" y="351.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">kerja sama lintas pihak, terbuka</text>
+<rect x="8" y="410" width="464" height="34" rx="10" fill="#fef9c3" stroke="#fde047" stroke-width="1.5"/>
+<text x="240" y="432" font-size="13.5" fill="#713f12" font-weight="800" text-anchor="middle">Employer branding: "Bangga Melayani Bangsa"</text>
+</svg>

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 366" width="480" height="366" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Empat tahap amandemen UUD 1945">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="366" fill="#ffffff"/>
+<line x1="110" y1="52.5" x2="110" y2="313.5" stroke="#cbd5e1" stroke-width="3"/>
+<text x="8" y="52.5" font-size="13" fill="#7c5cf0" font-weight="800" text-anchor="start">A-I · 1999</text>
+<circle cx="110" cy="52.5" r="7" fill="#fff" stroke="#7c5cf0" stroke-width="3.5"/>
+<rect x="126" y="14" width="344" height="77" rx="9" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.3"/>
+<text x="137" y="34.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Presiden dibatasi, DPR dikuatkan</text>
+<text x="137" y="56" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Maks 2 periode (Pasal 7) · kekuasaan</text>
+<text x="137" y="74" font-size="13" fill="#334155" font-weight="500" text-anchor="start">membentuk UU pindah ke DPR (Pasal 20)</text>
+<text x="8" y="139.5" font-size="13" fill="#2563eb" font-weight="800" text-anchor="start">A-II · 2000</text>
+<circle cx="110" cy="139.5" r="7" fill="#fff" stroke="#2563eb" stroke-width="3.5"/>
+<rect x="126" y="101" width="344" height="77" rx="9" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.3"/>
+<text x="137" y="121.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Daerah + HAM</text>
+<text x="137" y="143" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Pemda (Pasal 18) · Bab XA HAM (28A–28J) ·</text>
+<text x="137" y="161" font-size="13" fill="#334155" font-weight="500" text-anchor="start">wilayah negara · lambang &amp; lagu (36A–36C)</text>
+<text x="8" y="226.5" font-size="13" fill="#0d9488" font-weight="800" text-anchor="start">A-III · 2001</text>
+<circle cx="110" cy="226.5" r="7" fill="#fff" stroke="#0d9488" stroke-width="3.5"/>
+<rect x="126" y="188" width="344" height="77" rx="9" fill="#e6f7f5" stroke="#0d9488" stroke-width="1.3"/>
+<text x="137" y="208.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Lembaga negara + Pemilu</text>
+<text x="137" y="230" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Pilpres langsung (6A) · DPD, MK, KY, BPK ·</text>
+<text x="137" y="248" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Pasal 1(2) &amp; 1(3) negara hukum</text>
+<text x="8" y="313.5" font-size="13" fill="#d97706" font-weight="800" text-anchor="start">A-IV · 2002</text>
+<circle cx="110" cy="313.5" r="7" fill="#fff" stroke="#d97706" stroke-width="3.5"/>
+<rect x="126" y="275" width="344" height="77" rx="9" fill="#fff4e0" stroke="#d97706" stroke-width="1.3"/>
+<text x="137" y="295.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">MPR + pendidikan, ekonomi, sosial</text>
+<text x="137" y="317" font-size="13" fill="#334155" font-weight="500" text-anchor="start">MPR = DPR + DPD · DPA dihapus · Pasal 31, 32,</text>
+<text x="137" y="335" font-size="13" fill="#334155" font-weight="500" text-anchor="start">33, 34, 37</text>
+</svg>

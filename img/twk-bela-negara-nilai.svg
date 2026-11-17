@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 451" width="480" height="451" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Lima nilai dasar bela negara">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="451" fill="#ffffff"/>
+<rect x="8" y="10" width="464" height="74" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.4"/>
+<circle cx="42" cy="47" r="22" fill="#7c5cf0"/>
+<text x="42" y="55" font-size="24" fill="#fff" font-weight="800" text-anchor="middle">C</text>
+<text x="78" y="30.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Cinta tanah air</text>
+<text x="78" y="50.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">bangga produk dalam negeri, melestarikan lingkungan,</text>
+<text x="78" y="67.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">menjaga nama baik bangsa</text>
+<rect x="8" y="92" width="464" height="74" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.4"/>
+<circle cx="42" cy="129" r="22" fill="#2563eb"/>
+<text x="42" y="137" font-size="24" fill="#fff" font-weight="800" text-anchor="middle">S</text>
+<text x="78" y="112.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Sadar berbangsa dan bernegara</text>
+<text x="78" y="132.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">menjalankan hak &amp; kewajiban, menghargai keberagaman,</text>
+<text x="78" y="149.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">taat hukum</text>
+<rect x="8" y="174" width="464" height="77" rx="10" fill="#e6f7f5" stroke="#0d9488" stroke-width="1.4"/>
+<circle cx="42" cy="212.5" r="22" fill="#0d9488"/>
+<text x="42" y="220.5" font-size="24" fill="#fff" font-weight="800" text-anchor="middle">Y</text>
+<text x="78" y="194.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Yakin / setia pada Pancasila sebagai</text>
+<text x="78" y="214.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">ideologi negara</text>
+<text x="78" y="234.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">memahami dan mengamalkan nilai Pancasila</text>
+<rect x="8" y="259" width="464" height="74" rx="10" fill="#fff4e0" stroke="#d97706" stroke-width="1.4"/>
+<circle cx="42" cy="296" r="22" fill="#d97706"/>
+<text x="42" y="304" font-size="24" fill="#fff" font-weight="800" text-anchor="middle">R</text>
+<text x="78" y="279.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Rela berkorban untuk bangsa dan negara</text>
+<text x="78" y="299.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">mengorbankan waktu, tenaga, pikiran; siap membela negara</text>
+<rect x="8" y="341" width="464" height="58" rx="10" fill="#feecec" stroke="#dc2626" stroke-width="1.4"/>
+<circle cx="42" cy="370" r="22" fill="#dc2626"/>
+<text x="42" y="378" font-size="24" fill="#fff" font-weight="800" text-anchor="middle">K</text>
+<text x="78" y="361.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Kemampuan awal bela negara</text>
+<text x="78" y="381.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">psikis (ketabahan, integritas) &amp; fisik (kebugaran)</text>
+<rect x="8" y="407" width="464" height="34" rx="10" fill="#fef9c3" stroke="#fde047" stroke-width="1.5"/>
+<text x="240" y="429" font-size="14" fill="#713f12" font-weight="800" text-anchor="middle">Mnemonik: C – S – Y – R – K</text>
+</svg>

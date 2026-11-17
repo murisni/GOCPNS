@@ -184,6 +184,40 @@
       : `<div class="mb-3 flex items-center justify-between gap-2 rounded-xl border border-base-300 px-3 py-2 text-sm"><span>Belum masuk akun</span><button class="btn btn-primary btn-xs" onclick="Auth.open('masuk')">Masuk / Daftar</button></div>`;
   }
 
+  function openReset(d, back) {
+    d.innerHTML = `
+      <div class="modal-box max-w-sm">
+        <h3 class="text-center text-lg font-extrabold text-error">Reset progres belajar</h3>
+        <p class="mt-1 text-center text-sm text-base-content/70">Seluruh progres materi, soal yang sudah dikerjakan, dan hasil latihan akan dikosongkan${sess() ? ' (termasuk di akunmu)' : ''}. Sebelum itu, kode cadangan progres lamamu dibuat di bawah. Simpan kode ini agar progres bisa dikembalikan kapan saja lewat "Pulihkan progres".</p>
+        <textarea id="rs-out" readonly rows="4" class="textarea textarea-bordered mt-3 w-full text-xs" aria-label="Kode cadangan progres lama">Membuat kode…</textarea>
+        <button id="rs-copy" class="btn btn-primary mt-2 w-full" disabled>Salin kode cadangan</button>
+        <p id="rs-msg" class="mt-2 min-h-5 text-center text-sm font-semibold text-error" role="alert"></p>
+        <button id="rs-go" class="btn btn-error w-full" disabled>Reset sekarang</button>
+        <button id="rs-back" class="btn btn-ghost mt-1 w-full">Batal</button>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
+    const q = s => d.querySelector(s), msg = (t, ok) => { const m = q('#rs-msg'); m.textContent = t || ''; m.className = 'mt-2 min-h-5 text-center text-sm font-semibold ' + (ok ? 'text-success' : 'text-error'); };
+    let code = '', copied = false;
+    q('#rs-back').onclick = () => back();
+    toCode().then(c => {
+      code = c; q('#rs-out').value = c; q('#rs-copy').disabled = false;
+    }).catch(() => msg('Gagal membuat kode cadangan. Reset dibatalkan.'));
+    q('#rs-copy').onclick = async () => {
+      const o = q('#rs-out'); o.select();
+      try { await navigator.clipboard.writeText(code); } catch (e) {}
+      copied = true; q('#rs-go').disabled = false; msg('Kode disalin. Simpan di catatan / chat pribadimu.', true);
+    };
+    q('#rs-go').onclick = async () => {
+      if (!copied || !code) return;
+      q('#rs-go').disabled = true; q('#rs-go').classList.add('loading');
+      clearTimeout(timer);
+      KEYS.forEach(del); del('cpns_dirty');
+      if (sess()) { wr('cpns_dirty', 1); await push(false); }
+      location.reload();
+    };
+    if (!d.open) d.showModal();
+  }
+
   function openBackup(d) {
     d.innerHTML = `
       <div class="modal-box max-w-sm">
@@ -195,11 +229,14 @@
         <textarea id="bk-in" rows="3" placeholder="Tempel kode progres dari perangkat lama…" class="textarea textarea-bordered w-full text-xs"></textarea>
         <p id="bk-msg" class="mt-2 min-h-5 text-center text-sm font-semibold text-error" role="alert"></p>
         <button id="bk-load" class="btn btn-outline w-full">Pulihkan progres</button>
+        <div class="divider my-3 text-xs">atau mulai dari awal</div>
+        <button id="bk-reset" class="btn btn-outline btn-error w-full">Reset progres</button>
         <button id="bk-close" class="btn btn-ghost mt-1 w-full">Tutup</button>
       </div>
       <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
     const q = s => d.querySelector(s), msg = (t, ok) => { const m = q('#bk-msg'); m.textContent = t || ''; m.className = 'mt-2 min-h-5 text-center text-sm font-semibold ' + (ok ? 'text-success' : 'text-error'); };
     q('#bk-close').onclick = () => d.close();
+    q('#bk-reset').onclick = () => openReset(d, () => openBackup(d));
     q('#bk-copy').onclick = async () => {
       const code = await toCode(), o = q('#bk-out'); o.value = code; o.classList.remove('hidden'); o.select();
       try { await navigator.clipboard.writeText(code); msg('Kode disalin. Tempel di perangkat baru.', true); } catch (e) { msg('Tekan lama pada kotak lalu pilih Salin.', true); }
@@ -207,10 +244,10 @@
     q('#bk-load').onclick = async () => {
       try {
         const inc = await fromCode(q('#bk-in').value), m = merge(inc, snapshot());
-        KEYS.forEach(k => wr(k, m[k])); msg('Berhasil. Memuat ulang…', true); setTimeout(() => location.reload(), 700);
+        KEYS.forEach(k => wr(k, m[k])); if (sess()) { wr('cpns_dirty', 1); await push(false); } msg('Berhasil. Memuat ulang…', true); setTimeout(() => location.reload(), 700);
       } catch (e) { msg(e.message || 'Kode tidak valid.'); }
     };
-    d.showModal();
+    if (!d.open) d.showModal();
   }
 
   /* lembar profil: dibuka dari tab Profil (paling kanan) */
@@ -230,16 +267,20 @@
           ${u
             ? '<button id="pf-out" class="btn btn-outline btn-error w-full">Keluar dari akun</button>'
             : '<button id="pf-in" class="btn btn-primary w-full">Masuk</button><button id="pf-reg" class="btn btn-outline w-full">Daftar akun baru</button>'}
+          <button id="pf-backup" class="btn btn-outline w-full">Kode cadangan &amp; pulihkan</button>
+          <button id="pf-reset" class="btn btn-outline btn-error w-full">Reset progres</button>
           <button id="pf-close" class="btn btn-ghost w-full">Tutup</button>
         </div>
       </div>
       <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
     const q = s => d.querySelector(s);
     q('#pf-close').onclick = () => d.close();
+    q('#pf-backup').onclick = () => openBackup(d);
+    q('#pf-reset').onclick = () => openReset(d, () => openProfile());
     if (q('#pf-out')) q('#pf-out').onclick = () => { d.close(); logout(); };
     if (q('#pf-in')) q('#pf-in').onclick = () => { d.close(); open('masuk'); };
     if (q('#pf-reg')) q('#pf-reg').onclick = () => { d.close(); open('daftar'); };
-    d.showModal();
+    if (!d.open) d.showModal();
   }
 
   window.Auth = { hasServer: HAS_SERVER, _toCode: toCode, _fromCode: fromCode, touch, open, openProfile, logout, menuHTML, user: () => (sess() || {}).u || null };

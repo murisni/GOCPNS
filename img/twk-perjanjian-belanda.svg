@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 576" width="480" height="576" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Perjanjian Indonesia–Belanda 1946–1950">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="576" fill="#ffffff"/>
+<line x1="114" y1="52.5" x2="114" y2="541" stroke="#cbd5e1" stroke-width="3"/>
+<text x="8" y="52.5" font-size="13" fill="#7c5cf0" font-weight="800" text-anchor="start">Nov 1946</text>
+<circle cx="114" cy="52.5" r="7" fill="#fff" stroke="#7c5cf0" stroke-width="3.5"/>
+<rect x="130" y="14" width="340" height="77" rx="9" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.3"/>
+<text x="141" y="34.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Linggarjati</text>
+<text x="141" y="56" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Belanda mengakui de facto Jawa, Madura,</text>
+<text x="141" y="74" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Sumatra</text>
+<text x="8" y="139.5" font-size="13" fill="#dc2626" font-weight="800" text-anchor="start">Jan 1948</text>
+<circle cx="114" cy="139.5" r="7" fill="#fff" stroke="#dc2626" stroke-width="3.5"/>
+<rect x="130" y="101" width="340" height="77" rx="9" fill="#feecec" stroke="#dc2626" stroke-width="1.3"/>
+<text x="141" y="121.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Renville (kapal USS Renville)</text>
+<text x="141" y="143" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Wilayah RI makin sempit · garis demarkasi</text>
+<text x="141" y="161" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Van Mook</text>
+<text x="8" y="226.5" font-size="13" fill="#0d9488" font-weight="800" text-anchor="start">7 Mei 1949</text>
+<circle cx="114" cy="226.5" r="7" fill="#fff" stroke="#0d9488" stroke-width="3.5"/>
+<rect x="130" y="188" width="340" height="77" rx="9" fill="#e6f7f5" stroke="#0d9488" stroke-width="1.3"/>
+<text x="141" y="208.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Roem–Roijen</text>
+<text x="141" y="230" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Pemerintah RI kembali ke Yogyakarta ·</text>
+<text x="141" y="248" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Belanda hentikan operasi militer</text>
+<text x="8" y="305.5" font-size="13" fill="#2563eb" font-weight="800" text-anchor="start">23 Agt–2 Nov</text>
+<text x="8" y="323.5" font-size="13" fill="#2563eb" font-weight="800" text-anchor="start">1949</text>
+<circle cx="114" cy="314.5" r="7" fill="#fff" stroke="#2563eb" stroke-width="3.5"/>
+<rect x="130" y="275" width="340" height="79" rx="9" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.3"/>
+<text x="141" y="295.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Konferensi Meja Bundar (KMB), Den</text>
+<text x="141" y="315.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Haag</text>
+<text x="141" y="337" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Hasil: penyerahan kedaulatan kepada RIS</text>
+<text x="8" y="393.5" font-size="13" fill="#d97706" font-weight="800" text-anchor="start">27 Des 1949</text>
+<circle cx="114" cy="393.5" r="7" fill="#fff" stroke="#d97706" stroke-width="3.5"/>
+<rect x="130" y="364" width="340" height="59" rx="9" fill="#fff4e0" stroke="#d97706" stroke-width="1.3"/>
+<text x="141" y="384.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Pengakuan kedaulatan (RIS)</text>
+<text x="141" y="406" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Berlaku Konstitusi RIS</text>
+<text x="8" y="471.5" font-size="13" fill="#db2777" font-weight="800" text-anchor="start">3 Apr 1950</text>
+<circle cx="114" cy="471.5" r="7" fill="#fff" stroke="#db2777" stroke-width="3.5"/>
+<rect x="130" y="433" width="340" height="77" rx="9" fill="#fdebf4" stroke="#db2777" stroke-width="1.3"/>
+<text x="141" y="453.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Mosi Integral Natsir</text>
+<text x="141" y="475" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Usul menyatukan negara bagian RIS menjadi</text>
+<text x="141" y="493" font-size="13" fill="#334155" font-weight="500" text-anchor="start">NKRI</text>
+<text x="8" y="541" font-size="13" fill="#16a34a" font-weight="800" text-anchor="start">17 Agt 1950</text>
+<circle cx="114" cy="541" r="7" fill="#fff" stroke="#16a34a" stroke-width="3.5"/>
+<rect x="130" y="520" width="340" height="42" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.3"/>
+<text x="141" y="542.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">NKRI kembali · UUDS 1950 berlaku</text>
+</svg>

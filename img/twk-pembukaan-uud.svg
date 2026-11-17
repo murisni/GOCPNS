@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 444" width="480" height="444" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Empat alinea Pembukaan UUD 1945 dan tujuan negara">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="444" fill="#ffffff"/>
+<rect x="8" y="10" width="464" height="61" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.4"/>
+<rect x="8" y="10" width="6" height="61" rx="3" fill="#7c5cf0"/>
+<text x="22" y="31.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Alinea 1</text>
+<text x="22" y="53.5" font-size="13.5" fill="#334155" font-weight="500" text-anchor="start">Kemerdekaan hak segala bangsa; penjajahan harus dihapuskan</text>
+<rect x="8" y="79" width="464" height="61" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.4"/>
+<rect x="8" y="79" width="6" height="61" rx="3" fill="#2563eb"/>
+<text x="22" y="100.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Alinea 2</text>
+<text x="22" y="122.5" font-size="13.5" fill="#334155" font-weight="500" text-anchor="start">Perjuangan sampai ke pintu gerbang kemerdekaan</text>
+<rect x="8" y="148" width="464" height="61" rx="10" fill="#e6f7f5" stroke="#0d9488" stroke-width="1.4"/>
+<rect x="8" y="148" width="6" height="61" rx="3" fill="#0d9488"/>
+<text x="22" y="169.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Alinea 3</text>
+<text x="22" y="191.5" font-size="13.5" fill="#334155" font-weight="500" text-anchor="start">Atas berkat rahmat Allah, didorong keinginan luhur</text>
+<rect x="8" y="217" width="464" height="61" rx="10" fill="#fff4e0" stroke="#d97706" stroke-width="1.4"/>
+<rect x="8" y="217" width="6" height="61" rx="3" fill="#d97706"/>
+<text x="22" y="238.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Alinea 4</text>
+<text x="22" y="260.5" font-size="13.5" fill="#334155" font-weight="500" text-anchor="start">Tujuan negara, bentuk negara, dan dasar negara (Pancasila)</text>
+<text x="240" y="308" font-size="15" fill="#0f172a" font-weight="800" text-anchor="middle">Tujuan negara (alinea 4)</text>
+<rect x="8" y="320" width="228" height="52" rx="10" fill="#feecec" stroke="#dc2626" stroke-width="1.5"/>
+<circle cx="30" cy="346" r="13" fill="#dc2626"/>
+<text x="30" y="351" font-size="14" fill="#fff" font-weight="800" text-anchor="middle">1</text>
+<text x="50" y="337.5" font-size="12.5" fill="#0f172a" font-weight="800" text-anchor="start">Melindungi segenap</text>
+<text x="50" y="354.5" font-size="12.5" fill="#0f172a" font-weight="800" text-anchor="start">bangsa &amp; tumpah darah</text>
+<rect x="244" y="320" width="228" height="52" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.5"/>
+<circle cx="266" cy="346" r="13" fill="#16a34a"/>
+<text x="266" y="351" font-size="14" fill="#fff" font-weight="800" text-anchor="middle">2</text>
+<text x="286" y="337.5" font-size="12.5" fill="#0f172a" font-weight="800" text-anchor="start">Memajukan kesejahteraan</text>
+<text x="286" y="354.5" font-size="12.5" fill="#0f172a" font-weight="800" text-anchor="start">umum</text>
+<rect x="8" y="380" width="228" height="52" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.5"/>
+<circle cx="30" cy="406" r="13" fill="#2563eb"/>
+<text x="30" y="411" font-size="14" fill="#fff" font-weight="800" text-anchor="middle">3</text>
+<text x="50" y="397.5" font-size="12.5" fill="#0f172a" font-weight="800" text-anchor="start">Mencerdaskan kehidupan</text>
+<text x="50" y="414.5" font-size="12.5" fill="#0f172a" font-weight="800" text-anchor="start">bangsa</text>
+<rect x="244" y="380" width="228" height="52" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.5"/>
+<circle cx="266" cy="406" r="13" fill="#7c5cf0"/>
+<text x="266" y="411" font-size="14" fill="#fff" font-weight="800" text-anchor="middle">4</text>
+<text x="286" y="397.5" font-size="12.5" fill="#0f172a" font-weight="800" text-anchor="start">Ikut melaksanakan</text>
+<text x="286" y="414.5" font-size="12.5" fill="#0f172a" font-weight="800" text-anchor="start">ketertiban dunia</text>
+</svg>

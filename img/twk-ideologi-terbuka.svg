@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 486" width="480" height="486" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Tiga tingkat nilai dan tiga dimensi ideologi terbuka Pancasila">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="486" fill="#ffffff"/>
+<text x="240" y="28" font-size="15" fill="#0f172a" font-weight="800" text-anchor="middle">Penjabaran nilai (dari abstrak ke konkret)</text>
+<rect x="115" y="44" width="250" height="66" rx="12" fill="#7c5cf0"/>
+<text x="240" y="72" font-size="16" fill="#fff" font-weight="800" text-anchor="middle">NILAI DASAR</text>
+<text x="240" y="89.5" font-size="12.5" fill="#fff" font-weight="500" text-anchor="middle">Inti kelima sila · TETAP</text>
+<line x1="240" y1="110" x2="240" y2="122" stroke="#475569" stroke-width="2.5" marker-end="url(#ar)"/>
+<rect x="65" y="122" width="350" height="66" rx="12" fill="#2563eb"/>
+<text x="240" y="150" font-size="16" fill="#fff" font-weight="800" text-anchor="middle">NILAI INSTRUMENTAL</text>
+<text x="240" y="167.5" font-size="12.5" fill="#fff" font-weight="500" text-anchor="middle">UUD, UU, peraturan · dapat berubah</text>
+<line x1="240" y1="188" x2="240" y2="200" stroke="#475569" stroke-width="2.5" marker-end="url(#ar)"/>
+<rect x="15" y="200" width="450" height="66" rx="12" fill="#0d9488"/>
+<text x="240" y="228" font-size="16" fill="#fff" font-weight="800" text-anchor="middle">NILAI PRAKSIS</text>
+<text x="240" y="245.5" font-size="12.5" fill="#fff" font-weight="500" text-anchor="middle">Pelaksanaan dalam kehidupan sehari-hari</text>
+<text x="240" y="296" font-size="15" fill="#0f172a" font-weight="800" text-anchor="middle">Tiga dimensi ideologi terbuka (Alfian / Moerdiono)</text>
+<rect x="10" y="308" width="146" height="108" rx="10" fill="#fff4e0" stroke="#d97706" stroke-width="1.4"/>
+<text x="83" y="334" font-size="15" fill="#d97706" font-weight="800" text-anchor="middle">Idealitas</text>
+<text x="18" y="353.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">cita-cita, harapan,</text>
+<text x="18" y="370.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">tujuan</text>
+<rect x="164" y="308" width="146" height="108" rx="10" fill="#feecec" stroke="#dc2626" stroke-width="1.4"/>
+<text x="237" y="334" font-size="15" fill="#dc2626" font-weight="800" text-anchor="middle">Normatif</text>
+<text x="172" y="353.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">dituangkan dalam</text>
+<text x="172" y="370.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">norma hukum /</text>
+<text x="172" y="387.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">konstitusi</text>
+<rect x="318" y="308" width="146" height="108" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.4"/>
+<text x="391" y="334" font-size="15" fill="#16a34a" font-weight="800" text-anchor="middle">Realitas</text>
+<text x="326" y="353.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">berakar pada</text>
+<text x="326" y="370.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">kenyataan</text>
+<text x="326" y="387.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">masyarakat,</text>
+<text x="326" y="404.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">fleksibel</text>
+<rect x="10" y="428" width="460" height="46" rx="10" fill="#fef9c3" stroke="#fde047" stroke-width="1.5"/>
+<text x="20" y="444" font-size="13" fill="#713f12" font-weight="800" text-anchor="start">Ideologi terbuka: nilai dasar tidak berubah,</text>
+<text x="20" y="462" font-size="13" fill="#713f12" font-weight="800" text-anchor="start">penjabarannya dinamis mengikuti zaman.</text>
+</svg>

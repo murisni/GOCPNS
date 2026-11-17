@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 350" width="480" height="350" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Empat identitas negara dan pasalnya">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="350" fill="#ffffff"/>
+<rect x="8" y="10" width="228" height="136" rx="10" fill="#feecec" stroke="#dc2626" stroke-width="1.6"/>
+<rect x="86" y="24" width="72" height="24" rx="3" fill="#dc2626"/>
+<rect x="86" y="48" width="72" height="24" rx="3" fill="#fff" stroke="#94a3b8" stroke-width="1"/>
+<text x="122" y="98" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="middle">Bendera Merah Putih</text>
+<text x="122" y="112.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="middle">Pasal 35</text>
+<rect x="244" y="10" width="228" height="136" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.6"/>
+<rect x="324" y="24" width="68" height="42" rx="14" fill="#2563eb"/>
+<path d="M348 66 L340 78 L362 66Z" fill="#2563eb"/>
+<text x="358" y="53" font-size="22" fill="#fff" font-weight="800" text-anchor="middle">Aa</text>
+<text x="358" y="98" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="middle">Bahasa Indonesia</text>
+<text x="358" y="112.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="middle">Pasal 36</text>
+<rect x="8" y="156" width="228" height="136" rx="10" fill="#fff4e0" stroke="#d97706" stroke-width="1.6"/>
+<path d="M96 170 H148 V200 Q148 218 122 224 Q96 218 96 200Z" fill="#fff" stroke="#d97706" stroke-width="3"/>
+<text x="122" y="206" font-size="26" fill="#d97706" font-weight="500" text-anchor="middle">★</text>
+<text x="122" y="244" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="middle">Lambang Garuda Pancasila</text>
+<text x="122" y="258.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="middle">Pasal 36A · semboyan Bhinneka</text>
+<text x="122" y="275.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="middle">Tunggal Ika</text>
+<rect x="244" y="156" width="228" height="136" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.6"/>
+<circle cx="358" cy="196" r="28" fill="#16a34a"/>
+<text x="358" y="208" font-size="34" fill="#fff" font-weight="800" text-anchor="middle">♪</text>
+<text x="358" y="244" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="middle">Lagu Indonesia Raya</text>
+<text x="358" y="258.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="middle">Pasal 36B</text>
+<rect x="8" y="302" width="464" height="36" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="240" y="325" font-size="13" fill="#334155" font-weight="800" text-anchor="middle">Bentuk negara: kesatuan berbentuk republik (Pasal 1 ayat 1)</text>
+</svg>

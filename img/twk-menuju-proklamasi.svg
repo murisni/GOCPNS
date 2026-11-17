@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 849" width="480" height="849" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Menuju proklamasi dan perang kemerdekaan">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="849" fill="#ffffff"/>
+<line x1="106" y1="33" x2="106" y2="798.5" stroke="#cbd5e1" stroke-width="3"/>
+<text x="8" y="33" font-size="13" fill="#7c5cf0" font-weight="800" text-anchor="start">1942</text>
+<circle cx="106" cy="33" r="7" fill="#fff" stroke="#7c5cf0" stroke-width="3.5"/>
+<rect x="122" y="14" width="348" height="38" rx="9" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.3"/>
+<text x="133" y="34.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Jepang menduduki Indonesia</text>
+<text x="8" y="89.5" font-size="13" fill="#2563eb" font-weight="800" text-anchor="start">1 Mar 1945</text>
+<circle cx="106" cy="89.5" r="7" fill="#fff" stroke="#2563eb" stroke-width="3.5"/>
+<rect x="122" y="60" width="348" height="59" rx="9" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.3"/>
+<text x="133" y="80.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">BPUPKI dibentuk</text>
+<text x="133" y="102" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Dilantik 28 Mei 1945</text>
+<text x="8" y="147.5" font-size="13" fill="#0d9488" font-weight="800" text-anchor="start">6 &amp; 9 Agt</text>
+<text x="8" y="165.5" font-size="13" fill="#0d9488" font-weight="800" text-anchor="start">1945</text>
+<circle cx="106" cy="156.5" r="7" fill="#fff" stroke="#0d9488" stroke-width="3.5"/>
+<rect x="122" y="127" width="348" height="59" rx="9" fill="#e6f7f5" stroke="#0d9488" stroke-width="1.3"/>
+<text x="133" y="147.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Bom atom Hiroshima &amp; Nagasaki</text>
+<text x="133" y="169" font-size="13" fill="#334155" font-weight="500" text-anchor="start">14 Agt 1945 Jepang menyerah</text>
+<text x="8" y="232.5" font-size="13" fill="#d97706" font-weight="800" text-anchor="start">16 Agt 1945</text>
+<circle cx="106" cy="232.5" r="7" fill="#fff" stroke="#d97706" stroke-width="3.5"/>
+<rect x="122" y="194" width="348" height="77" rx="9" fill="#fff4e0" stroke="#d97706" stroke-width="1.3"/>
+<text x="133" y="214.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Peristiwa Rengasdengklok</text>
+<text x="133" y="236" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Golongan muda mendesak proklamasi; malam:</text>
+<text x="133" y="254" font-size="13" fill="#334155" font-weight="500" text-anchor="start">naskah dirumuskan di rumah Laksamana Maeda</text>
+<text x="8" y="317.5" font-size="13" fill="#dc2626" font-weight="800" text-anchor="start">17 Agt 1945</text>
+<circle cx="106" cy="317.5" r="7" fill="#fff" stroke="#dc2626" stroke-width="3.5"/>
+<rect x="122" y="279" width="348" height="77" rx="9" fill="#feecec" stroke="#dc2626" stroke-width="1.3"/>
+<text x="133" y="299.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Proklamasi Kemerdekaan</text>
+<text x="133" y="321" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Teks diketik Sayuti Melik, bendera dijahit</text>
+<text x="133" y="339" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Fatmawati</text>
+<text x="8" y="402.5" font-size="13" fill="#db2777" font-weight="800" text-anchor="start">18 Agt 1945</text>
+<circle cx="106" cy="402.5" r="7" fill="#fff" stroke="#db2777" stroke-width="3.5"/>
+<rect x="122" y="364" width="348" height="77" rx="9" fill="#fdebf4" stroke="#db2777" stroke-width="1.3"/>
+<text x="133" y="384.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">PPKI</text>
+<text x="133" y="406" font-size="13" fill="#334155" font-weight="500" text-anchor="start">UUD 1945 disahkan; Soekarno Presiden, Hatta</text>
+<text x="133" y="424" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Wapres</text>
+<text x="8" y="478.5" font-size="13" fill="#4f46e5" font-weight="800" text-anchor="start">10 Nov 1945</text>
+<circle cx="106" cy="478.5" r="7" fill="#fff" stroke="#4f46e5" stroke-width="3.5"/>
+<rect x="122" y="449" width="348" height="59" rx="9" fill="#eceeff" stroke="#4f46e5" stroke-width="1.3"/>
+<text x="133" y="469.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Pertempuran Surabaya</text>
+<text x="133" y="491" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Bung Tomo · Hari Pahlawan</text>
+<text x="8" y="545.5" font-size="13" fill="#16a34a" font-weight="800" text-anchor="start">24 Des 1945</text>
+<circle cx="106" cy="545.5" r="7" fill="#fff" stroke="#16a34a" stroke-width="3.5"/>
+<rect x="122" y="516" width="348" height="59" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.3"/>
+<text x="133" y="536.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Pertempuran Ambarawa</text>
+<text x="133" y="558" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Kol. Soedirman</text>
+<text x="8" y="602" font-size="13" fill="#7c5cf0" font-weight="800" text-anchor="start">Mar 1946</text>
+<circle cx="106" cy="602" r="7" fill="#fff" stroke="#7c5cf0" stroke-width="3.5"/>
+<rect x="122" y="583" width="348" height="38" rx="9" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.3"/>
+<text x="133" y="603.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Bandung Lautan Api</text>
+<text x="8" y="648" font-size="13" fill="#2563eb" font-weight="800" text-anchor="start">21 Jul 1947</text>
+<circle cx="106" cy="648" r="7" fill="#fff" stroke="#2563eb" stroke-width="3.5"/>
+<rect x="122" y="629" width="348" height="38" rx="9" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.3"/>
+<text x="133" y="649.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Agresi Militer Belanda I</text>
+<text x="8" y="713.5" font-size="13" fill="#0d9488" font-weight="800" text-anchor="start">19 Des 1948</text>
+<circle cx="106" cy="713.5" r="7" fill="#fff" stroke="#0d9488" stroke-width="3.5"/>
+<rect x="122" y="675" width="348" height="77" rx="9" fill="#e6f7f5" stroke="#0d9488" stroke-width="1.3"/>
+<text x="133" y="695.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Agresi Militer II &amp; PDRI</text>
+<text x="133" y="717" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Sjafruddin Prawiranegara di Sumatra Barat ·</text>
+<text x="133" y="735" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Hari Bela Negara</text>
+<text x="8" y="798.5" font-size="13" fill="#d97706" font-weight="800" text-anchor="start">1 Mar 1949</text>
+<circle cx="106" cy="798.5" r="7" fill="#fff" stroke="#d97706" stroke-width="3.5"/>
+<rect x="122" y="760" width="348" height="77" rx="9" fill="#fff4e0" stroke="#d97706" stroke-width="1.3"/>
+<text x="133" y="780.5" font-size="14.5" fill="#0f172a" font-weight="800" text-anchor="start">Serangan Umum 1 Maret</text>
+<text x="133" y="802" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Gagasan Sri Sultan HB IX · pelaksana Letkol</text>
+<text x="133" y="820" font-size="13" fill="#334155" font-weight="500" text-anchor="start">Soeharto</text>
+</svg>

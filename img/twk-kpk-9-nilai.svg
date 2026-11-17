@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 264" width="480" height="264" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Sembilan nilai integritas KPK">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="264" fill="#ffffff"/>
+<rect x="8" y="10" width="148" height="196" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.6"/>
+<rect x="8" y="10" width="148" height="50" rx="10" fill="#7c5cf0"/>
+<rect x="8" y="40" width="148" height="20" rx="0" fill="#7c5cf0"/>
+<text x="82" y="34" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">INTI</text>
+<text x="82" y="53" font-size="12.5" fill="#fff" font-weight="500" text-anchor="middle">J-D-T</text>
+<rect x="20" y="72" width="124" height="34" rx="10" fill="#fff" stroke="#7c5cf0" stroke-width="1.3"/>
+<text x="82" y="95" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Jujur</text>
+<rect x="20" y="114" width="124" height="34" rx="10" fill="#fff" stroke="#7c5cf0" stroke-width="1.3"/>
+<text x="82" y="137" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Disiplin</text>
+<rect x="20" y="156" width="124" height="34" rx="10" fill="#fff" stroke="#7c5cf0" stroke-width="1.3"/>
+<text x="82" y="179" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Tanggung jawab</text>
+<rect x="164" y="10" width="148" height="196" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.6"/>
+<rect x="164" y="10" width="148" height="50" rx="10" fill="#2563eb"/>
+<rect x="164" y="40" width="148" height="20" rx="0" fill="#2563eb"/>
+<text x="238" y="34" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">SIKAP</text>
+<text x="238" y="53" font-size="12.5" fill="#fff" font-weight="500" text-anchor="middle">A-B-P</text>
+<rect x="176" y="72" width="124" height="34" rx="10" fill="#fff" stroke="#2563eb" stroke-width="1.3"/>
+<text x="238" y="95" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Adil</text>
+<rect x="176" y="114" width="124" height="34" rx="10" fill="#fff" stroke="#2563eb" stroke-width="1.3"/>
+<text x="238" y="137" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Berani</text>
+<rect x="176" y="156" width="124" height="34" rx="10" fill="#fff" stroke="#2563eb" stroke-width="1.3"/>
+<text x="238" y="179" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Peduli</text>
+<rect x="320" y="10" width="148" height="196" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.6"/>
+<rect x="320" y="10" width="148" height="50" rx="10" fill="#16a34a"/>
+<rect x="320" y="40" width="148" height="20" rx="0" fill="#16a34a"/>
+<text x="394" y="34" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">ETOS KERJA</text>
+<text x="394" y="53" font-size="12.5" fill="#fff" font-weight="500" text-anchor="middle">K-S-M</text>
+<rect x="332" y="72" width="124" height="34" rx="10" fill="#fff" stroke="#16a34a" stroke-width="1.3"/>
+<text x="394" y="95" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Kerja keras</text>
+<rect x="332" y="114" width="124" height="34" rx="10" fill="#fff" stroke="#16a34a" stroke-width="1.3"/>
+<text x="394" y="137" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Sederhana</text>
+<rect x="332" y="156" width="124" height="34" rx="10" fill="#fff" stroke="#16a34a" stroke-width="1.3"/>
+<text x="394" y="179" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Mandiri</text>
+<rect x="8" y="218" width="464" height="36" rx="10" fill="#fef9c3" stroke="#fde047" stroke-width="1.5"/>
+<text x="240" y="241" font-size="13.5" fill="#713f12" font-weight="800" text-anchor="middle">Urutan aspek: Inti → Sikap → Etos Kerja</text>
+</svg>

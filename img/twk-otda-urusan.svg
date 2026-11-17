@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 604" width="480" height="604" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Urusan pemerintahan menurut UU 23/2014">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="604" fill="#ffffff"/>
+<rect x="110" y="8" width="260" height="36" rx="9" fill="#1e3a8a"/>
+<text x="240" y="32" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">URUSAN PEMERINTAHAN</text>
+<line x1="240" y1="44" x2="80" y2="70" stroke="#64748b" stroke-width="2"/>
+<line x1="240" y1="44" x2="240" y2="70" stroke="#64748b" stroke-width="2"/>
+<line x1="240" y1="44" x2="400" y2="70" stroke="#64748b" stroke-width="2"/>
+<rect x="8" y="70" width="148" height="392" rx="10" fill="#feecec" stroke="#dc2626" stroke-width="1.5"/>
+<rect x="8" y="70" width="148" height="30" rx="10" fill="#dc2626"/>
+<rect x="8" y="86" width="148" height="14" rx="0" fill="#dc2626"/>
+<text x="82" y="91" font-size="14" fill="#fff" font-weight="800" text-anchor="middle">ABSOLUT (6)</text>
+<text x="15" y="115" font-size="12" fill="#dc2626" font-weight="800" text-anchor="start">Tidak boleh</text>
+<text x="15" y="131" font-size="12" fill="#dc2626" font-weight="800" text-anchor="start">diserahkan ke</text>
+<text x="15" y="147" font-size="12" fill="#dc2626" font-weight="800" text-anchor="start">daerah</text>
+<text x="15" y="169" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">P — Politik luar</text>
+<text x="15" y="185" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">negeri</text>
+<text x="15" y="207" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">P — Pertahanan</text>
+<text x="15" y="229" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">K — Keamanan</text>
+<text x="15" y="251" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">Y — Yustisi</text>
+<text x="15" y="273" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">M — Moneter &amp; fiskal</text>
+<text x="15" y="289" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">nasional</text>
+<text x="15" y="311" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">A — Agama</text>
+<rect x="166" y="70" width="148" height="392" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.5"/>
+<rect x="166" y="70" width="148" height="30" rx="10" fill="#2563eb"/>
+<rect x="166" y="86" width="148" height="14" rx="0" fill="#2563eb"/>
+<text x="240" y="91" font-size="14" fill="#fff" font-weight="800" text-anchor="middle">KONKUREN</text>
+<text x="173" y="115" font-size="12" fill="#2563eb" font-weight="800" text-anchor="start">Dibagi pusat –</text>
+<text x="173" y="131" font-size="12" fill="#2563eb" font-weight="800" text-anchor="start">provinsi –</text>
+<text x="173" y="147" font-size="12" fill="#2563eb" font-weight="800" text-anchor="start">kab/kota</text>
+<text x="173" y="169" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">Wajib pelayanan</text>
+<text x="173" y="185" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">dasar: pendidikan,</text>
+<text x="173" y="201" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">kesehatan, PU,</text>
+<text x="173" y="217" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">perumahan,</text>
+<text x="173" y="233" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">trantibum, sosial</text>
+<text x="173" y="255" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">Wajib non-dasar:</text>
+<text x="173" y="271" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">tenaga kerja,</text>
+<text x="173" y="287" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">pangan, lingkungan,</text>
+<text x="173" y="303" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">kependudukan</text>
+<text x="173" y="325" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">Pilihan: kelautan,</text>
+<text x="173" y="341" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">pariwisata,</text>
+<text x="173" y="357" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">pertanian,</text>
+<text x="173" y="373" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">kehutanan, ESDM,</text>
+<text x="173" y="389" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">perdagangan,</text>
+<text x="173" y="405" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">industri,</text>
+<text x="173" y="421" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">transmigrasi</text>
+<rect x="324" y="70" width="148" height="392" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.5"/>
+<rect x="324" y="70" width="148" height="30" rx="10" fill="#16a34a"/>
+<rect x="324" y="86" width="148" height="14" rx="0" fill="#16a34a"/>
+<text x="398" y="91" font-size="14" fill="#fff" font-weight="800" text-anchor="middle">UMUM</text>
+<text x="331" y="115" font-size="12" fill="#16a34a" font-weight="800" text-anchor="start">Wewenang Presiden</text>
+<text x="331" y="131" font-size="12" fill="#16a34a" font-weight="800" text-anchor="start">sebagai kepala</text>
+<text x="331" y="147" font-size="12" fill="#16a34a" font-weight="800" text-anchor="start">pemerintahan</text>
+<text x="331" y="169" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">Kebangsaan,</text>
+<text x="331" y="185" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">ideologi, kerukunan</text>
+<text x="331" y="207" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">Dilaksanakan</text>
+<text x="331" y="223" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">Gubernur / Bupati /</text>
+<text x="331" y="239" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">Walikota dibantu</text>
+<text x="331" y="255" font-size="12" fill="#1e293b" font-weight="500" text-anchor="start">instansi vertikal</text>
+<text x="240" y="486" font-size="15" fill="#1e293b" font-weight="800" text-anchor="middle">3 asas penyelenggaraan</text>
+<rect x="8" y="500" width="148" height="92" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.3"/>
+<text x="16" y="518.5" font-size="13.5" fill="#1e293b" font-weight="800" text-anchor="start">Desentralisasi</text>
+<text x="16" y="537" font-size="12" fill="#334155" font-weight="500" text-anchor="start">urusan pusat →</text>
+<text x="16" y="553" font-size="12" fill="#334155" font-weight="500" text-anchor="start">daerah otonom</text>
+<rect x="164" y="500" width="148" height="92" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.3"/>
+<text x="172" y="518.5" font-size="13.5" fill="#1e293b" font-weight="800" text-anchor="start">Dekonsentrasi</text>
+<text x="172" y="537" font-size="12" fill="#334155" font-weight="500" text-anchor="start">pelimpahan wewenang</text>
+<text x="172" y="553" font-size="12" fill="#334155" font-weight="500" text-anchor="start">ke gubernur /</text>
+<text x="172" y="569" font-size="12" fill="#334155" font-weight="500" text-anchor="start">instansi vertikal</text>
+<rect x="320" y="500" width="148" height="92" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.3"/>
+<text x="328" y="518.5" font-size="13.5" fill="#1e293b" font-weight="800" text-anchor="start">Tugas pembantuan</text>
+<text x="328" y="537" font-size="12" fill="#334155" font-weight="500" text-anchor="start">penugasan pusat →</text>
+<text x="328" y="553" font-size="12" fill="#334155" font-weight="500" text-anchor="start">daerah (atau</text>
+<text x="328" y="569" font-size="12" fill="#334155" font-weight="500" text-anchor="start">provinsi → kab/kota)</text>
+</svg>

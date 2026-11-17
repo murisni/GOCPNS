@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 410" width="480" height="410" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Asta Gatra: Tri Gatra dan Panca Gatra">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="410" fill="#ffffff"/>
+<rect x="10" y="10" width="460" height="50" rx="12" fill="#1e3a8a"/>
+<text x="240" y="32" font-size="16" fill="#fff" font-weight="800" text-anchor="middle">ASTA GATRA = 8 aspek ketahanan nasional</text>
+<text x="240" y="51" font-size="13" fill="#dbeafe" font-weight="500" text-anchor="middle">Tri Gatra (3) + Panca Gatra (5)</text>
+<line x1="120" y1="60" x2="120" y2="84" stroke="#64748b" stroke-width="2.5"/>
+<line x1="330" y1="60" x2="330" y2="84" stroke="#64748b" stroke-width="2.5"/>
+<rect x="10" y="84" width="220" height="36" rx="8" fill="#16a34a"/>
+<text x="120" y="108" font-size="14" fill="#fff" font-weight="800" text-anchor="middle">TRI GATRA · alamiah</text>
+<rect x="240" y="84" width="230" height="36" rx="8" fill="#7c5cf0"/>
+<text x="355" y="108" font-size="14" fill="#fff" font-weight="800" text-anchor="middle">PANCA GATRA · sosial</text>
+<rect x="10" y="130" width="220" height="52" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.4"/>
+<text x="22" y="152" font-size="14.5" fill="#1e293b" font-weight="800" text-anchor="start">Geografi</text>
+<text x="22" y="171" font-size="12.5" fill="#475569" font-weight="500" text-anchor="start">wilayah, letak, iklim</text>
+<rect x="10" y="190" width="220" height="52" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.4"/>
+<text x="22" y="212" font-size="14.5" fill="#1e293b" font-weight="800" text-anchor="start">Demografi</text>
+<text x="22" y="231" font-size="12.5" fill="#475569" font-weight="500" text-anchor="start">kependudukan</text>
+<rect x="10" y="250" width="220" height="52" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.4"/>
+<text x="22" y="272" font-size="14.5" fill="#1e293b" font-weight="800" text-anchor="start">Sumber Kekayaan Alam</text>
+<text x="22" y="291" font-size="12.5" fill="#475569" font-weight="500" text-anchor="start">SDA hayati &amp; nonhayati</text>
+<rect x="240" y="130" width="230" height="34" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.4"/>
+<text x="254" y="153" font-size="14.5" fill="#1e293b" font-weight="800" text-anchor="start">1. Ideologi</text>
+<rect x="240" y="170" width="230" height="34" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.4"/>
+<text x="254" y="193" font-size="14.5" fill="#1e293b" font-weight="800" text-anchor="start">2. Politik</text>
+<rect x="240" y="210" width="230" height="34" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.4"/>
+<text x="254" y="233" font-size="14.5" fill="#1e293b" font-weight="800" text-anchor="start">3. Ekonomi</text>
+<rect x="240" y="250" width="230" height="34" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.4"/>
+<text x="254" y="273" font-size="14.5" fill="#1e293b" font-weight="800" text-anchor="start">4. Sosial Budaya</text>
+<rect x="240" y="290" width="230" height="34" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.4"/>
+<text x="254" y="313" font-size="14.5" fill="#1e293b" font-weight="800" text-anchor="start">5. Pertahanan &amp; Keamanan</text>
+<rect x="10" y="340" width="460" height="58" rx="10" fill="#fef9c3" stroke="#fde047" stroke-width="1.5"/>
+<text x="20" y="356.5" font-size="12.5" fill="#713f12" font-weight="800" text-anchor="start">Wawasan Nusantara: persatuan wilayah, bangsa &amp; kepentingan</text>
+<text x="20" y="373.5" font-size="12.5" fill="#713f12" font-weight="800" text-anchor="start">— satu kesatuan politik, ekonomi, sosial budaya,</text>
+<text x="20" y="390.5" font-size="12.5" fill="#713f12" font-weight="800" text-anchor="start">pertahanan keamanan.</text>
+</svg>

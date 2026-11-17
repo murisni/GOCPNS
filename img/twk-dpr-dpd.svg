@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 518" width="480" height="518" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Fungsi dan hak DPR serta kewenangan DPD">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="518" fill="#ffffff"/>
+<rect x="8" y="10" width="464" height="34" rx="8" fill="#2563eb"/>
+<text x="240" y="33" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">DPR (Pasal 20A)</text>
+<text x="8" y="66" font-size="12.5" fill="#2563eb" font-weight="800" text-anchor="start">3 FUNGSI</text>
+<rect x="8" y="74" width="148" height="38" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.4"/>
+<text x="82" y="98" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Legislasi</text>
+<rect x="164" y="74" width="148" height="38" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.4"/>
+<text x="238" y="98" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Anggaran</text>
+<rect x="320" y="74" width="148" height="38" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.4"/>
+<text x="394" y="98" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Pengawasan</text>
+<text x="8" y="134" font-size="12.5" fill="#dc2626" font-weight="800" text-anchor="start">3 HAK DPR</text>
+<rect x="8" y="142" width="148" height="38" rx="10" fill="#feecec" stroke="#dc2626" stroke-width="1.4"/>
+<text x="82" y="166" font-size="13.5" fill="#1e293b" font-weight="800" text-anchor="middle">Interpelasi</text>
+<rect x="164" y="142" width="148" height="38" rx="10" fill="#feecec" stroke="#dc2626" stroke-width="1.4"/>
+<text x="238" y="166" font-size="13.5" fill="#1e293b" font-weight="800" text-anchor="middle">Angket</text>
+<rect x="320" y="142" width="148" height="38" rx="10" fill="#feecec" stroke="#dc2626" stroke-width="1.4"/>
+<text x="394" y="166" font-size="12" fill="#1e293b" font-weight="800" text-anchor="middle">Menyatakan pendapat</text>
+<rect x="8" y="200" width="464" height="34" rx="8" fill="#16a34a"/>
+<text x="240" y="223" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">DPD (Pasal 22D)</text>
+<rect x="8" y="244" width="464" height="46" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.4"/>
+<text x="18" y="263" font-size="14" fill="#1e293b" font-weight="800" text-anchor="start">Dapat mengajukan RUU</text>
+<text x="18" y="278.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">otonomi daerah, hubungan pusat–daerah, SDA, perimbangan keuangan</text>
+<rect x="8" y="298" width="464" height="46" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.4"/>
+<text x="18" y="317" font-size="14" fill="#1e293b" font-weight="800" text-anchor="start">Ikut membahas RUU</text>
+<text x="18" y="332.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">bidang yang sama</text>
+<rect x="8" y="352" width="464" height="46" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.4"/>
+<text x="18" y="371" font-size="14" fill="#1e293b" font-weight="800" text-anchor="start">Memberi pertimbangan</text>
+<text x="18" y="386.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">RUU APBN, pajak, pendidikan, agama</text>
+<rect x="8" y="406" width="464" height="46" rx="10" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.4"/>
+<text x="18" y="425" font-size="14" fill="#1e293b" font-weight="800" text-anchor="start">Mengawasi</text>
+<text x="18" y="440.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">pelaksanaan UU di bidang tersebut</text>
+<rect x="8" y="466" width="464" height="40" rx="10" fill="#fef9c3" stroke="#fde047" stroke-width="1.5"/>
+<text x="240" y="491" font-size="12.5" fill="#713f12" font-weight="800" text-anchor="middle">DPD: wakil provinsi, jumlah sama tiap provinsi, maks 1/3 jumlah DPR</text>
+</svg>

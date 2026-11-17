@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 366" width="480" height="366" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="MA, KY dan MK">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="366" fill="#ffffff"/>
+<rect x="6" y="10" width="150" height="346" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.6"/>
+<rect x="6" y="10" width="150" height="52" rx="10" fill="#2563eb"/>
+<rect x="6" y="40" width="150" height="22" rx="0" fill="#2563eb"/>
+<text x="81" y="38" font-size="22" fill="#fff" font-weight="800" text-anchor="middle">MA</text>
+<text x="81" y="56" font-size="12" fill="#fff" font-weight="500" text-anchor="middle">Pasal 24A</text>
+<text x="15" y="81.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">Kasasi</text>
+<text x="15" y="102.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">Menguji peraturan</text>
+<text x="15" y="119.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">di bawah UU</text>
+<text x="15" y="136.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">terhadap UU</text>
+<text x="15" y="157.5" font-size="12.5" fill="#1e293b" font-weight="800" text-anchor="start">4 lingkungan</text>
+<text x="15" y="174.5" font-size="12.5" fill="#1e293b" font-weight="800" text-anchor="start">peradilan:</text>
+<text x="15" y="195.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">• Umum</text>
+<text x="15" y="216.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">• Agama</text>
+<text x="15" y="237.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">• Militer</text>
+<text x="15" y="258.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">• Tata Usaha Negara</text>
+<rect x="164" y="10" width="150" height="346" rx="10" fill="#fff4e0" stroke="#d97706" stroke-width="1.6"/>
+<rect x="164" y="10" width="150" height="52" rx="10" fill="#d97706"/>
+<rect x="164" y="40" width="150" height="22" rx="0" fill="#d97706"/>
+<text x="239" y="38" font-size="22" fill="#fff" font-weight="800" text-anchor="middle">KY</text>
+<text x="239" y="56" font-size="12" fill="#fff" font-weight="500" text-anchor="middle">Pasal 24B</text>
+<text x="173" y="81.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">Mengusulkan</text>
+<text x="173" y="98.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">pengangkatan hakim</text>
+<text x="173" y="115.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">agung</text>
+<text x="173" y="136.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">Menjaga kehormatan,</text>
+<text x="173" y="153.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">keluhuran martabat</text>
+<text x="173" y="170.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">&amp; perilaku hakim</text>
+<rect x="322" y="10" width="150" height="346" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.6"/>
+<rect x="322" y="10" width="150" height="52" rx="10" fill="#7c5cf0"/>
+<rect x="322" y="40" width="150" height="22" rx="0" fill="#7c5cf0"/>
+<text x="397" y="38" font-size="22" fill="#fff" font-weight="800" text-anchor="middle">MK</text>
+<text x="397" y="56" font-size="12" fill="#fff" font-weight="500" text-anchor="middle">Pasal 24C</text>
+<text x="331" y="81.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">9 hakim: 3 MA, 3</text>
+<text x="331" y="98.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">DPR, 3 Presiden</text>
+<text x="331" y="119.5" font-size="12.5" fill="#1e293b" font-weight="800" text-anchor="start">4 WEWENANG:</text>
+<text x="331" y="140.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">• Uji UU terhadap</text>
+<text x="331" y="157.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">UUD</text>
+<text x="331" y="178.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">• Sengketa lembaga</text>
+<text x="331" y="195.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">negara</text>
+<text x="331" y="216.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">• Bubarkan parpol</text>
+<text x="331" y="237.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">• Sengketa hasil</text>
+<text x="331" y="254.5" font-size="12.5" fill="#1e293b" font-weight="500" text-anchor="start">pemilu</text>
+<text x="331" y="275.5" font-size="12.5" fill="#1e293b" font-weight="800" text-anchor="start">1 KEWAJIBAN:</text>
+<text x="331" y="292.5" font-size="12.5" fill="#1e293b" font-weight="800" text-anchor="start">putus pendapat</text>
+<text x="331" y="309.5" font-size="12.5" fill="#1e293b" font-weight="800" text-anchor="start">DPR soal</text>
+<text x="331" y="326.5" font-size="12.5" fill="#1e293b" font-weight="800" text-anchor="start">pelanggaran</text>
+<text x="331" y="343.5" font-size="12.5" fill="#1e293b" font-weight="800" text-anchor="start">Presiden/Wapres</text>
+</svg>

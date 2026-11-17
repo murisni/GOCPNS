@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 1105" width="480" height="1105" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Peta tonggak sejarah Indonesia 1908–1998">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="1105" fill="#ffffff"/>
+<line x1="118" y1="32.5" x2="118" y2="1076.5" stroke="#cbd5e1" stroke-width="3"/>
+<text x="8" y="32.5" font-size="13" fill="#7c5cf0" font-weight="800" text-anchor="start">20 Mei 1908</text>
+<circle cx="118" cy="32.5" r="7" fill="#fff" stroke="#7c5cf0" stroke-width="3.5"/>
+<rect x="134" y="14" width="336" height="37" rx="9" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.3"/>
+<text x="145" y="34" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Budi Utomo (Kebangkitan Nasional)</text>
+<text x="8" y="85" font-size="13" fill="#2563eb" font-weight="800" text-anchor="start">1912</text>
+<circle cx="118" cy="85" r="7" fill="#fff" stroke="#2563eb" stroke-width="3.5"/>
+<rect x="134" y="57" width="336" height="56" rx="9" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.3"/>
+<text x="145" y="77" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Sarekat Islam · Indische Partij (25</text>
+<text x="145" y="96" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Des)</text>
+<text x="8" y="137.5" font-size="13" fill="#0d9488" font-weight="800" text-anchor="start">3 Juli 1922</text>
+<circle cx="118" cy="137.5" r="7" fill="#fff" stroke="#0d9488" stroke-width="3.5"/>
+<rect x="134" y="119" width="336" height="37" rx="9" fill="#e6f7f5" stroke="#0d9488" stroke-width="1.3"/>
+<text x="145" y="139" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Taman Siswa</text>
+<text x="8" y="190" font-size="13" fill="#d97706" font-weight="800" text-anchor="start">1925</text>
+<circle cx="118" cy="190" r="7" fill="#fff" stroke="#d97706" stroke-width="3.5"/>
+<rect x="134" y="162" width="336" height="56" rx="9" fill="#fff4e0" stroke="#d97706" stroke-width="1.3"/>
+<text x="145" y="182" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Manifesto Politik Perhimpunan</text>
+<text x="145" y="201" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Indonesia</text>
+<text x="8" y="242.5" font-size="13" fill="#dc2626" font-weight="800" text-anchor="start">28 Okt 1928</text>
+<circle cx="118" cy="242.5" r="7" fill="#fff" stroke="#dc2626" stroke-width="3.5"/>
+<rect x="134" y="224" width="336" height="37" rx="9" fill="#feecec" stroke="#dc2626" stroke-width="1.3"/>
+<text x="145" y="244" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Sumpah Pemuda (Kongres Pemuda II)</text>
+<text x="8" y="286" font-size="13" fill="#db2777" font-weight="800" text-anchor="start">29 Mei–1 Jun</text>
+<text x="8" y="304" font-size="13" fill="#db2777" font-weight="800" text-anchor="start">1945</text>
+<circle cx="118" cy="295" r="7" fill="#fff" stroke="#db2777" stroke-width="3.5"/>
+<rect x="134" y="267" width="336" height="56" rx="9" fill="#fdebf4" stroke="#db2777" stroke-width="1.3"/>
+<text x="145" y="287" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Sidang I BPUPKI (Yamin, Soepomo,</text>
+<text x="145" y="306" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Soekarno)</text>
+<text x="8" y="347.5" font-size="13" fill="#4f46e5" font-weight="800" text-anchor="start">22 Jun 1945</text>
+<circle cx="118" cy="347.5" r="7" fill="#fff" stroke="#4f46e5" stroke-width="3.5"/>
+<rect x="134" y="329" width="336" height="37" rx="9" fill="#eceeff" stroke="#4f46e5" stroke-width="1.3"/>
+<text x="145" y="349" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Piagam Jakarta (Panitia Sembilan)</text>
+<text x="8" y="390.5" font-size="13" fill="#16a34a" font-weight="800" text-anchor="start">16 Agt 1945</text>
+<circle cx="118" cy="390.5" r="7" fill="#fff" stroke="#16a34a" stroke-width="3.5"/>
+<rect x="134" y="372" width="336" height="37" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.3"/>
+<text x="145" y="392" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Rengasdengklok</text>
+<text x="8" y="433.5" font-size="13" fill="#7c5cf0" font-weight="800" text-anchor="start">17 Agt 1945</text>
+<circle cx="118" cy="433.5" r="7" fill="#fff" stroke="#7c5cf0" stroke-width="3.5"/>
+<rect x="134" y="415" width="336" height="37" rx="9" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.3"/>
+<text x="145" y="435" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Proklamasi Kemerdekaan</text>
+<text x="8" y="476.5" font-size="13" fill="#2563eb" font-weight="800" text-anchor="start">18 Agt 1945</text>
+<circle cx="118" cy="476.5" r="7" fill="#fff" stroke="#2563eb" stroke-width="3.5"/>
+<rect x="134" y="458" width="336" height="37" rx="9" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.3"/>
+<text x="145" y="478" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">PPKI: UUD 1945, Presiden &amp; Wapres</text>
+<text x="8" y="519.5" font-size="13" fill="#0d9488" font-weight="800" text-anchor="start">10 Nov 1945</text>
+<circle cx="118" cy="519.5" r="7" fill="#fff" stroke="#0d9488" stroke-width="3.5"/>
+<rect x="134" y="501" width="336" height="37" rx="9" fill="#e6f7f5" stroke="#0d9488" stroke-width="1.3"/>
+<text x="145" y="521" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Pertempuran Surabaya (Hari Pahlawan)</text>
+<text x="8" y="562.5" font-size="13" fill="#d97706" font-weight="800" text-anchor="start">Nov 1946</text>
+<circle cx="118" cy="562.5" r="7" fill="#fff" stroke="#d97706" stroke-width="3.5"/>
+<rect x="134" y="544" width="336" height="37" rx="9" fill="#fff4e0" stroke="#d97706" stroke-width="1.3"/>
+<text x="145" y="564" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Perjanjian Linggarjati</text>
+<text x="8" y="605.5" font-size="13" fill="#dc2626" font-weight="800" text-anchor="start">Jan 1948</text>
+<circle cx="118" cy="605.5" r="7" fill="#fff" stroke="#dc2626" stroke-width="3.5"/>
+<rect x="134" y="587" width="336" height="37" rx="9" fill="#feecec" stroke="#dc2626" stroke-width="1.3"/>
+<text x="145" y="607" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Perjanjian Renville</text>
+<text x="8" y="648.5" font-size="13" fill="#db2777" font-weight="800" text-anchor="start">19 Des 1948</text>
+<circle cx="118" cy="648.5" r="7" fill="#fff" stroke="#db2777" stroke-width="3.5"/>
+<rect x="134" y="630" width="336" height="37" rx="9" fill="#fdebf4" stroke="#db2777" stroke-width="1.3"/>
+<text x="145" y="650" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">PDRI (Hari Bela Negara)</text>
+<text x="8" y="691.5" font-size="13" fill="#4f46e5" font-weight="800" text-anchor="start">1 Mar 1949</text>
+<circle cx="118" cy="691.5" r="7" fill="#fff" stroke="#4f46e5" stroke-width="3.5"/>
+<rect x="134" y="673" width="336" height="37" rx="9" fill="#eceeff" stroke="#4f46e5" stroke-width="1.3"/>
+<text x="145" y="693" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Serangan Umum 1 Maret</text>
+<text x="8" y="734.5" font-size="13" fill="#16a34a" font-weight="800" text-anchor="start">7 Mei 1949</text>
+<circle cx="118" cy="734.5" r="7" fill="#fff" stroke="#16a34a" stroke-width="3.5"/>
+<rect x="134" y="716" width="336" height="37" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.3"/>
+<text x="145" y="736" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Roem–Roijen</text>
+<text x="8" y="774" font-size="13" fill="#7c5cf0" font-weight="800" text-anchor="start">23 Agt–2 Nov</text>
+<text x="8" y="792" font-size="13" fill="#7c5cf0" font-weight="800" text-anchor="start">1949</text>
+<circle cx="118" cy="783" r="7" fill="#fff" stroke="#7c5cf0" stroke-width="3.5"/>
+<rect x="134" y="759" width="336" height="48" rx="9" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.3"/>
+<text x="145" y="784.5" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">KMB → kedaulatan 27 Des 1949</text>
+<text x="8" y="841" font-size="13" fill="#2563eb" font-weight="800" text-anchor="start">3 Apr 1950</text>
+<circle cx="118" cy="841" r="7" fill="#fff" stroke="#2563eb" stroke-width="3.5"/>
+<rect x="134" y="813" width="336" height="56" rx="9" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.3"/>
+<text x="145" y="833" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Mosi Integral Natsir → NKRI 17 Agt</text>
+<text x="145" y="852" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">1950</text>
+<text x="8" y="890" font-size="13" fill="#0d9488" font-weight="800" text-anchor="start">18–24 Apr</text>
+<text x="8" y="908" font-size="13" fill="#0d9488" font-weight="800" text-anchor="start">1955</text>
+<circle cx="118" cy="899" r="7" fill="#fff" stroke="#0d9488" stroke-width="3.5"/>
+<rect x="134" y="875" width="336" height="48" rx="9" fill="#e6f7f5" stroke="#0d9488" stroke-width="1.3"/>
+<text x="145" y="900.5" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">KAA Bandung (Dasasila Bandung)</text>
+<text x="8" y="947.5" font-size="13" fill="#d97706" font-weight="800" text-anchor="start">13 Des 1957</text>
+<circle cx="118" cy="947.5" r="7" fill="#fff" stroke="#d97706" stroke-width="3.5"/>
+<rect x="134" y="929" width="336" height="37" rx="9" fill="#fff4e0" stroke="#d97706" stroke-width="1.3"/>
+<text x="145" y="949" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Deklarasi Djuanda (Hari Nusantara)</text>
+<text x="8" y="990.5" font-size="13" fill="#dc2626" font-weight="800" text-anchor="start">5 Juli 1959</text>
+<circle cx="118" cy="990.5" r="7" fill="#fff" stroke="#dc2626" stroke-width="3.5"/>
+<rect x="134" y="972" width="336" height="37" rx="9" fill="#feecec" stroke="#dc2626" stroke-width="1.3"/>
+<text x="145" y="992" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Dekrit Presiden: kembali ke UUD 1945</text>
+<text x="8" y="1033.5" font-size="13" fill="#db2777" font-weight="800" text-anchor="start">11 Mar 1966</text>
+<circle cx="118" cy="1033.5" r="7" fill="#fff" stroke="#db2777" stroke-width="3.5"/>
+<rect x="134" y="1015" width="336" height="37" rx="9" fill="#fdebf4" stroke="#db2777" stroke-width="1.3"/>
+<text x="145" y="1035" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Supersemar</text>
+<text x="8" y="1076.5" font-size="13" fill="#4f46e5" font-weight="800" text-anchor="start">21 Mei 1998</text>
+<circle cx="118" cy="1076.5" r="7" fill="#fff" stroke="#4f46e5" stroke-width="3.5"/>
+<rect x="134" y="1058" width="336" height="37" rx="9" fill="#eceeff" stroke="#4f46e5" stroke-width="1.3"/>
+<text x="145" y="1078" font-size="14" fill="#0f172a" font-weight="800" text-anchor="start">Reformasi: Soeharto mundur</text>
+</svg>

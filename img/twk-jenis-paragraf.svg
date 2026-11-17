@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 458" width="480" height="458" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Letak kalimat utama pada jenis paragraf">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="458" fill="#ffffff"/>
+<rect x="8" y="10" width="464" height="100" rx="10" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.4"/>
+<text x="20" y="34" font-size="15" fill="#2563eb" font-weight="800" text-anchor="start">Deduktif</text>
+<text x="20" y="52" font-size="12.5" fill="#475569" font-weight="500" text-anchor="start">umum → khusus</text>
+<text x="20" y="73" font-size="12" fill="#1e293b" font-weight="800" text-anchor="start">Kalimat utama di</text>
+<text x="20" y="89" font-size="12" fill="#1e293b" font-weight="800" text-anchor="start">AWAL</text>
+<rect x="190" y="24" width="268" height="15" rx="5" fill="#2563eb"/>
+<rect x="190" y="45" width="268" height="15" rx="5" fill="#cbd5e1"/>
+<rect x="190" y="66" width="268" height="15" rx="5" fill="#cbd5e1"/>
+<rect x="190" y="87" width="268" height="15" rx="5" fill="#cbd5e1"/>
+<rect x="8" y="120" width="464" height="100" rx="10" fill="#fff4e0" stroke="#d97706" stroke-width="1.4"/>
+<text x="20" y="144" font-size="15" fill="#d97706" font-weight="800" text-anchor="start">Induktif</text>
+<text x="20" y="162" font-size="12.5" fill="#475569" font-weight="500" text-anchor="start">khusus → umum</text>
+<text x="20" y="183" font-size="12" fill="#1e293b" font-weight="800" text-anchor="start">Kalimat utama di</text>
+<text x="20" y="199" font-size="12" fill="#1e293b" font-weight="800" text-anchor="start">AKHIR</text>
+<rect x="190" y="134" width="268" height="15" rx="5" fill="#cbd5e1"/>
+<rect x="190" y="155" width="268" height="15" rx="5" fill="#cbd5e1"/>
+<rect x="190" y="176" width="268" height="15" rx="5" fill="#cbd5e1"/>
+<rect x="190" y="197" width="268" height="15" rx="5" fill="#d97706"/>
+<rect x="8" y="230" width="464" height="100" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.4"/>
+<text x="20" y="254" font-size="15" fill="#7c5cf0" font-weight="800" text-anchor="start">Campuran</text>
+<text x="20" y="272" font-size="12.5" fill="#475569" font-weight="500" text-anchor="start">awal &amp; akhir</text>
+<text x="20" y="293" font-size="12" fill="#1e293b" font-weight="800" text-anchor="start">Kalimat utama di</text>
+<text x="20" y="309" font-size="12" fill="#1e293b" font-weight="800" text-anchor="start">awal dan akhir</text>
+<rect x="190" y="244" width="268" height="15" rx="5" fill="#7c5cf0"/>
+<rect x="190" y="265" width="268" height="15" rx="5" fill="#cbd5e1"/>
+<rect x="190" y="286" width="268" height="15" rx="5" fill="#cbd5e1"/>
+<rect x="190" y="307" width="268" height="15" rx="5" fill="#7c5cf0"/>
+<rect x="8" y="340" width="464" height="100" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="1.4"/>
+<text x="20" y="364" font-size="15" fill="#64748b" font-weight="800" text-anchor="start">Deskriptif / ineratif</text>
+<text x="20" y="382" font-size="12.5" fill="#475569" font-weight="500" text-anchor="start">tersebar</text>
+<text x="20" y="403" font-size="12" fill="#1e293b" font-weight="800" text-anchor="start">Tidak ada kalimat</text>
+<text x="20" y="419" font-size="12" fill="#1e293b" font-weight="800" text-anchor="start">utama tunggal</text>
+<rect x="190" y="354" width="268" height="15" rx="5" fill="#cbd5e1"/>
+<rect x="190" y="375" width="268" height="15" rx="5" fill="#cbd5e1"/>
+<rect x="190" y="396" width="268" height="15" rx="5" fill="#cbd5e1"/>
+<rect x="190" y="417" width="268" height="15" rx="5" fill="#cbd5e1"/>
+</svg>

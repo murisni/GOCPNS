@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 538" width="480" height="538" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Pembeda gratifikasi, suap, pemerasan, benturan kepentingan">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker>
+<marker id="al" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#475569"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+</defs>
+<rect width="480" height="538" fill="#ffffff"/>
+<rect x="8" y="10" width="464" height="124" rx="10" fill="#fff4e0" stroke="#d97706" stroke-width="1.5"/>
+<text x="20" y="34" font-size="15" fill="#d97706" font-weight="800" text-anchor="start">GRATIFIKASI</text>
+<rect x="20" y="48" width="120" height="34" rx="10" fill="#fff" stroke="#475569" stroke-width="1.4"/>
+<text x="80" y="70" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Pemberi</text>
+<rect x="340" y="48" width="120" height="34" rx="10" fill="#fff" stroke="#475569" stroke-width="1.4"/>
+<text x="400" y="70" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Pejabat</text>
+<line x1="144" y1="65" x2="336" y2="65" stroke="#94a3b8" stroke-width="3" marker-end="url(#ar)"/>
+<text x="20" y="99.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">Searah, tanpa kesepakatan. Lapor KPK ≤ 30 hari kerja.</text>
+<rect x="8" y="144" width="464" height="124" rx="10" fill="#feecec" stroke="#dc2626" stroke-width="1.5"/>
+<text x="20" y="168" font-size="15" fill="#dc2626" font-weight="800" text-anchor="start">SUAP</text>
+<rect x="20" y="182" width="120" height="34" rx="10" fill="#fff" stroke="#475569" stroke-width="1.4"/>
+<text x="80" y="204" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Pemberi</text>
+<rect x="340" y="182" width="120" height="34" rx="10" fill="#fff" stroke="#475569" stroke-width="1.4"/>
+<text x="400" y="204" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Pejabat</text>
+<line x1="144" y1="191" x2="336" y2="191" stroke="#94a3b8" stroke-width="3" marker-end="url(#ar)"/>
+<line x1="336" y1="208" x2="144" y2="208" stroke="#94a3b8" stroke-width="3" marker-end="url(#ar)"/>
+<text x="20" y="233.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">Ada kesepakatan dua pihak agar pejabat berbuat / tidak berbuat</text>
+<text x="20" y="250.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">bertentangan dengan tugas.</text>
+<rect x="8" y="278" width="464" height="124" rx="10" fill="#f3efff" stroke="#7c5cf0" stroke-width="1.5"/>
+<text x="20" y="302" font-size="15" fill="#7c5cf0" font-weight="800" text-anchor="start">PEMERASAN</text>
+<rect x="20" y="316" width="120" height="34" rx="10" fill="#fff" stroke="#475569" stroke-width="1.4"/>
+<text x="80" y="338" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Pemberi</text>
+<rect x="340" y="316" width="120" height="34" rx="10" fill="#fff" stroke="#475569" stroke-width="1.4"/>
+<text x="400" y="338" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Pejabat</text>
+<line x1="336" y1="333" x2="144" y2="333" stroke="#94a3b8" stroke-width="3" marker-end="url(#ar)"/>
+<text x="20" y="367.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">Pejabat yang memaksa pihak lain memberi sesuatu.</text>
+<rect x="8" y="412" width="464" height="116" rx="10" fill="#e6f7f5" stroke="#0d9488" stroke-width="1.5"/>
+<text x="20" y="436" font-size="15" fill="#0d9488" font-weight="800" text-anchor="start">BENTURAN KEPENTINGAN</text>
+<rect x="20" y="448" width="130" height="34" rx="10" fill="#fff" stroke="#475569" stroke-width="1.4"/>
+<text x="85" y="470" font-size="14" fill="#1e293b" font-weight="800" text-anchor="middle">Pejabat</text>
+<line x1="154" y1="465" x2="230" y2="465" stroke="#94a3b8" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="234" y="448" width="226" height="34" rx="10" fill="#fff" stroke="#0d9488" stroke-width="1.4"/>
+<text x="347" y="470" font-size="12.5" fill="#1e293b" font-weight="800" text-anchor="middle">kepentingan pribadi / golongan</text>
+<text x="20" y="501.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">Wajib mundur dari pengambilan keputusan &amp; mendeklarasikan (Pasal</text>
+<text x="20" y="518.5" font-size="12.5" fill="#334155" font-weight="500" text-anchor="start">42 UU 30/2014).</text>
+</svg>
