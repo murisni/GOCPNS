@@ -335,6 +335,18 @@
   .lx-hero .lx-track { background: rgba(255,255,255,.28); height: .8rem; }
   .lx-hero .lx-fill { background: #fde047; }
   .lx-hero .lx-fill::after { background: rgba(255,255,255,.5); }
+  /* ---------- v29: kartu beranda geser (TWK / TIU / TKP / SKB) ---------- */
+  .lx-car { display: flex; gap: .75rem; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: .25rem .1rem 1.1rem; margin: -.25rem -.1rem -.6rem; outline: none; overscroll-behavior-x: contain; }
+  .lx-car::-webkit-scrollbar { display: none; }
+  .lx-slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; }
+  .lx-hero-fill { height: 100%; }
+  .lx-hero-twk { background: linear-gradient(135deg, #0b7fd4, #5b5fe0); box-shadow: 0 10px 24px -8px rgba(11,127,212,.45); }
+  .lx-hero-tiu { background: linear-gradient(135deg, #7c3aed, #c026d3); box-shadow: 0 10px 24px -8px rgba(124,58,237,.45); }
+  .lx-hero-tkp { background: linear-gradient(135deg, #0d9488, #0e7490); box-shadow: 0 10px 24px -8px rgba(13,148,136,.45); }
+  .lx-hero-skb { background: linear-gradient(135deg, #4f46e5, #1e3a8a); box-shadow: 0 10px 24px -8px rgba(79,70,229,.45); }
+  .lx-dots { display: flex; justify-content: center; gap: .4rem; margin-top: .15rem; }
+  .lx-dot { width: .5rem; height: .5rem; padding: 0; border: 0; border-radius: 9999px; background: #cbd5e1; transition: width .25s, background .25s; }
+  .lx-dot.on { width: 1.4rem; background: #0b7fd4; }
   .lx-path { display: flex; flex-direction: column; align-items: center; gap: 2.7rem; padding: 3.4rem 0 1.5rem; overflow: hidden; }
   .lx-step { display: flex; flex-direction: column; align-items: center; width: 100%; transform: translateX(var(--x, 0px)); }
   .lx-node {

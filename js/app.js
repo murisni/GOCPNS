@@ -324,13 +324,20 @@ function renderHome() {
   const topicDone = rows.filter(x => x.p.total && x.p.pct === 100).length;
   const last = rows.filter(x => x.at).sort((a, b) => b.at - a.at)[0] || null;
   const open = x => x.p.pct < 100;
-  let cur = null, label = 'Mulai belajar';
-  if (last && open(last)) { cur = last; label = 'Lanjutkan belajar'; }
-  else {
-    const i = last ? rows.indexOf(last) : -1;
-    cur = rows.slice(i + 1).find(open) || rows.find(open) || null;
-    if (last) label = 'Topik berikutnya';
-  }
+  /* v29: pilih topik "lanjutkan" untuk tiap jalur (TWK / TIU / TKP / SKB) secara terpisah */
+  const pickFor = g => {
+    const gr = rows.filter(x => x.t.group === g);
+    const lastG = gr.filter(x => x.at).sort((a, b) => b.at - a.at)[0] || null;
+    let c = null, lb = 'Mulai belajar';
+    if (lastG && open(lastG)) { c = lastG; lb = 'Lanjutkan belajar'; }
+    else {
+      const i = lastG ? gr.indexOf(lastG) : -1;
+      c = gr.slice(i + 1).find(open) || gr.find(open) || null;
+      if (lastG) lb = 'Topik berikutnya';
+    }
+    return { g, cur: c, label: lb, total: gr.length, done: gr.filter(x => x.p.total && x.p.pct === 100).length };
+  };
+  const heroes = ['TWK', 'TIU', 'TKP', 'SKB'].map(pickFor).filter(x => x.total);
   const groups = ['SKD_FULL', 'SKD_TWK', 'SKD_TIU', 'SKD_TKP'].concat(skbKeys());
   const allPacks = groups.reduce((a, g) => a.concat(packsFor(g)), []);
   const packDone = allPacks.filter(p => results[p.key]).length;
@@ -344,34 +351,42 @@ function renderHome() {
          <a href="#/ujian" class="btn btn-warning btn-sm shrink-0 rounded-xl font-bold">Lanjut</a>
        </div>` : '';
 
-  /* --- kartu "Lanjutkan belajar" --- */
-  let cont = '';
-  if (cur) {
+  /* --- kartu "Lanjutkan belajar": 4 kartu (TWK, TIU, TKP, SKB) yang bergeser otomatis / bisa digeser --- */
+  const heroCard = h => {
+    const cur = h.cur, label = h.label, g = h.g;
+    const gLabel = g === 'SKB' && cur && cur.t.skbCategory ? `SKB ${esc(skbMeta('SKB_' + cur.t.skbCategory).short)}` : g;
+    if (!cur) {
+      return `<div class="lx-slide"><div class="lx-hero lx-hero-${g.toLowerCase()} lx-hero-fill">
+        <div class="flex items-center justify-between gap-2"><span class="inline-flex items-center rounded-full bg-white/20 px-2.5 py-1 text-[0.68rem] font-extrabold uppercase tracking-wide text-white">Selesai</span><span class="text-xs font-bold text-white/90">${g}</span></div>
+        <h2 class="mt-2.5 text-lg font-extrabold leading-snug">Semua materi ${g} sudah selesai!</h2>
+        <p class="mt-1 text-xs text-white/85">${h.done} dari ${h.total} topik tuntas. Uji dirimu lewat latihan soal.</p>
+        <a href="#/${g === 'SKB' ? 'skb' : 'skd'}" class="lx-btn lx-green mt-4">${icon('play', 'h-5 w-5')} Latihan soal ${g}</a>
+      </div></div>`;
+    }
     const steps = lessonSteps(cur.t), done = lessonDone(cur.t);
     const ni = steps.findIndex((_, i) => !done[i]);
     const nextTitle = ni >= 0 && steps[ni] ? steps[ni].title : '';
     const started = cur.p.done > 0 || !!cur.p.cur;
-    cont = `
-    <section class="lx-hero mb-4" aria-label="${label}">
+    return `<div class="lx-slide"><div class="lx-hero lx-hero-${g.toLowerCase()} lx-hero-fill" aria-label="${label} ${g}">
       <div class="flex items-center justify-between gap-2">
         <span class="inline-flex items-center rounded-full bg-white/20 px-2.5 py-1 text-[0.68rem] font-extrabold uppercase tracking-wide text-white">${label}</span>
-        <span class="text-xs font-bold text-white/90">${cur.t.group === 'SKB' ? 'SKB' : esc(cur.t.group)}</span>
+        <span class="text-xs font-bold text-white/90">${gLabel}</span>
       </div>
       <h2 class="mt-2.5 line-clamp-2 text-lg font-extrabold leading-snug">${esc(cur.t.title)}</h2>
-      ${nextTitle ? `<p class="mt-1 break-words text-xs text-white/85">Selanjutnya: ${esc(nextTitle)}</p>` : ''}
+      ${nextTitle ? `<p class="mt-1 line-clamp-2 break-words text-xs text-white/85">Selanjutnya: ${esc(nextTitle)}</p>` : ''}
       <div class="mt-3 flex items-center gap-3">
         <div class="lx-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${cur.p.live}"><div class="lx-fill" style="width:${Math.max(cur.p.live, 4)}%"></div></div>
         <span class="shrink-0 text-xs font-bold text-white">${cur.p.done} dari ${cur.p.total}${cur.p.cur ? ` · soal ${cur.p.cur.solved}/${cur.p.cur.total}` : ''}</span>
       </div>
       <a href="#/materi/${cur.t.id}" class="lx-btn lx-green mt-4">${icon('play', 'h-5 w-5')} ${started ? 'Lanjutkan' : 'Mulai'}</a>
-    </section>`;
-  } else if (MATERI.length) {
+    </div></div>`;
+  };
+  let cont = '';
+  if (heroes.length) {
     cont = `
-    <section class="mb-4 rounded-3xl border-2 border-b-4 border-green-300 bg-green-50 p-4 text-center">
-      <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-green-500 text-white">${icon('trophy', 'h-7 w-7')}</span>
-      <h2 class="mt-2 text-base font-extrabold text-slate-900">Semua materi sudah selesai!</h2>
-      <p class="mt-0.5 text-xs text-slate-600">Hebat. Sekarang uji dirimu lewat tryout SKD.</p>
-      <a href="#/skd" class="lx-btn lx-green mt-3">Coba tryout SKD</a>
+    <section class="mb-4" aria-label="Lanjutkan belajar" aria-roledescription="carousel">
+      <div id="homeCar" class="lx-car" tabindex="0">${heroes.map(heroCard).join('')}</div>
+      <div class="lx-dots" id="homeDots">${heroes.map((h, i) => `<button type="button" class="lx-dot${i === 0 ? ' on' : ''}" aria-label="Kartu ${h.g}" data-i="${i}"></button>`).join('')}</div>
     </section>`;
   }
 
@@ -427,6 +442,35 @@ function renderHome() {
       </div>
     </div>
   `);
+  initHomeCarousel();
+}
+
+/* v29: kartu beranda bergeser otomatis tiap 2 detik; berhenti saat disentuh/di-hover, lanjut lagi setelah dilepas */
+let homeCarTimer = null;
+function initHomeCarousel() {
+  if (homeCarTimer) { clearInterval(homeCarTimer); homeCarTimer = null; }
+  const car = document.getElementById('homeCar'), dots = document.getElementById('homeDots');
+  if (!car) return;
+  const slides = Array.from(car.children);
+  if (slides.length < 2) { if (dots) dots.style.display = 'none'; return; }
+  let idx = 0, hold = false, holdTimer = null;
+  const mark = i => { idx = i; if (dots) Array.from(dots.children).forEach((d, k) => d.classList.toggle('on', k === i)); };
+  const go = (i, smooth) => { car.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: smooth ? 'smooth' : 'auto' }); mark(i); };
+  const pause = ms => { hold = true; clearTimeout(holdTimer); holdTimer = setTimeout(() => { hold = false; }, ms); };
+  car.addEventListener('scroll', () => {
+    const w = slides[1].offsetLeft - slides[0].offsetLeft || car.clientWidth;
+    const i = Math.max(0, Math.min(slides.length - 1, Math.round(car.scrollLeft / w)));
+    if (i !== idx) mark(i);
+  }, { passive: true });
+  ['touchstart', 'pointerdown', 'wheel'].forEach(ev => car.addEventListener(ev, () => pause(5000), { passive: true }));
+  car.addEventListener('mouseenter', () => { hold = true; clearTimeout(holdTimer); });
+  car.addEventListener('mouseleave', () => pause(800));
+  if (dots) dots.addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b) { pause(5000); go(+b.dataset.i, true); } });
+  homeCarTimer = setInterval(() => {
+    if (!document.getElementById('homeCar')) { clearInterval(homeCarTimer); homeCarTimer = null; return; }
+    if (hold || document.hidden) return;
+    go((idx + 1) % slides.length, true);
+  }, 2000);
 }
 
 /* ---------- kartu paket ---------- */
