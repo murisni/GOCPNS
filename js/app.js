@@ -724,7 +724,7 @@ function lessonSetPart(t, i, solved, total) {
   store.set(LESSON_KEY, lessonStore);
 }
 function lessonSteps(t) {
-  const steps = (t.sections || []).map(s => ({ kind: 'sec', title: s.title, html: s.html, quiz: s.quiz }));
+  const steps = (t.sections || []).map(s => ({ kind: 'sec', title: s.title, html: s.html, quiz: s.quiz, fam: s.fam }));
   if ((t.tips || []).length) steps.push({ kind: 'tips', title: 'Cara Menjawab Cepat', tips: t.tips, quiz: t.tipsQuiz });
   return steps;
 }
@@ -761,6 +761,7 @@ function lessonPlan(t) {
     const want = lxTokens(st.kind === 'tips' ? (st.tips || []).join(' ') : st.title + ' ' + st.html);
     const ranked = pool.map(q => {
       let sc = 0; lxQuestionTokens(q).forEach(w => { if (want.has(w)) sc++; });
+      if (st.fam && q.fam && [].concat(st.fam).indexOf(q.fam) >= 0) sc += 100;   // v31: soal berkonsep sama dengan langkah ini didahulukan
       return { q, sc: sc + ((q.trick || q.explanation) ? 0.5 : 0), h: hashStr(q.id + '|' + t.id) };
     }).sort((a, b) => (b.sc - a.sc) || (a.h - b.h));
     const pick = [];
@@ -786,6 +787,46 @@ function lessonPlan(t) {
   lxPlans[key] = plan;
   return plan;
 }
+
+/* v31: soal PENGGANTI. Jika jawaban salah, soal itu tidak diulang persis, melainkan diganti soal lain
+   dengan KONSEP yang sama (label fam sama; bila tidak ada -> sub-topik sama + kemiripan kata kunci). */
+function lessonReplacement(L, q) {
+  const pool = materiPool(L.t).filter(x => x && x.q && x.options && x.options.length >= 2 && typeof x.ans === 'number' && x.q.length <= 650);
+  const otherPlan = new Set(); lessonPlan(L.t).forEach(a => a.forEach(x => otherPlan.add(x.id)));
+  const qt = lxQuestionTokens(q), head = String(q.q).slice(0, 60).toLowerCase();
+  let best = null, bestSc = 0, fallback = null, fbSc = 0;
+  pool.forEach(x => {
+    if (L.used.has(x.id) || String(x.q).slice(0, 60).toLowerCase() === head) return;
+    let sc = 0;
+    if (q.fam && x.fam === q.fam) sc += 100;
+    if (x.sub && x.sub === q.sub) sc += 10;
+    if (q.trick && x.trick && String(x.trick).slice(0, 40) === String(q.trick).slice(0, 40)) sc += 20;
+    let ov = 0; lxQuestionTokens(x).forEach(w => { if (qt.has(w)) ov++; });
+    sc += Math.min(ov, 30) / 3 + Math.random();
+    if (sc < 10) return;                                       // harus sekonsep / sesub-topik
+    if (otherPlan.has(x.id)) { if (sc > fbSc) { fbSc = sc; fallback = x; } return; }
+    if (sc > bestSc) { bestSc = sc; best = x; }
+  });
+  return best || fallback || null;
+}
+/* v31: materi bertambah di bagian akhir (sebelum "Cara Menjawab Cepat") -> pindahkan penanda selesai langkah tips lama */
+function lessonMigrateV31() {
+  let changed = false;
+  MATERI.forEach(t => {
+    if (t.tipsFrom == null || !(t.tips || []).length) return;
+    const e = lessonStore[t.id]; if (!e || e.mig31) return;
+    const to = (t.sections || []).length;
+    if (to > t.tipsFrom) {
+      const wasDone = e.done && e.done[t.tipsFrom];
+      if (e.done) delete e.done[t.tipsFrom];
+      if (e.part) delete e.part[t.tipsFrom];
+      if (wasDone) e.done[to] = 1;
+    }
+    e.mig31 = 1; changed = true;
+  });
+  if (changed) store.set(LESSON_KEY, lessonStore);
+}
+lessonMigrateV31();
 
 /* ---------- halaman jalur (detail materi) ---------- */
 function renderMateriDetail(t) {
@@ -863,7 +904,7 @@ function lessonOpen(id, i) {
   const qs = (lessonPlan(t)[i] || []).slice();
   const pt = lessonDone(t)[i] ? null : lessonPart(t, i);
   const resume = !!(pt && pt.total === qs.length && pt.solved < qs.length);      // materi sudah dibaca -> lanjut ke soal sisa
-  lesson = { t, steps, i, phase: resume ? 'quiz' : 'read', queue: resume ? qs.slice(pt.solved) : qs, total: qs.length, solved: resume ? pt.solved : 0, picked: null, checked: false, ok: false, wrongIds: new Set() };
+  lesson = { t, steps, i, phase: resume ? 'quiz' : 'read', queue: resume ? qs.slice(pt.solved) : qs, total: qs.length, solved: resume ? pt.solved : 0, picked: null, checked: false, ok: false, wrongIds: new Set(), used: new Set(qs.map(x => x.id)), answered: 0, correct: 0, pending: null };
   document.documentElement.classList.add('lx-open');
   let el = $('#lesson');
   if (!el) {
@@ -913,7 +954,7 @@ function lessonPaint() {
       return `<button type="button" class="lx-opt ${c}" ${L.checked ? 'disabled' : ''} onclick="App.lessonPick(${k})"><span class="lx-k">${LETTERS[k]}</span><span class="lx-t">${escO(o)}</span></button>`;
     }).join('');
     main = `<div class="lx-wrap">
-        <div class="flex items-center justify-between gap-2"><span class="lx-chip">${icon('puzzle', 'h-4 w-4')} Soal ${Math.min(L.solved + 1, L.total)} dari ${L.total}</span><button type="button" class="lx-reread" onclick="App.lessonReread()">${icon('book', 'h-4 w-4')} Baca ulang materi</button></div>
+        <div class="flex items-center justify-between gap-2"><span class="lx-chip">${icon('puzzle', 'h-4 w-4')} Soal ${Math.min(L.solved + 1, L.total)} dari ${L.total}${L.answered ? ` · Skor ${L.correct}/${L.answered}` : ''}</span><button type="button" class="lx-reread" onclick="App.lessonReread()">${icon('book', 'h-4 w-4')} Baca ulang materi</button></div>
         <div class="mt-3 mb-4 whitespace-pre-line text-[1.02rem] font-bold leading-relaxed text-slate-900">${escQ(q)}</div>
         ${q.svg ? `<div class="q-svg mb-4 overflow-auto rounded-xl bg-base-200/60 p-3">${q.svg}</div>` : ''}
         <div role="group" aria-label="Pilihan jawaban">${opts}</div></div>`;
@@ -922,19 +963,18 @@ function lessonPaint() {
     } else {
       foot = `<div class="lx-sheet ${L.ok ? 'ok' : 'bad'}" role="status" aria-live="polite"><div class="lx-sheet-in">
           <h3>${L.ok ? '🎉 Benar!' : '😅 Belum tepat'}</h3>
-          <div class="lx-why">${!L.ok ? `<div><b>Jawaban benar:</b> ${LETTERS[q.ans]}. ${escO(q.options[q.ans])}</div>` : ''}${q.explanation ? `<div class="mt-1.5"><b>Pembahasan:</b> ${esc(q.explanation)}</div>` : ''}${q.trick && !String(q.explanation || '').includes(q.trick) ? `<div class="mt-1.5"><b>Trik:</b> ${esc(q.trick)}</div>` : ''}</div>
+          <div class="lx-why">${!L.ok ? `<div><b>Jawaban benar:</b> ${LETTERS[q.ans]}. ${escO(q.options[q.ans])}</div>` : ''}${q.explanation ? `<div class="mt-1.5"><b>Pembahasan:</b> ${esc(q.explanation)}</div>` : ''}${!L.ok ? `<div class="mt-1.5"><b>🔁 Berikutnya:</b> ${L.pending ? 'soal ini diganti soal baru dengan konsep yang sama, supaya kamu belajar dari kesalahan.' : 'soal ini akan diulang di akhir.'}</div>` : ''}${q.trick && !String(q.explanation || '').includes(q.trick) ? `<div class="mt-1.5"><b>Trik:</b> ${esc(q.trick)}</div>` : ''}</div>
           <button class="lx-btn ${L.ok ? 'lx-green' : 'lx-red'} mt-3" onclick="App.lessonNext()">${L.ok ? 'Lanjut' : 'Mengerti, lanjut'}</button>
         </div></div>`;
     }
   } else {
     const nextI = L.i + 1, hasNext = nextI < L.steps.length;
-    const first = L.total - L.wrongIds.size;
     const conf = Array.from({ length: 22 }, (_, n) => `<i style="left:${(n * 4.6 + (n % 3) * 1.3).toFixed(1)}%;background:${['#fde047', '#16a34a', '#0b7fd4', '#e0364f', '#a78bfa'][n % 5]};animation-delay:${((n % 7) * 0.12).toFixed(2)}s"></i>`).join('');
     main = `<div class="lx-wrap lx-done"><div class="lx-conf" aria-hidden="true">${conf}</div>
         <div class="lx-medal">${hasNext ? '⭐' : '🏆'}</div>
         <h2 class="mt-5 text-2xl font-black text-neutral">${hasNext ? 'Langkah selesai!' : 'Semua langkah selesai!'}</h2>
         <p class="mt-1 text-sm text-slate-600">${esc(L.t.title)}</p>
-        ${L.total ? `<div class="mt-5 flex justify-center gap-3"><div class="lx-stat"><b>${first}/${L.total}</b><span>Benar langsung</span></div><div class="lx-stat"><b>${L.i + 1}/${L.steps.length}</b><span>Langkah</span></div></div>` : ''}
+        ${L.total ? `<div class="mt-5 flex justify-center gap-3"><div class="lx-stat"><b>${L.correct}/${L.answered}</b><span>Skor (benar/dijawab)</span></div><div class="lx-stat"><b>${L.i + 1}/${L.steps.length}</b><span>Langkah</span></div></div>` : ''}
         <p class="mt-5 text-sm text-slate-600">${hasNext ? 'Langkah berikutnya sudah terbuka. Terus semangat!' : 'Saatnya uji dirimu lewat Tantangan Akhir.'}</p></div>`;
     foot = `<div class="lx-foot"><div class="lx-foot-in">
         ${hasNext ? `<button class="lx-btn lx-green" onclick="App.lessonOpen('${L.t.id}',${nextI})">Langkah berikutnya ${icon('arrowR', 'h-5 w-5')}</button>`
@@ -963,13 +1003,19 @@ const lessonApi = {
     const q = lesson.queue[0];
     lesson.ok = lesson.picked === q.ans; lesson.checked = true;
     markSeen(q.id);
-    if (!lesson.ok) lesson.wrongIds.add(q.id);
+    lesson.answered++; if (lesson.ok) lesson.correct++;
+    lesson.pending = null;
+    if (!lesson.ok) { lesson.wrongIds.add(q.id); lesson.pending = lessonReplacement(lesson, q); if (lesson.pending) lesson.used.add(lesson.pending.id); }
     lessonPaint();
   },
   lessonNext() {
     if (!lesson || !lesson.checked) return;
     if (lesson.ok) { lesson.queue.shift(); lesson.solved++; if (lesson.queue.length) lessonSetPart(lesson.t, lesson.i, lesson.solved, lesson.total); }
-    else lesson.queue.push(lesson.queue.shift());           // salah -> diulang di akhir sampai benar
+    else {                                                  // salah -> diganti soal sekonsep (v31); jika tak ada, soal yang sama diulang di akhir
+      const bad = lesson.queue.shift();
+      if (lesson.pending) { markSeen(lesson.pending.id); lesson.queue.push(lesson.pending); } else lesson.queue.push(bad);
+    }
+    lesson.pending = null;
     lesson.picked = null; lesson.checked = false; lesson.ok = false;
     if (!lesson.queue.length) { lessonMarkDone(lesson.t, lesson.i); lesson.phase = 'result'; }
     lessonPaint();
