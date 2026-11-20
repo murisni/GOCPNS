@@ -170,6 +170,7 @@ function packsFor(group) {
   return [];
 }
 function findPack(key) {
+  if (key.indexOf('PLAN-') === 0) return planPackByKey(key);   // v34: Try Out / latihan harian dari Planning
   const i = key.lastIndexOf('-');
   const group = key.slice(0, i);
   return packsFor(group).find(p => p.key === key) || null;
@@ -797,6 +798,7 @@ function lessonPlan(t) {
 function lessonReplacement(L, q) {
   const pool = materiPool(L.t).filter(x => x && x.q && x.options && x.options.length >= 2 && typeof x.ans === 'number' && x.q.length <= 650);
   const otherPlan = new Set(); lessonPlan(L.t).forEach(a => a.forEach(x => otherPlan.add(x.id)));
+  const planRsv = planReservedSet();   // v34: soal Try Out/latihan Planning jangan dipakai sebagai soal pengganti
   const qt = lxQuestionTokens(q), head = String(q.q).slice(0, 60).toLowerCase();
   let best = null, bestSc = 0, fallback = null, fbSc = 0;
   pool.forEach(x => {
@@ -808,7 +810,7 @@ function lessonReplacement(L, q) {
     let ov = 0; lxQuestionTokens(x).forEach(w => { if (qt.has(w)) ov++; });
     sc += Math.min(ov, 30) / 3 + Math.random();
     if (sc < 10) return;                                       // harus sekonsep / sesub-topik
-    if (otherPlan.has(x.id)) { if (sc > fbSc) { fbSc = sc; fallback = x; } return; }
+    if (otherPlan.has(x.id) || planRsv.has(x.id)) { if (sc > fbSc) { fbSc = sc; fallback = x; } return; }
     if (sc > bestSc) { bestSc = sc; best = x; }
   });
   return best || fallback || null;
@@ -1035,15 +1037,24 @@ const lessonApi = {
 };
 
 /* ==========================================================================
-   PLANNING BELAJAR (v33)
-   Pilih SATU tes (SKD atau SKB satu bidang) + jumlah hari (1–30). Materi (langkah-langkah jalur belajar)
-   dibagi otomatis ke tiap hari; persen tuntas tiap hari dihitung dari langkah materi + soal yang sudah selesai.
-   Yang disimpan hanya pengaturannya (cpns_plan_v1); pembagian dihitung ulang, jadi progres selalu sama dengan jalur materi.
+   PLANNING BELAJAR (v33, disempurnakan v34)
+   Pilih SATU tes (SKD atau SKB satu bidang) + jumlah hari (maks. 30, SUDAH termasuk hari Try Out).
+   - Tiap kelompok (SKD: TWK, TIU, TKP; SKB: satu bidang) mendapat blok hari belajar, lalu SATU hari TRY OUT
+     berisi 30 soal campuran dari seluruh materi kelompok itu. Soal dipilih yang belum pernah muncul di langkah
+     materi (dan belum pernah kamu kerjakan); soalnya disimpan supaya tetap sama saat dibuka lagi.
+   - TIU: tiap hari belajar ditambah "Latihan Harian" (soal baru dari materi hari itu), karena rumus TIU sulit dihafal.
+   - Persen tuntas hari belajar = langkah materi + soal (dan latihan harian TIU); hari Try Out tuntas saat sudah dikerjakan.
+   Yang disimpan hanya pengaturan (cpns_plan_v1) + daftar id soal Try Out/latihan (cpns_plan_q_v1).
    ========================================================================== */
 const PLAN_KEY = 'cpns_plan_v1';
+const PLANQ_KEY = 'cpns_plan_q_v1';
 const PLAN_MAX = 30;
+const PLAN_TO_N = 30;        // soal per Try Out
+const PLAN_DRILL_N = 20;     // soal latihan harian TIU
+const PLAN_DRILL_GROUPS = ['TIU'];
 const PLAN_XS = [0, 40, 66, 40, 0, -40, -66, -40];
 let planCfg = planSanitize(store.get(PLAN_KEY, null));
+let planQ = store.get(PLANQ_KEY, null);
 let planDraft = null;
 
 function planSanitize(c) {
@@ -1060,13 +1071,15 @@ const planDlg = id => {
 const stepCount = t => (t.sections || []).length + ((t.tips || []).length ? 1 : 0);   // sama dengan lessonSteps(t).length
 const planSkbCats = () => MATERI.reduce((a, t) => { if (t.group === 'SKB' && t.skbCategory && !a.includes(t.skbCategory)) a.push(t.skbCategory); return a; }, []);
 const planCatName = c => skbMeta('SKB_' + c).name;
-function planTopics(cfg) {
-  return cfg.test === 'SKB'
-    ? [MATERI.filter(t => t.group === 'SKB' && t.skbCategory === cfg.cat)]
-    : ['TWK', 'TIU', 'TKP'].map(g => MATERI.filter(t => t.group === g));
+function planLists(cfg) {
+  const L = cfg.test === 'SKB'
+    ? [{ g: 'SKB', topics: MATERI.filter(t => t.group === 'SKB' && t.skbCategory === cfg.cat) }]
+    : ['TWK', 'TIU', 'TKP'].map(g => ({ g, topics: MATERI.filter(t => t.group === g) }));
+  return L.map(l => ({ g: l.g, topics: l.topics.filter(t => stepCount(t) > 0) })).filter(l => l.topics.length);
 }
-const planTotal = cfg => planTopics(cfg).reduce((a, ts) => a + ts.reduce((b, t) => b + stepCount(t), 0), 0);
-const planMaxDays = cfg => Math.max(1, Math.min(PLAN_MAX, planTotal(cfg)));
+const planTotal = cfg => planLists(cfg).reduce((a, l) => a + l.topics.reduce((b, t) => b + stepCount(t), 0), 0);
+const planMinDays = cfg => 2 * Math.max(1, planLists(cfg).length);                 // minimal: 1 hari belajar + 1 Try Out per kelompok
+const planMaxDays = cfg => Math.max(planMinDays(cfg), Math.min(PLAN_MAX, planTotal(cfg) + planLists(cfg).length));
 
 /* pecah n langkah berurutan menjadi d bagian hampir sama besar (sisa dibagi ke hari-hari awal) */
 function evenChunks(arr, d) {
@@ -1075,7 +1088,7 @@ function evenChunks(arr, d) {
   for (let i = 0; i < d; i++) { const n = base + (i < extra ? 1 : 0); out.push(arr.slice(p, p + n)); p += n; }
   return out;
 }
-/* berapa hari untuk tiap kelompok (mis. TWK/TIU/TKP) agar beban per hari paling merata:
+/* berapa hari belajar untuk tiap kelompok agar beban per hari paling merata:
    utamakan beban harian terberat sekecil mungkin, lalu selisih antarhari sekecil mungkin */
 function planAlloc(ns, D) {
   const k = ns.length;
@@ -1111,25 +1124,30 @@ function planDayInfo(units, no) {
   segs.forEach(s => { if (!gs.includes(s.t.group)) gs.push(s.t.group); });
   return { no, units, segs, label: gs.join(' + ') };
 }
-/* susun hari belajar: SKD -> TWK, TIU, TKP masing-masing mendapat jatah hari (blok berurutan);
-   SKB (satu bidang) / hari terlalu sedikit -> langkah dipotong merata berurutan */
+/* susun hari: untuk tiap kelompok -> hari belajar (blok berurutan) lalu 1 hari Try Out */
 function planBuild(cfg) {
-  const lists = planTopics(cfg).map(ts => {
+  const lists = planLists(cfg).map(l => {
     const units = [];
-    ts.forEach(t => { const n = stepCount(t); for (let i = 0; i < n; i++) units.push({ t, i }); });
-    return units;
-  }).filter(u => u.length);
-  const N = lists.reduce((a, u) => a + u.length, 0);
-  if (!N) return [];
-  const D = Math.max(1, Math.min(cfg.days, PLAN_MAX, N));
-  let chunks = [];
-  if (lists.length > 1 && D >= lists.length) {
-    const alloc = planAlloc(lists.map(u => u.length), D);
-    lists.forEach((u, gi) => { chunks = chunks.concat(evenChunks(u, alloc[gi])); });
-  } else {
-    chunks = evenChunks([].concat.apply([], lists), D);
-  }
-  return chunks.map((u, i) => planDayInfo(u, i + 1));
+    l.topics.forEach(t => { const n = stepCount(t); for (let i = 0; i < n; i++) units.push({ t, i }); });
+    return { g: l.g, topics: l.topics, units };
+  });
+  if (!lists.length) return [];
+  const G = lists.length;
+  const D = Math.max(2 * G, Math.min(cfg.days, planMaxDays(cfg)));
+  const alloc = G > 1 ? planAlloc(lists.map(l => l.units.length), D - G) : [D - G];
+  const days = [];
+  lists.forEach((l, gi) => {
+    const startNo = days.length + 1;
+    evenChunks(l.units, alloc[gi]).forEach(u => {
+      const d = planDayInfo(u, days.length + 1);
+      d.kind = 'learn'; d.g = l.g; d.topics = l.topics; d.set = 'DR-' + d.no;
+      if (PLAN_DRILL_GROUPS.includes(l.g)) d.drill = { key: `PLAN-${cfg.at}-DR-${d.no}`, n: PLAN_DRILL_N };
+      days.push(d);
+    });
+    days.push({ no: days.length + 1, kind: 'tryout', g: l.g, topics: l.topics, units: [], segs: [], label: 'Try Out ' + l.g,
+      set: 'TO-' + l.g, packKey: `PLAN-${cfg.at}-TO-${l.g}`, n: PLAN_TO_N, fromNo: startNo, toNo: days.length });
+  });
+  return days;
 }
 function planProg(units) {
   let done = 0, part = 0;
@@ -1140,22 +1158,110 @@ function planProg(units) {
   const n = units.length, full = n > 0 && done === n;
   return { done, n, full, sum: done + part, pct: full ? 100 : Math.min(99, Math.round((done + part) / Math.max(n, 1) * 100)) };
 }
+/* progres satu hari: hari belajar = langkah materi (+ latihan harian TIU, bobot 25% dari jumlah langkah, min. 2); Try Out = 0/100 */
+const planDrillW = d => Math.max(2, Math.round(d.units.length / 4));
+function planDayProg(d) {
+  if (d.kind === 'tryout') { const r = results[d.packKey]; return { n: 1, done: r ? 1 : 0, sum: r ? 1 : 0, full: !!r, pct: r ? 100 : 0, rec: r || null }; }
+  const p = planProg(d.units);
+  if (!d.drill) return p;
+  const w = planDrillW(d), r = results[d.drill.key], dd = r ? w : 0, n = p.n + w, sum = p.sum + dd, full = p.full && !!r;
+  return { n, done: p.done + dd, sum, full, pct: full ? 100 : Math.min(99, Math.round(sum / n * 100)), steps: p, rec: r || null };
+}
 const planNextStep = t => { const d = lessonDone(t), n = stepCount(t); let i = 0; while (i < n && d[i]) i++; return i < n ? i : -1; };
-const planByLabel = days => days.reduce((a, d) => {
-  let r = a.find(x => x.label === d.label);
-  if (!r) a.push(r = { label: d.label, days: 0, min: 1e9, max: 0 });
-  r.days++; r.min = Math.min(r.min, d.units.length); r.max = Math.max(r.max, d.units.length);
-  return a;
-}, []);
-const planRange = r => r.min === r.max ? `${r.min}` : `${r.min}–${r.max}`;
+const planRange = (a, b) => a === b ? `${a}` : `${a}–${b}`;
+function planSummary(days) {
+  const out = [];
+  days.forEach(d => {
+    let r = out.find(x => x.g === d.g);
+    if (!r) out.push(r = { g: d.g, learn: 0, min: 1e9, max: 0, drill: false });
+    if (d.kind === 'learn') { r.learn++; r.min = Math.min(r.min, d.units.length); r.max = Math.max(r.max, d.units.length); if (d.drill) r.drill = true; }
+  });
+  return out;
+}
+
+/* ---------- soal Try Out & latihan harian ---------- */
+/* Pilih n soal dari materi `primary` (lalu `secondary`), bergiliran antar-topik agar semua materi terwakili.
+   Urutan prioritas: belum pernah dipakai di langkah materi & belum pernah dikerjakan -> baru satu dari keduanya -> sisanya.
+   Soal yang sudah dipakai Try Out/latihan lain di planning yang sama dihindari. */
+function planPickQs(primary, secondary, n, ctx, seed) {
+  const out = [], mine = new Set();
+  const valid = q => q && q.q && q.options && q.options.length >= 2 && typeof q.ans === 'number' && q.q.length <= 650;
+  const run = (topics, limit) => {
+    const lists = topics.map(t => materiPool(t).filter(valid).map(q => ({
+      q, h: hashStr(q.id + '|' + seed),
+      tier: (ctx.lesson.has(q.id) ? 2 : 0) + (seen.has(q.id) ? 1 : 0) + (ctx.taken.has(q.id) ? 4 : 0)
+    })).sort((a, b) => (a.tier - b.tier) || (a.h - b.h)));
+    const order = shuffle(lists.map((_, i) => i), seed + 'o');
+    for (let mt = 0; mt <= limit && out.length < n; mt++) {
+      let moved = true;
+      while (out.length < n && moved) {
+        moved = false;
+        for (const i of order) {
+          if (out.length >= n) break;
+          const c = lists[i].find(x => x.tier <= mt && !mine.has(x.q.id));
+          if (c) { out.push(c.q); mine.add(c.q.id); moved = true; }
+        }
+      }
+    }
+  };
+  if (secondary.length) {
+    run(primary, 1);
+    if (out.length < n) run(secondary, 1);
+    if (out.length < n) run(primary, 7);
+    if (out.length < n) run(secondary, 7);
+  } else run(primary, 7);
+  out.forEach(q => ctx.taken.add(q.id));
+  return shuffle(out, seed + 'f').map(q => q.id);
+}
+function planGen(cfg) {
+  const days = planBuild(cfg), sets = {}, ctx = { lesson: new Set(), taken: new Set() };
+  planLists(cfg).forEach(l => l.topics.forEach(t => lessonPlan(t).forEach(a => a.forEach(q => ctx.lesson.add(q.id)))));
+  days.filter(d => d.kind === 'tryout').forEach(d => { sets[d.set] = planPickQs(d.topics, [], d.n, ctx, cfg.at + d.set); });
+  days.filter(d => d.drill).forEach(d => {
+    const prim = []; d.segs.forEach(s => { if (!prim.includes(s.t)) prim.push(s.t); });
+    sets[d.set] = planPickQs(prim, d.topics.filter(t => !prim.includes(t)), d.drill.n, ctx, cfg.at + d.set);
+  });
+  planQ = { at: cfg.at, sets };
+  store.set(PLANQ_KEY, planQ);
+  return sets;
+}
+const planEnsureSets = () => (planCfg && planQ && planQ.at === planCfg.at) ? planQ.sets : (planCfg ? planGen(planCfg) : null);
+const planReservedSet = () => { const s = new Set(); if (planCfg && planQ && planQ.at === planCfg.at) Object.values(planQ.sets).forEach(a => a.forEach(id => s.add(id))); return s; };
+let planIdx = null, planIdxN = -1;
+function planQIndex() {
+  const n = Object.values(BANK).reduce((a, x) => a + x.length, 0) + MATERI.length;
+  if (planIdx && planIdxN === n) return planIdx;
+  planIdx = new Map();
+  Object.values(BANK).forEach(arr => arr.forEach(q => planIdx.set(q.id, q)));
+  MATERI.forEach(t => customQuestions(t).forEach(q => planIdx.set(q.id, q)));
+  planIdxN = n;
+  return planIdx;
+}
+/* paket ujian untuk Try Out / latihan harian (dipakai findPack -> dialog mulai -> mesin ujian yang sama) */
+function planPackByKey(key) {
+  const cfg = planCfg;
+  if (!cfg || key.indexOf('PLAN-' + cfg.at + '-') !== 0) return null;
+  const d = planBuild(cfg).find(x => (x.kind === 'tryout' ? x.packKey : (x.drill && x.drill.key)) === key);
+  if (!d) return null;
+  const sets = planEnsureSets(), idx = planQIndex();
+  const qs = ((sets && sets[d.set]) || []).map(id => idx.get(id)).filter(Boolean);
+  if (!qs.length) return null;
+  const isTo = d.kind === 'tryout', gname = d.g === 'SKB' ? 'SKB ' + planCatName(cfg.cat) : d.g;
+  return {
+    key, group: 'PLAN', kind: 'CAT', mode: 'PLAN', plan: true,
+    title: isTo ? `Try Out ${gname}` : `Latihan Harian ${d.g} · Hari ${d.no}`,
+    compose: isTo ? `${qs.length} soal campuran dari seluruh materi ${gname} (Hari ${d.fromNo}–${d.toNo})` : `${qs.length} soal baru dari materi Hari ${d.no}`,
+    questions: qs, minutes: isTo ? (d.g === 'TIU' ? 45 : 30) : Math.max(10, qs.length)
+  };
+}
 
 /* ---------- halaman Planning ---------- */
 function renderPlanning() {
   const cfg = planCfg, days = cfg ? planBuild(cfg) : [];
-  const progs = days.map(d => planProg(d.units));
+  const progs = days.map(planDayProg);
   const nowIdx = progs.findIndex(p => !p.full), allDone = days.length > 0 && nowIdx === -1;
-  const tot = progs.reduce((a, p) => a + p.n, 0), sum = progs.reduce((a, p) => a + p.sum, 0), doneN = progs.reduce((a, p) => a + p.done, 0);
-  const pctAll = allDone ? 100 : Math.min(99, Math.floor(sum / Math.max(tot, 1) * 100));
+  const mean = progs.length ? progs.reduce((a, p) => a + p.pct, 0) / progs.length : 0;
+  const pctAll = allDone ? 100 : Math.min(99, Math.floor(mean));
   const nDaysDone = progs.filter(p => p.full).length;
 
   const actions = `
@@ -1170,22 +1276,24 @@ function renderPlanning() {
     <div class="pl-empty">
       <span class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-sky-100 text-sky-700">${icon('calendar', 'h-7 w-7')}</span>
       <h2 class="mt-3 text-base font-extrabold text-slate-900">Belum ada planning</h2>
-      <p class="mx-auto mt-1 text-xs leading-relaxed text-slate-600" style="max-width:20rem">Tekan <b>Atur planning</b>, pilih tes (SKD atau SKB) dan berapa hari kamu mau belajar (maks. ${PLAN_MAX} hari). Materi akan dibagi otomatis ke tiap hari.</p>
+      <p class="mx-auto mt-1 text-xs leading-relaxed text-slate-600" style="max-width:20rem">Tekan <b>Atur planning</b>, pilih tes (SKD atau SKB) dan berapa hari kamu mau belajar (maks. ${PLAN_MAX} hari). Materi dibagi otomatis, dan tiap bagian ditutup dengan <b>Try Out ${PLAN_TO_N} soal</b>.</p>
     </div>${actions}`;
   } else {
     const label = cfg.test === 'SKB' ? `SKB ${esc(planCatName(cfg.cat))}` : 'SKD';
-    const split = planByLabel(days).map(r => `${esc(r.label)} ${r.days} hari`).join(' · ');
+    const split = planSummary(days).map(r => `${esc(r.g)} ${r.learn} hari + Try Out`).join(' · ');
     const cur = allDone ? days.length : nowIdx + 1;
     const nodes = days.map((d, i) => {
-      const p = progs[i], isNow = i === nowIdx;
-      const st = p.full ? 'done' : isNow ? 'now' : 'todo' + (p.pct ? ' part' : '');
+      const p = progs[i], isNow = i === nowIdx, isTo = d.kind === 'tryout';
+      const st = (p.full ? 'done' : isNow ? 'now' : 'todo' + (p.pct ? ' part' : '')) + (isTo ? ' to' : '');
+      const sub = isTo ? `Try Out ${esc(d.g)} · ${d.n} soal campuran` : `${esc(d.label)} · ${d.units.length} langkah${d.drill ? ' + latihan' : ''}`;
+      const inner = p.full ? icon('tick', 'h-8 w-8') : isTo ? icon('clipboard', 'h-7 w-7') : `<span class="pl-pct">${p.pct}<small>%</small></span>`;
       return `
       <div class="lx-step" style="--x:${PLAN_XS[i % PLAN_XS.length]}px">
-        <button type="button" class="lx-node pl-node ${st}" style="--pct:${p.pct}" onclick="App.planDay(${d.no})" aria-label="Hari ${d.no}: ${esc(d.label)}, ${p.full ? 'tuntas' : p.pct + ' persen tuntas'}">
-          ${isNow ? `<span class="lx-bubble">${p.pct ? 'LANJUT' : 'MULAI'}</span>` : ''}${p.full ? icon('tick', 'h-8 w-8') : `<span class="pl-pct">${p.pct}<small>%</small></span>`}
+        <button type="button" class="lx-node pl-node ${st}" style="--pct:${p.pct}" onclick="App.planDay(${d.no})" aria-label="Hari ${d.no}: ${isTo ? 'Try Out ' + esc(d.g) : esc(d.label)}, ${p.full ? 'tuntas' : p.pct + ' persen tuntas'}">
+          ${isNow ? `<span class="lx-bubble">${p.pct ? 'LANJUT' : 'MULAI'}</span>` : ''}${inner}
         </button>
         <div class="lx-label ${p.full || isNow || p.pct ? '' : 'dim'}">Hari ${d.no}</div>
-        <div class="pl-sub">${esc(d.label)} · ${d.units.length} langkah</div>
+        <div class="pl-sub ${isTo ? 'to' : ''}">${sub}</div>
       </div>`;
     }).join('');
     const finalNode = `
@@ -1205,7 +1313,7 @@ function renderPlanning() {
         <div class="lx-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pctAll}"><div class="lx-fill" style="width:${Math.max(pctAll, 4)}%"></div></div>
         <span class="shrink-0 text-xs font-bold text-white">${pctAll}%</span>
       </div>
-      <p class="mt-1.5 text-[0.7rem] font-semibold text-white/85">${nDaysDone} dari ${days.length} hari tuntas · ${doneN}/${tot} langkah selesai</p>
+      <p class="mt-1.5 text-[0.7rem] font-semibold text-white/85">${nDaysDone} dari ${days.length} hari tuntas</p>
       ${allDone ? '' : `<button type="button" class="lx-btn lx-green mt-3" onclick="App.planDay(${cur})">${icon('play', 'h-5 w-5')} ${progs[nowIdx].pct ? 'Lanjutkan' : 'Mulai'} Hari ${cur}</button>`}
     </div>
     ${actions}
@@ -1215,7 +1323,7 @@ function renderPlanning() {
   shell('planning', `
     ${breadcrumb([['#/', 'Beranda'], [null, 'Planning']])}
     <div class="mx-auto max-w-xl">
-      ${pageHead('Planning Belajar', 'Atur berapa hari kamu belajar. Materi TWK, TIU, TKP (atau satu bidang SKB) dibagi otomatis per hari.')}
+      ${pageHead('Planning Belajar', `Atur berapa hari kamu belajar. Materi dibagi otomatis per hari, tiap bagian ditutup Try Out ${PLAN_TO_N} soal campuran.`)}
       ${body}
     </div>
   `);
@@ -1225,17 +1333,18 @@ function renderPlanning() {
 function planPaintSetup() {
   const d = planDlg('dlg-plan'), dr = planDraft, cats = planSkbCats();
   const box = d.querySelector('.modal-box'), keep = box ? box.scrollTop : 0;
-  const maxD = planMaxDays(dr);
-  dr.days = Math.max(1, Math.min(dr.days, maxD));
+  const minD = planMinDays(dr), maxD = planMaxDays(dr);
+  dr.days = Math.max(minD, Math.min(dr.days, maxD));
   const okSave = dr.test === 'SKD' || !!dr.cat;
   const days = okSave ? planBuild(dr) : [];
-  const prev = planByLabel(days).map(r => `<li class="flex items-baseline justify-between gap-3"><span class="font-extrabold text-slate-800">${esc(r.label)}</span><span class="text-right text-slate-600">${r.days} hari · ±${planRange(r)} langkah/hari</span></li>`).join('');
+  const prev = planSummary(days).map(r => `<li class="flex items-baseline justify-between gap-3"><span class="font-extrabold text-slate-800">${esc(r.g)}</span><span class="text-right text-slate-600">${r.learn} hari belajar + Try Out<span class="block text-[0.7rem] text-slate-500">±${planRange(r.min, r.max)} langkah/hari${r.drill ? ` + latihan harian ${PLAN_DRILL_N} soal` : ''}</span></span></li>`).join('');
   const opt = (on, act, txt, sub) => `<button type="button" class="pl-opt ${on ? 'on' : ''}" aria-pressed="${on}" onclick="${act}">${txt}${sub ? `<span class="block text-[0.68rem] font-semibold opacity-75">${sub}</span>` : ''}</button>`;
+  const nG = planLists(dr).length;
   d.innerHTML = `
   <div class="modal-box max-w-md">
     <div class="flex items-start justify-between gap-3">
       <div><h3 class="text-xl font-extrabold text-neutral">Atur planning</h3>
-      <p class="mt-0.5 text-sm text-base-content/70">Fokus ke satu tes. Materi dibagi otomatis ke tiap hari.</p></div>
+      <p class="mt-0.5 text-sm text-base-content/70">Fokus ke satu tes. Materi dibagi otomatis, tiap bagian ditutup Try Out.</p></div>
       <button class="btn btn-ghost btn-sm btn-circle" onclick="$('#dlg-plan').close()" aria-label="Tutup">${icon('x', 'h-4 w-4')}</button>
     </div>
 
@@ -1248,16 +1357,17 @@ function planPaintSetup() {
       ? cats.map(c => `<button type="button" class="pl-chip ${dr.cat === c ? 'on' : ''}" aria-pressed="${dr.cat === c}" onclick="App.planSetCat('${esc(c)}')">${esc(planCatName(c))}</button>`).join('')
       : '<span class="text-sm text-slate-500">Belum ada materi SKB.</span>'}</div>` : ''}
 
-    <div class="pl-label mt-4">Belajar dalam berapa hari?</div>
+    <div class="pl-label mt-4">Total hari (termasuk hari Try Out)</div>
     <div class="pl-step">
-      <button type="button" onclick="App.planStep(-1)" aria-label="Kurangi hari" ${dr.days <= 1 ? 'disabled' : ''}>−</button>
-      <input type="number" inputmode="numeric" min="1" max="${maxD}" value="${dr.days}" aria-label="Jumlah hari belajar" onchange="App.planSetDays(this.value)">
+      <button type="button" onclick="App.planStep(-1)" aria-label="Kurangi hari" ${dr.days <= minD ? 'disabled' : ''}>−</button>
+      <input type="number" inputmode="numeric" min="${minD}" max="${maxD}" value="${dr.days}" aria-label="Jumlah hari belajar" onchange="App.planSetDays(this.value)">
       <button type="button" onclick="App.planStep(1)" aria-label="Tambah hari" ${dr.days >= maxD ? 'disabled' : ''}>+</button>
     </div>
-    <div class="pl-chips mt-3 justify-center">${[7, 14, 21, 30].filter(n => n <= maxD).map(n => `<button type="button" class="pl-chip ${dr.days === n ? 'on' : ''}" onclick="App.planSetDays(${n})">${n} hari</button>`).join('')}</div>
-    <p class="mt-2 text-center text-xs text-slate-500">${maxD < PLAN_MAX ? `Materi ini baru ${planTotal(dr)} langkah, jadi maksimal ${maxD} hari.` : `Maksimal ${PLAN_MAX} hari.`}</p>
+    <div class="pl-chips mt-3 justify-center">${[7, 14, 21, 30].filter(n => n >= minD && n <= maxD).map(n => `<button type="button" class="pl-chip ${dr.days === n ? 'on' : ''}" onclick="App.planSetDays(${n})">${n} hari</button>`).join('')}</div>
+    <p class="mt-2 text-center text-xs text-slate-500">Minimal ${minD} hari (${nG} hari Try Out + hari belajar)${maxD < PLAN_MAX ? `; materi ini baru ${planTotal(dr)} langkah, jadi maksimal ${maxD} hari.` : `, maksimal ${PLAN_MAX} hari.`}</p>
 
-    ${prev ? `<div class="pl-prev"><div class="pl-label" style="margin-bottom:.4rem">Pembagian otomatis</div><ul class="space-y-1">${prev}</ul></div>` : ''}
+    ${prev ? `<div class="pl-prev"><div class="pl-label" style="margin-bottom:.4rem">Pembagian otomatis</div><ul class="space-y-2">${prev}</ul>
+      <p class="mt-2 text-[0.7rem] leading-snug text-slate-500">Try Out: ${PLAN_TO_N} soal campuran dari seluruh materi kelompok itu, diambil dari soal yang belum pernah muncul di langkah materi.</p></div>` : ''}
 
     <div class="modal-action act-stack">
       <button class="btn btn-ghost" onclick="$('#dlg-plan').close()">Batal</button>
@@ -1270,15 +1380,34 @@ function planPaintSetup() {
 }
 
 /* ---------- lembar detail satu hari ---------- */
+function planPackRow(key, title, sub, rec, tag) {
+  const st = rec ? `Skor terakhir ${rec.last.score}/${rec.last.max} · terbaik ${rec.best.score}` : 'Belum dikerjakan';
+  return `
+    <div class="pl-row ${rec ? 'ok' : ''}">
+      <div class="min-w-0 flex-1">
+        <span class="inline-block rounded-full bg-amber-100 px-2 py-0.5 text-[0.65rem] font-extrabold text-amber-900">${tag}</span>
+        <div class="pl-row-t mt-1">${esc(title)}</div>
+        <div class="pl-row-s">${esc(sub)}</div>
+        <div class="pl-row-s" style="color:${rec ? '#15803d' : '#64748b'}">${esc(st)}</div>
+      </div>
+      <button type="button" class="pl-go" onclick="App.planPack('${esc(key)}')">${rec ? 'Ulangi' : 'Mulai'}</button>
+    </div>`;
+}
 function planDayOpen(no) {
   if (!planCfg) return;
   const day = planBuild(planCfg)[no - 1]; if (!day) return;
-  const p = planProg(day.units);
-  const first = day.segs.find(s => !planProg(s.units).full);
-  const rows = day.segs.map(s => {
-    const sp = planProg(s.units), total = stepCount(s.t);
-    const rng = s.from === s.to ? `Langkah ${s.from + 1}` : `Langkah ${s.from + 1}–${s.to + 1}`;
-    return `
+  const p = planDayProg(day), isTo = day.kind === 'tryout';
+  let rows = '', cta = '';
+  if (isTo) {
+    rows = planPackRow(day.packKey, `Try Out ${day.g === 'SKB' ? 'SKB ' + planCatName(planCfg.cat) : day.g}`,
+      `${day.n} soal campuran dari seluruh materi (Hari ${day.fromNo}–${day.toNo}). Soal baru yang belum muncul di langkah materi.`, p.rec, 'TRY OUT');
+    cta = `<button class="btn btn-primary" onclick="App.planPack('${esc(day.packKey)}')">${p.full ? 'Ulangi Try Out' : 'Mulai Try Out'} ${icon('arrowR', 'h-4 w-4')}</button>`;
+  } else {
+    const first = day.segs.find(s => !planProg(s.units).full);
+    rows = day.segs.map(s => {
+      const sp = planProg(s.units), total = stepCount(s.t);
+      const rng = s.from === s.to ? `Langkah ${s.from + 1}` : `Langkah ${s.from + 1}–${s.to + 1}`;
+      return `
     <div class="pl-row ${sp.full ? 'ok' : ''}">
       <div class="min-w-0 flex-1">
         <span class="inline-block rounded-full px-2 py-0.5 text-[0.65rem] font-extrabold ${catStyle(s.t.group).badge}">${s.t.group === 'SKB' ? esc('SKB ' + (s.t.skbCategory || '')) : s.t.group}</span>
@@ -1288,13 +1417,17 @@ function planDayOpen(no) {
       </div>
       ${sp.full ? `<span class="pl-ok" aria-label="Tuntas">${icon('tick', 'h-5 w-5')}</span>` : `<button type="button" class="pl-go" onclick="App.planStudy('${esc(s.t.id)}')">${sp.done || sp.pct ? 'Lanjut' : 'Belajar'}</button>`}
     </div>`;
-  }).join('');
+    }).join('');
+    if (day.drill) rows += planPackRow(day.drill.key, `Latihan Harian ${day.g}`, `${day.drill.n} soal baru dari materi hari ini — perbanyak latihan, rumus ${day.g} sulit kalau hanya dihafal.`, p.rec, 'LATIHAN HARIAN');
+    if (first) cta = `<button class="btn btn-primary" onclick="App.planStudy('${esc(first.t.id)}')">${p.pct ? 'Lanjutkan belajar' : 'Mulai belajar'} ${icon('arrowR', 'h-4 w-4')}</button>`;
+    else if (day.drill && !p.rec) cta = `<button class="btn btn-primary" onclick="App.planPack('${esc(day.drill.key)}')">Kerjakan latihan harian ${icon('arrowR', 'h-4 w-4')}</button>`;
+  }
   const d = planDlg('dlg-plan-day');
   d.innerHTML = `
   <div class="modal-box max-w-md">
     <div class="flex items-start justify-between gap-3">
-      <div><h3 class="text-xl font-extrabold text-neutral">Hari ${day.no}</h3>
-      <p class="mt-0.5 text-sm text-base-content/70">${esc(day.label)} · ${day.units.length} langkah materi + soal</p></div>
+      <div><h3 class="text-xl font-extrabold text-neutral">Hari ${day.no}${isTo ? ' · Try Out' : ''}</h3>
+      <p class="mt-0.5 text-sm text-base-content/70">${isTo ? `${esc(day.g)} · ${day.n} soal campuran` : `${esc(day.label)} · ${day.units.length} langkah materi + soal${day.drill ? ' + latihan harian' : ''}`}</p></div>
       <button class="btn btn-ghost btn-sm btn-circle" onclick="$('#dlg-plan-day').close()" aria-label="Tutup">${icon('x', 'h-4 w-4')}</button>
     </div>
     <div class="mt-3 rounded-2xl ${p.full ? 'bg-green-50' : 'bg-slate-100'} p-3">
@@ -1304,7 +1437,7 @@ function planDayOpen(no) {
     <div class="mt-3">${rows}</div>
     <div class="modal-action act-stack">
       <button class="btn btn-ghost" onclick="$('#dlg-plan-day').close()">Tutup</button>
-      ${first ? `<button class="btn btn-primary" onclick="App.planStudy('${esc(first.t.id)}')">${p.pct ? 'Lanjutkan belajar' : 'Mulai belajar'} ${icon('arrowR', 'h-4 w-4')}</button>` : ''}
+      ${cta}
     </div>
   </div>
   <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
@@ -1314,7 +1447,7 @@ function planDayOpen(no) {
 const planApi = {
   planSetup() {
     const c = planCfg, cats = planSkbCats();
-    planDraft = c ? { test: c.test, cat: c.cat, days: c.days } : { test: 'SKD', cat: '', days: 7 };
+    planDraft = c ? { test: c.test, cat: c.cat, days: c.days } : { test: 'SKD', cat: '', days: 14 };
     if (planDraft.test === 'SKB' && !cats.includes(planDraft.cat)) planDraft.cat = cats[0] || '';
     planPaintSetup();
   },
@@ -1331,16 +1464,17 @@ const planApi = {
     if (!planDraft) return;
     const c = planSanitize(Object.assign({}, planDraft, { at: Date.now() }));
     if (!c || (c.test === 'SKB' && !c.cat)) return;
-    c.days = Math.min(c.days, planMaxDays(c));
-    planCfg = c; store.set(PLAN_KEY, c);
+    c.days = Math.max(planMinDays(c), Math.min(c.days, planMaxDays(c)));
+    planCfg = c; planQ = null; store.set(PLAN_KEY, c);
+    try { planGen(c); } catch (e) { console.error('planGen', e); }
     const d = $('#dlg-plan'); if (d && d.open) d.close();
     toast(`Planning ${c.days} hari dibuat.`);
     if (location.hash === '#/planning') renderPlanning(); else go('#/planning');
   },
   async planReset() {
     if (!planCfg) { toast('Belum ada planning.'); return; }
-    if (!await ask({ title: 'Reset planning?', text: 'Pengaturan planning (tes dan jumlah hari) dihapus. Progres materi dan soal yang sudah kamu kerjakan tidak ikut terhapus.', ok: 'Reset planning', danger: true })) return;
-    planCfg = null; store.del(PLAN_KEY);
+    if (!await ask({ title: 'Reset planning?', text: 'Pengaturan planning (tes, jumlah hari, dan soal Try Out) dihapus. Progres materi dan soal yang sudah kamu kerjakan tidak ikut terhapus.', ok: 'Reset planning', danger: true })) return;
+    planCfg = null; planQ = null; store.del(PLAN_KEY); store.del(PLANQ_KEY);
     toast('Planning direset.');
     if (location.hash === '#/planning') renderPlanning();
   },
@@ -1351,6 +1485,11 @@ const planApi = {
     const i = planNextStep(t);
     if (i < 0) { toast('Semua langkah topik ini sudah selesai.'); return; }
     lessonOpen(id, i);
+  },
+  planPack(key) {
+    const d = $('#dlg-plan-day'); if (d && d.open) d.close();
+    if (!planPackByKey(key)) { toast('Soal belum tersedia untuk bagian ini.'); return; }
+    openStart(key);
   }
 };
 
@@ -1905,7 +2044,8 @@ const App = {
   },
   exitToList() {
     const d = $('#dlg-result'); if (d.open) d.close();
-    const back = exam && exam.pack.group === 'MATERI' ? '#/materi'
+    const back = exam && exam.pack.plan ? '#/planning'
+      : exam && exam.pack.group === 'MATERI' ? '#/materi'
       : exam && exam.pack.mode === 'SKB' ? '#/skb/' + exam.pack.group
       : exam && exam.pack.mode === 'SKD' ? '#/skd' : '#/';
     if (exam && exam.pack.mode === 'SKD') ui.skdTab = exam.pack.group;

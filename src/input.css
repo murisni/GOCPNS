@@ -429,7 +429,7 @@
 .pl-actions .lx-btn { margin-top: 0; min-height: 3rem; padding: .7rem .5rem; gap: .35rem; font-size: .78rem; letter-spacing: .02em; line-height: 1.15; text-align: center; }
 .pl-empty { margin-top: .25rem; padding: 1.5rem 1rem; text-align: center; border: 2px dashed #cbd5e1; border-radius: 1.5rem; background: #fff; }
 .pl-node {
-  background: radial-gradient(closest-side, #fff 76%, transparent 78%), conic-gradient(#0b7fd4 calc(var(--pct, 0) * 1%), #e2e8f0 0);
+  background: radial-gradient(closest-side, #fff 76%, transparent 78%), conic-gradient(var(--c, #0b7fd4) calc(var(--pct, 0) * 1%), #e2e8f0 0);
   color: #94a3b8; --s: #cbd5e1;
 }
 .pl-node.now { color: #0b7fd4; --s: #075f9f; }
@@ -475,3 +475,9 @@
 .pl-go:active { transform: translateY(2px); box-shadow: 0 1px 0 #075f9f; }
 .pl-ok { display: grid; flex: none; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 9999px; background: #16a34a; color: #fff; }
 @media (prefers-reduced-motion: reduce) { .hmenu { animation: none; } }
+
+/* ---------- v34: hari Try Out di Planning ---------- */
+.pl-node.to { --c: #f59e0b; color: #d97706; }
+.pl-node.to.now { --s: #b45309; }
+.pl-node.to.done { color: #fff; }
+.pl-sub.to { color: #b45309; font-weight: 700; }
