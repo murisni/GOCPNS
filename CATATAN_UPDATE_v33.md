@@ -14,3 +14,10 @@ File: js/app.js, src/input.css, css/app.css (aturan baru ditambahkan di akhir), 
 - TIU: tiap hari belajar ada **Latihan Harian 20 soal** baru (bobot 25% dari persen hari itu). TWK & TKP tanpa latihan tambahan.
 - Hari Try Out tuntas setelah dikerjakan; hasil tampil di lembar hari. Tombol keluar/daftar paket dari ujian kembali ke Planning.
 File: js/app.js, src/input.css, css/app.css, index.html, sw.js (cache v36)
+
+## v35 — Audit soal ganda, materi ganda & kelengkapan materi
+- js/dedupe_v35.js: membuang soal kembar (teks soal + gambar + jawaban benar + opsi identik; label "[Soal ... #n]" diabaikan). 111 soal kembar terbuang (hampir semuanya salinan di bank SKB).
+- js/patches_v35.js: materi ganda TIU/TKP digabung (bagian unik dipindah ke topik "kasus/lengkap", topik lama disembunyikan): soal cerita, deret, analogi, silogisme, berhitung cepat, perbandingan, figural, himpunan-peluang, tkp-playbook -> strategi-tkp.
+- Materi & soal SKB baru (sebelumnya hanya 4-6 soal unik per bidang): Hukum 41 soal + 7 bagian, Keuangan 41 soal + 6 bagian, Pendidikan 38 soal + 6 bagian, Kesehatan 44 soal + 6 bagian.
+- app.js: lessonMigrateV35 memindahkan penanda "Cara Menjawab Cepat" bila jumlah langkah topik bertambah. Progres topik yang digabung/dihapus tidak dibawa.
+- Versi: app.js/css ?v=35, cache SW cat-cpns-v37.

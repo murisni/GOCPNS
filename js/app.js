@@ -828,11 +828,29 @@ function lessonMigrateV31() {
       if (e.part) delete e.part[t.tipsFrom];
       if (wasDone) e.done[to] = 1;
     }
-    e.mig31 = 1; changed = true;
+    e.mig31 = 1; e.mig35 = 1; changed = true;
   });
   if (changed) store.set(LESSON_KEY, lessonStore);
 }
 lessonMigrateV31();
+/* v35: materi digabung/diperluas lagi -> pindahkan penanda langkah tips dari posisi lama (t.__prev) ke posisi baru */
+function lessonMigrateV35() {
+  let changed = false;
+  MATERI.forEach(t => {
+    if (t.__prev == null || !(t.tips || []).length) return;
+    const e = lessonStore[t.id]; if (!e || e.mig35) return;
+    const to = (t.sections || []).length;
+    if (to > t.__prev) {
+      const wasDone = e.done && e.done[t.__prev];
+      if (e.done) delete e.done[t.__prev];
+      if (e.part) delete e.part[t.__prev];
+      if (wasDone) e.done[to] = 1;
+    }
+    e.mig35 = 1; changed = true;
+  });
+  if (changed) store.set(LESSON_KEY, lessonStore);
+}
+lessonMigrateV35();
 
 /* ---------- halaman jalur (detail materi) ---------- */
 function renderMateriDetail(t) {
