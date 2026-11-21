@@ -481,3 +481,44 @@
 .pl-node.to.now { --s: #b45309; }
 .pl-node.to.done { color: #fff; }
 .pl-sub.to { color: #b45309; font-weight: 700; }
+
+/* ---------- v36: RANGKUMAN materi ---------- */
+.lx-sum { display: inline-flex; flex: none; align-items: center; gap: .35rem; min-height: 2.4rem; padding: .35rem .85rem; border: 0; border-radius: 9999px; background: #fde047; color: #3a2400; font-size: .72rem; font-weight: 900; letter-spacing: .06em; white-space: nowrap; box-shadow: 0 3px 0 #c27803; transition: transform .06s, box-shadow .06s; }
+.lx-sum:active { transform: translateY(2px); box-shadow: 0 1px 0 #c27803; }
+.lx-sum-sm { min-height: 2.2rem; padding: .3rem .65rem; font-size: .66rem; }
+.rk-overlay { z-index: 70; }
+.rk-head { min-width: 0; flex: 1; }
+.rk-kicker { font-size: .66rem; font-weight: 900; letter-spacing: .12em; color: #b45309; }
+.rk-title { font-size: .95rem; font-weight: 800; line-height: 1.25; color: #0f172a; overflow-wrap: anywhere; }
+.rk-intro { margin: .25rem 0 .75rem; font-size: .85rem; line-height: 1.5; color: #475569; }
+.rk-tools { display: flex; gap: .5rem; margin-bottom: .75rem; }
+.rk-tool { flex: 1; min-height: 2.5rem; border: 2px solid #e5e7eb; border-radius: .85rem; background: #fff; font-size: .8rem; font-weight: 800; color: #334155; }
+.rk-tool:active { background: #f1f5f9; }
+.rk-item { margin-bottom: .6rem; border: 2px solid #e5e7eb; border-radius: 1.1rem; background: #fff; overflow: hidden; }
+.rk-item[open] { border-color: #93c5fd; }
+.rk-item > summary { display: flex; align-items: center; gap: .65rem; min-height: 3.25rem; padding: .65rem .8rem; cursor: pointer; list-style: none; }
+.rk-item > summary::-webkit-details-marker { display: none; }
+.rk-num { display: grid; flex: none; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 9999px; background: #eaf4fd; color: #0b7fd4; font-size: .8rem; font-weight: 900; }
+.rk-num.done { background: #16a34a; color: #fff; }
+.rk-sum-t { flex: 1; min-width: 0; font-size: .9rem; font-weight: 800; line-height: 1.3; color: #0f172a; overflow-wrap: anywhere; }
+.rk-chev { flex: none; color: #94a3b8; transition: transform .15s; }
+.rk-item[open] .rk-chev { transform: rotate(180deg); }
+.rk-in { padding: .2rem .9rem 1rem; border-top: 1px solid #e5e7eb; }
+.rk-tips { margin: .6rem 0; padding: 0; list-style: none; display: grid; gap: .6rem; }
+.rk-tips li { display: flex; gap: .6rem; font-size: .92rem; line-height: 1.55; }
+.rk-n { display: grid; flex: none; place-items: center; width: 1.5rem; height: 1.5rem; margin-top: .1rem; border-radius: 9999px; background: #fbbf24; color: #451a03; font-size: .72rem; font-weight: 900; }
+.rk-ex { margin-top: .9rem; padding: .75rem; border: 2px dashed #bfdbfe; border-radius: 1rem; background: #f8fbff; }
+.rk-ex-h { font-size: .72rem; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; color: #0b7fd4; }
+.rk-q { margin-top: .7rem; padding-top: .7rem; border-top: 1px solid #dbeafe; }
+.rk-q:first-of-type { border-top: 0; padding-top: 0; }
+.rk-qn { font-size: .7rem; font-weight: 800; color: #64748b; }
+.rk-qt { margin-top: .2rem; white-space: pre-line; font-size: .92rem; font-weight: 700; line-height: 1.5; color: #0f172a; }
+.rk-opts { margin: .5rem 0 0; padding: 0; list-style: none; display: grid; gap: .35rem; }
+.rk-opt { display: flex; align-items: flex-start; gap: .5rem; padding: .4rem .55rem; border: 1.5px solid #e5e7eb; border-radius: .7rem; background: #fff; font-size: .86rem; line-height: 1.4; }
+.rk-opt.ok { border-color: #16a34a; background: #dcfce7; }
+.rk-k { flex: none; width: 1.4rem; height: 1.4rem; display: grid; place-items: center; border-radius: .45rem; background: #f1f5f9; font-size: .72rem; font-weight: 800; color: #475569; }
+.rk-opt.ok .rk-k { background: #16a34a; color: #fff; }
+.rk-t { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.rk-tick { color: #15803d; }
+.rk-why { margin-top: .5rem; padding: .55rem .7rem; border-radius: .75rem; background: #fffbeb; border: 1px solid #fde68a; font-size: .85rem; line-height: 1.5; color: #1e293b; }
+@media (prefers-reduced-motion: reduce) { .lx-sum, .rk-chev { transition: none; } }

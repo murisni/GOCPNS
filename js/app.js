@@ -906,8 +906,9 @@ function renderMateriDetail(t) {
       <a href="${backUrl}" class="mt-3 inline-flex items-center gap-1.5 min-h-10 rounded-full bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-xs ring-1 ring-slate-200 active:scale-95 sm:hidden">${icon('back', 'h-3.5 w-3.5 text-primary')}<span>${backLabel}</span></a>
       <div class="lx-hero mt-3">
         <div class="flex items-center justify-between gap-2">
-          <span class="badge border-0 bg-white/20 font-bold text-white">${badgeLabel}</span>
-          <span class="text-xs font-bold text-white/90">${prog.done}/${prog.total} langkah${prog.cur ? ` · soal ${prog.cur.solved}/${prog.cur.total}` : ''}</span>
+          <span class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><span class="badge border-0 bg-white/20 font-bold text-white">${badgeLabel}</span>
+          <span class="text-xs font-bold text-white/90">${prog.done}/${prog.total} langkah${prog.cur ? ` · soal ${prog.cur.solved}/${prog.cur.total}` : ''}</span></span>
+          <button type="button" class="lx-sum" onclick="App.rangkuman('${t.id}')" aria-label="Buka rangkuman materi ${esc(t.title)}">${icon('book', 'h-4 w-4')} RANGKUMAN</button>
         </div>
         <h1 class="mt-2 text-xl font-extrabold leading-snug">${esc(t.title)}</h1>
         <p class="mt-1 text-xs leading-relaxed text-white/85">${esc(t.summary)}</p>
@@ -947,7 +948,7 @@ function lessonClose(fromPop) {
   if (location.hash.indexOf('#/materi/' + t.id) === 0) { const y = window.scrollY; renderMateriDetail(t); window.scrollTo(0, y); }
   else if (location.hash === '#/planning') { const y = window.scrollY; renderPlanning(); window.scrollTo(0, y); }   // v33: persen hari ikut diperbarui
 }
-window.addEventListener('popstate', () => { if (lesson) lessonClose(true); });
+window.addEventListener('popstate', () => { if (lesson && !rk) lessonClose(true); });
 
 function lessonPaint() {
   const el = $('#lesson'); if (!el || !lesson) return;
@@ -959,6 +960,7 @@ function lessonPaint() {
     <div class="lx-top">
       <button type="button" class="lx-x" onclick="App.lessonClose()" aria-label="Tutup">${icon('x', 'h-6 w-6')}</button>
       <div class="lx-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><div class="lx-fill" style="width:${Math.max(pct, L.phase === 'result' ? 100 : 5)}%"></div></div>
+      <button type="button" class="lx-sum lx-sum-sm" onclick="App.rangkuman('${L.t.id}')" aria-label="Buka rangkuman">${icon('book', 'h-4 w-4')} RANGKUMAN</button>
     </div>`;
   let main = '', foot = '';
 
@@ -1052,6 +1054,64 @@ const lessonApi = {
     App.startMateriPractice(id);
   },
   lessonFinalFromDone() { if (!lesson) return; const id = lesson.t.id; lessonClose(false); setTimeout(() => App.lessonFinal(id), 60); }
+};
+
+/* ==========================================================================
+   RANGKUMAN MATERI (v36)
+   Tombol RANGKUMAN di kanan atas tiap materi: seluruh langkah materi (rumus, studi kasus, jebakan),
+   contoh soal beserta cara mengerjakannya, dan "Cara Menjawab Cepat" dalam satu halaman yang bisa dibuka kapan saja.
+   ========================================================================== */
+let rk = null;   // { t } saat rangkuman terbuka
+function rkQuestion(q, n) {
+  const opts = (q.options || []).map((o, k) => `<li class="rk-opt${k === q.ans ? ' ok' : ''}"><span class="rk-k">${LETTERS[k]}</span><span class="rk-t">${escO(o)}</span>${k === q.ans ? '<b class="rk-tick">✓</b>' : ''}</li>`).join('');
+  const why = q.explanation ? `<div class="rk-why"><b>Cara mengerjakan:</b> ${esc(q.explanation)}</div>` : '';
+  const trick = q.trick && !String(q.explanation || '').includes(q.trick) ? `<div class="rk-why"><b>Trik:</b> ${esc(q.trick)}</div>` : '';
+  return `<div class="rk-q"><div class="rk-qn">Contoh soal ${n}</div><div class="rk-qt">${escQ(q)}</div>${q.svg ? `<div class="q-svg my-2 overflow-auto rounded-xl bg-base-200/60 p-2">${q.svg}</div>` : ''}<ul class="rk-opts">${opts}</ul>${why}${trick}</div>`;
+}
+function rkBody(t) {
+  const steps = lessonSteps(t), plan = lessonPlan(t), d = lessonDone(t);
+  const items = steps.map((st, i) => {
+    const content = st.kind === 'tips'
+      ? `<ol class="rk-tips">${st.tips.map((x, n) => `<li><span class="rk-n">${n + 1}</span><span class="min-w-0 flex-1">${x}</span></li>`).join('')}</ol>`
+      : `<div class="materi-body">${wrapTables(st.html)}</div>`;
+    const qs = (plan[i] || []).filter(q => q && q.options && q.options.length);
+    const ex = qs.length ? `<div class="rk-ex"><div class="rk-ex-h">Contoh soal & cara mengerjakannya</div>${qs.map((q, n) => rkQuestion(q, n + 1)).join('')}</div>` : '';
+    return `<details class="rk-item"${steps.length === 1 ? ' open' : ''}><summary><span class="rk-num${d[i] ? ' done' : ''}">${d[i] ? '✓' : i + 1}</span><span class="rk-sum-t">${esc(st.title)}</span><span class="rk-chev" aria-hidden="true">▾</span></summary><div class="rk-in">${content}${ex}</div></details>`;
+  }).join('');
+  return items;
+}
+function rkOpen(id) {
+  const t = MATERI.find(x => x.id === id); if (!t) return;
+  if (rk) return;
+  rk = { t };
+  document.documentElement.classList.add('lx-open');
+  let el = $('#rangkuman');
+  if (!el) { el = document.createElement('div'); el.id = 'rangkuman'; el.className = 'lx-overlay rk-overlay'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); document.body.appendChild(el); }
+  const n = lessonSteps(t).length;
+  el.innerHTML = `
+    <div class="lx-top"><button type="button" class="lx-x" onclick="App.rangkumanClose()" aria-label="Tutup rangkuman">${icon('x', 'h-6 w-6')}</button>
+      <div class="rk-head"><div class="rk-kicker">RANGKUMAN</div><div class="rk-title">${esc(t.title)}</div></div></div>
+    <div class="lx-body" id="rk-scroll"><div class="lx-wrap">
+      <p class="rk-intro">Semua materi, rumus, studi kasus, dan contoh soal beserta cara mengerjakannya ada di sini. Ketuk judul untuk membuka. ${n} bagian.</p>
+      <div class="rk-tools"><button type="button" class="rk-tool" onclick="App.rangkumanToggle(true)">Buka semua</button><button type="button" class="rk-tool" onclick="App.rangkumanToggle(false)">Tutup semua</button></div>
+      ${rkBody(t)}
+      <button type="button" class="lx-btn lx-ghost mt-4" onclick="App.rangkumanClose()">Tutup rangkuman</button>
+    </div></div>`;
+  try { history.pushState({ rk: 1 }, ''); } catch (e) { /* abaikan */ }
+  const b = $('#rk-scroll'); if (b) b.scrollTop = 0;
+}
+function rkClose(fromPop) {
+  if (!rk) return;
+  rk = null;
+  const el = $('#rangkuman'); if (el) el.remove();
+  if (!lesson) document.documentElement.classList.remove('lx-open');
+  if (!fromPop) { try { if (history.state && history.state.rk) history.back(); } catch (e) { /* abaikan */ } }
+}
+window.addEventListener('popstate', () => { if (rk) rkClose(true); });
+const rangkumanApi = {
+  rangkuman: rkOpen,
+  rangkumanClose: () => rkClose(false),
+  rangkumanToggle(on) { document.querySelectorAll('#rangkuman details.rk-item').forEach(d => { d.open = !!on; }); }
 };
 
 /* ==========================================================================
@@ -1977,6 +2037,7 @@ const App = {
   setMateriSkbGroup(id) { ui.materiSkbGroup = id; renderMateri(null); },
   scrollTo(id) { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
   ...lessonApi,
+  ...rangkumanApi,
   ...planApi,
   openStart, openDb,
   /* v33: menu garis tiga (HP): Input DB / Profil */
