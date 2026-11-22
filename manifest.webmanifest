@@ -1,6 +1,6 @@
 {
-  "name": "CAT CPNS Belajar",
-  "short_name": "CAT CPNS",
+  "name": "GOCPNS — Belajar SKD & SKB",
+  "short_name": "GOCPNS",
   "description": "Belajar materi, latihan paket soal SKD dan SKB CPNS dengan simulasi CAT.",
   "lang": "id",
   "start_url": "./index.html",
@@ -11,19 +11,19 @@
   "theme_color": "#ffffff",
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "icons/icon-192.png?v=40",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icons/icon-512.png?v=40",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-maskable-512.png",
+      "src": "icons/icon-maskable-512.png?v=40",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

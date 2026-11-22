@@ -26,7 +26,17 @@
     [a, b].forEach(s => { const l = s.cpns_lesson_v1 || {}; Object.keys(l).forEach(id => {
       const e = L[id] || (L[id] = { done: {}, at: 0 });
       Object.assign(e.done, l[id].done || {}); e.at = Math.max(e.at, l[id].at || 0);
+      Object.entries(l[id].part || {}).forEach(([i, next]) => {
+        const part = e.part || (e.part = {});
+        const prev = part[i];
+        if (!prev || next.solved > prev.solved || (next.solved === prev.solved && (next.at || 0) >= (prev.at || 0))) {
+          part[i] = next;
+        }
+      });
     }); });
+    Object.values(L).forEach(e => {
+      if (e.part) Object.keys(e.done).forEach(i => { if (e.done[i]) delete e.part[i]; });
+    });
     const R = {}, ra = a.cpns_results_v3 || {}, rb = b.cpns_results_v3 || {};
     new Set([...Object.keys(ra), ...Object.keys(rb)]).forEach(k => {
       R[k] = !ra[k] ? rb[k] : !rb[k] ? ra[k] : ((rb[k].attempts || 0) > (ra[k].attempts || 0) ? rb[k] : ra[k]);

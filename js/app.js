@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CAT CPNS — aplikasi belajar & simulasi (tanpa framework, jalan di file:// )
+   GOCPNS — aplikasi belajar & simulasi (tanpa framework, jalan di file:// )
    Bagian: util · ikon · penyimpanan · bank soal & paket · materi · tampilan ·
            mesin ujian · dialog (mulai, hasil, database)
    ========================================================================== */
@@ -64,12 +64,48 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* abaikan */ } if (window.Auth) window.Auth.touch(k); },
   del(k) { try { localStorage.removeItem(k); } catch (e) { /* abaikan */ } }
 };
-const seen = new Set(store.get('cpns_seen_qids_v2', []));
+const questions = window.CPNSQuestions;
+const seen = new Set(store.get('cpns_seen_qids_v2', []).map(questions.resolve));
+const seenKeys = new Set(), seenPatterns = new Set();
 let results = store.get('cpns_results_v3', {});
-function markSeen(id) {
-  if (!id || seen.has(id)) return;
+const seenBefore = q => seen.has(questions.resolve(q.id)) || seenKeys.has(questions.key(q));
+function markSeen(q) {
+  const id = questions.resolve(q.id);
+  seenKeys.add(questions.key(q));
+  seenPatterns.add(questions.pattern(q));
+  if (seen.has(id)) return;
   seen.add(id);
   store.set('cpns_seen_qids_v2', Array.from(seen));
+}
+
+// Pilih soal baru dulu. Sebarkan variasi satu templat agar tiap sesi beragam.
+function selectQuestions(pool, count, blocked = new Set()) {
+  if (count <= 0) return [];
+  const unique = new Set(blocked), patterns = new Set(), picked = [], deferred = [];
+  for (const q of pool) {
+    const key = questions.key(q);
+    if (unique.has(key)) continue;
+    unique.add(key);
+    const pattern = questions.pattern(q), old = seenBefore(q);
+    if (!old && !seenPatterns.has(pattern) && !patterns.has(pattern)) {
+      picked.push(q);
+      patterns.add(pattern);
+      if (picked.length === count) return picked;
+    } else deferred.push({ q, pattern, old });
+  }
+  for (const old of [false, true]) {
+    const repeats = [];
+    for (const entry of deferred) {
+      if (old !== entry.old) continue;
+      if (patterns.has(entry.pattern)) { repeats.push(entry.q); continue; }
+      picked.push(entry.q);
+      patterns.add(entry.pattern);
+      if (picked.length === count) return picked;
+    }
+    picked.push(...repeats.slice(0, count - picked.length));
+    if (picked.length === count) return picked;
+  }
+  return picked;
 }
 
 /* ---------- bank soal & pembuatan paket ---------- */
@@ -117,9 +153,11 @@ const CAT_SIZE = 30;   // soal per paket latihan TWK / TIU / TKP
 const SKB_SIZE = 20;   // soal per paket SKB
 const FULL_MIX = { TWK: 30, TIU: 35, TKP: 45 };  // komposisi tryout SKD
 const PASSING = { TWK: 65, TIU: 80, TKP: 166 };
+const SKD_TARGET = 505;
+const PRAKOM_TARGET = 0.9;
 
 const SKD_GROUPS = {
-  SKD_FULL: { label: 'Tryout Lengkap', short: 'Tryout', desc: '30 TWK + 35 TIU + 45 TKP • 100 menit — mengikuti format ujian sebenarnya.' },
+  SKD_FULL: { label: 'Tryout Lengkap', short: 'Tryout', desc: '30 TWK + 35 TIU + 45 TKP • 100 menit — acuan format CPNS 2024.' },
   SKD_TWK: { label: 'TWK', short: 'TWK', desc: 'Tes Wawasan Kebangsaan: pilar negara, nasionalisme, integritas, bahasa Indonesia.' },
   SKD_TIU: { label: 'TIU', short: 'TIU', desc: 'Tes Intelegensia Umum: verbal, numerik, dan figural.' },
   SKD_TKP: { label: 'TKP', short: 'TKP', desc: 'Tes Karakteristik Pribadi: skor 1–5 pada tiap opsi.' }
@@ -170,6 +208,16 @@ function packsFor(group) {
   }
   return [];
 }
+function preparePack(pack) {
+  if (pack.plan) return pack; // Planning sudah memilih soal dari topik terkait.
+  const groups = pack.kind === 'FULL' ? Object.keys(FULL_MIX).map(c => 'SKD_' + c) : [pack.group];
+  const selected = groups.flatMap(bucket => {
+    const base = pack.kind === 'FULL' ? pack.questions.filter(q => q.category === bucket.slice(4)) : pack.questions;
+    return selectQuestions(base.concat(ordered(bucket)), base.length);
+  });
+  return { ...pack, questions: selected };
+}
+
 function findPack(key) {
   if (key.indexOf('PLAN-') === 0) return planPackByKey(key);   // v34: Try Out / latihan harian dari Planning
   const i = key.lastIndexOf('-');
@@ -223,7 +271,7 @@ function materiExamples(t, n = 3) {
   const bySub = new Set(), picked = [];
   const sh = shuffle(pool, 'ex:' + t.id);
   sh.forEach(q => { if (picked.length < n && !bySub.has(q.sub)) { bySub.add(q.sub); picked.push(q); } });
-  sh.forEach(q => { if (picked.length < n && !picked.includes(q)) picked.push(q); });
+  sh.forEach(q => { if (picked.length < n && !picked.some(x => questions.key(x) === questions.key(q))) picked.push(q); });
   return picked;
 }
 
@@ -271,6 +319,10 @@ function navbar(active) {
   <!-- HP: tombol garis tiga di pojok kanan (ikut tergulung), header penuh disembunyikan.
        v33: diklik -> tampil 2 tombol (Input DB & Profil); masing-masing membuka lembar dari bawah -->
   <div class="mrow sm:hidden">
+    <a href="#/" class="flex items-center gap-2 text-lg font-extrabold tracking-tight text-neutral" style="margin-inline-end:auto">
+      <img src="icons/icon-192.png?v=40" width="36" height="36" class="rounded-xl" alt="">
+      <span><span class="text-primary">GO</span>CPNS</span>
+    </a>
     <button type="button" class="mburger" onclick="App.toggleHMenu(event)" aria-label="Menu" aria-haspopup="true" aria-expanded="false" aria-controls="hmenu">${icon('menu', 'h-6 w-6')}</button>
     <div id="hmenu" class="hmenu" role="menu" hidden>
       <button type="button" role="menuitem" onclick="App.hmenu('notif')">${icon('bell', 'h-5 w-5')}<span>Pengingat belajar</span></button>
@@ -282,8 +334,8 @@ function navbar(active) {
     <div class="navbar mx-auto min-h-14 max-w-6xl px-3 sm:px-4 md:min-h-16">
       <div class="navbar-start">
         <a href="#/" class="flex items-center gap-2.5 text-lg font-extrabold tracking-tight text-neutral active:scale-98 transition">
-          <span class="grid h-9 w-9 place-items-center rounded-xl bg-primary text-sm font-black text-white shadow-xs">CAT</span>
-          <span class="text-lg">CPNS <span class="font-bold text-primary">Belajar</span></span>
+          <img src="icons/icon-192.png?v=40" width="36" height="36" class="rounded-xl" alt="">
+          <span class="text-lg"><span class="text-primary">GO</span>CPNS</span>
         </a>
       </div>
       <div class="navbar-center flex"><ul class="menu menu-horizontal gap-1 px-1">${li}</ul></div>
@@ -411,7 +463,7 @@ function renderHome() {
       <div class="grid grid-cols-3 gap-2.5">
         ${stat('book', 'bg-teal-100 text-teal-700', `${topicDone}<span class="text-sm font-bold text-slate-400">/${MATERI.length}</span>`, 'Materi selesai')}
         ${stat('check', 'bg-sky-100 text-sky-700', `${packDone}<span class="text-sm font-bold text-slate-400">/${allPacks.length}</span>`, 'Paket soal selesai')}
-        ${stat('bolt', 'bg-amber-100 text-amber-700', fmtNum(seen.size), 'Soal dikerjakan')}
+        ${stat('bolt', 'bg-amber-100 text-amber-700', fmtNum(seen.size), 'Soal pernah dibuka')}
       </div>
     </section>`;
 
@@ -431,7 +483,7 @@ function renderHome() {
     <div class="home-wrap mx-auto w-full max-w-xl pb-2 pt-1 sm:pt-8">
       <header class="mb-4 px-0.5">
         <h1 class="text-2xl font-extrabold leading-tight tracking-tight text-neutral">${sapa}!</h1>
-        <p class="mt-0.5 text-sm text-slate-600">Yuk, belajar sedikit demi sedikit untuk CPNS.</p>
+        <p class="mt-0.5 text-sm text-slate-600"><a href="#/materi/rencana-7-hari" class="link link-primary font-bold">Panduan 7 hari</a> · Target SKD 500+ dan SKB Prakom 90%</p>
       </header>
       <div class="home-grid">
       <div class="home-col home-col-left">
@@ -501,6 +553,7 @@ function packCard(p) {
     <div class="mt-3 flex flex-wrap gap-2">
       <span class="${chipCls}">${icon('grid', 'h-3.5 w-3.5 text-primary')} ${p.questions.length} soal</span>
       <span class="${chipCls}">${icon('clock', 'h-3.5 w-3.5 text-amber-500')} ${p.minutes} menit</span>
+      ${p.questions.some(q => q.practice === 'GOCPNS') ? `<span class="${chipCls}">Soal baru GOCPNS</span>` : ''}
       ${r
         ? `<span class="inline-flex items-center gap-1 rounded-full bg-green-500 px-2.5 py-1 text-xs font-extrabold text-white">${icon('tick', 'h-3.5 w-3.5')} Selesai</span>`
         : `<span class="inline-flex items-center rounded-full border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-400">Belum dikerjakan</span>`}
@@ -526,7 +579,7 @@ function renderSkd() {
   const pct = packs.length ? Math.round(nDone / packs.length * 100) : 0;
   shell('skd', `
     ${breadcrumb([['#/', 'Beranda'], [null, 'SKD']])}
-    ${pageHead('Seleksi Kompetensi Dasar (SKD)', 'Pilih jenis latihan, lalu pilih paket soal. Isi tiap paket selalu sama, jadi kamu bisa melihat kemajuanmu.')}
+    ${pageHead('Seleksi Kompetensi Dasar (SKD)', 'Pilih jenis latihan, lalu pilih paket soal. Paket mengutamakan soal yang belum pernah kamu buka.')}
     <div role="tablist" class="mb-3.5 grid w-full grid-cols-4 gap-2 sm:inline-grid sm:w-auto">${tabs}</div>
     <div class="mb-4 rounded-2xl bg-white/80 p-3.5 ring-1 ring-slate-200">
       <p class="text-xs leading-relaxed text-slate-600 sm:text-sm">${g.desc}</p>
@@ -583,6 +636,7 @@ function renderSkb(key) {
 
     ${pageHead('SKB ' + esc(m.name), esc(m.desc) + ` Setiap paket berisi ${SKB_SIZE} soal.`,
       `<a href="#/skb" class="hidden sm:inline-flex btn btn-ghost btn-sm gap-2 text-slate-700 hover:bg-slate-100 rounded-xl">${icon('back', 'h-4 w-4 text-primary')} Ganti bidang</a>`)}
+    ${key === 'SKB_PRAKOM' ? '<p class="mb-3 text-xs text-slate-600">Target latihan 90% · Kisi-kisi Ahli Pertama. <a class="link link-primary" href="#/materi/rencana-7-hari">Panduan 7 hari</a></p>' : ''}
     ${packs.length ? `<div class="mb-4 flex items-center gap-3 rounded-2xl bg-white/80 p-3.5 ring-1 ring-slate-200"><div class="lx-track !h-2.5"><div class="lx-fill" style="width:${pct}%"></div></div><span class="shrink-0 text-xs font-bold text-slate-600">${nDone} dari ${packs.length} paket</span></div>` : ''}
     <div class="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">${packs.map(packCard).join('')}</div>
     ${(() => { const t = MATERI.find(x => x.buckets && x.buckets.length === 1 && x.buckets[0] === key && !x.subs); return t
@@ -724,10 +778,13 @@ function lessonMarkDone(t, i) {
 /* v26: kemajuan SEBAGIAN satu langkah = materi sudah dibaca, soal baru terjawab benar `solved` dari `total` (mis. 2/3).
    Langkah baru dianggap selesai (centang) hanya setelah semua soalnya benar. */
 const lessonPart = (t, i) => ((lessonStore[t.id] && lessonStore[t.id].part) || {})[i] || null;
-function lessonSetPart(t, i, solved, total) {
-  if (lessonDone(t)[i]) return;
-  const e = lessonStore[t.id] || (lessonStore[t.id] = { done: {} });
-  (e.part || (e.part = {}))[i] = { solved, total };
+function lessonSetPart(L) {
+  if (lessonDone(L.t)[L.i]) return;
+  const e = lessonStore[L.t.id] || (lessonStore[L.t.id] = { done: {} });
+  (e.part || (e.part = {}))[L.i] = {
+    solved: L.solved, total: L.total, queue: L.queue.map(q => q.id),
+    used: [...L.used], answered: L.answered, correct: L.correct, at: Date.now()
+  };
   e.at = Date.now();
   store.set(LESSON_KEY, lessonStore);
 }
@@ -758,65 +815,64 @@ function lxQuestionTokens(q) {
   if (!s) { s = lxTokens([q.q, q.options.join(' '), q.trick, q.explanation].join(' ')); lxQTok.set(q.id, s); }
   return s;
 }
-const lxPlans = {};
-function lessonPlan(t) {
-  const pool = materiPool(t).filter(q => q && q.q && q.options && q.options.length >= 2 && typeof q.ans === 'number' && q.q.length <= 650);
-  const key = t.id + ':' + pool.length;
-  if (lxPlans[key]) return lxPlans[key];
-  const steps = lessonSteps(t), used = new Set(), usedKey = new Set(), plan = [];
-  const dupKey = q => (q.trick || q.q).slice(0, 70).toLowerCase();
-  steps.forEach(st => {
+const lxPlans = new Map();
+const lxChoices = new Map();
+function inlineLessonQuestions(t, st, i) {
+  return (st.quiz || []).map((q, n) => {
+    const ans = q.ans ?? 0;
+    return { ...q, id: q.id || `LQ-${t.id}-${i}-${n + 1}`, ans,
+      scores: q.scores || (q.options || []).map((_, k) => k === ans ? 5 : 0),
+      category: q.category || t.group, sub: q.sub || t.title };
+  }).filter(questions.valid);
+}
+function lessonChoices(t) {
+  if (lxChoices.has(t.id)) return lxChoices.get(t.id);
+  const pool = materiPool(t).filter(q => questions.valid(q) && q.q.length <= 650);
+  const choices = lessonSteps(t).map((st, i) => {
     const want = lxTokens(st.kind === 'tips' ? (st.tips || []).join(' ') : st.title + ' ' + st.html);
     const ranked = pool.map(q => {
-      let sc = 0; lxQuestionTokens(q).forEach(w => { if (want.has(w)) sc++; });
-      if (st.fam && q.fam && [].concat(st.fam).indexOf(q.fam) >= 0) sc += 100;   // v31: soal berkonsep sama dengan langkah ini didahulukan
-      return { q, sc: sc + ((q.trick || q.explanation) ? 0.5 : 0), h: hashStr(q.id + '|' + t.id) };
-    }).sort((a, b) => (b.sc - a.sc) || (a.h - b.h));
-    const pick = [];
-    (st.quiz || []).slice(0, LESSON_QS).forEach((q, n) => {      // soal khusus langkah ini (opsional, di js/materi.js)
-      const c = Object.assign({}, q);
-      c.id = c.id || `LQ-${t.id}-${steps.indexOf(st)}-${n + 1}`;
-      c.options = c.options || []; c.ans = typeof c.ans === 'number' ? c.ans : 0;
-      c.trick = c.trick || ''; c.explanation = c.explanation || '';
-      pick.push(c); used.add(c.id);
-    });
-    for (const r of ranked) {                                   // pass 1: tanpa soal kembar
-      if (pick.length >= LESSON_QS) break;
-      if (used.has(r.q.id) || usedKey.has(dupKey(r.q))) continue;
-      pick.push(r.q); used.add(r.q.id); usedKey.add(dupKey(r.q));
-    }
-    for (const r of ranked) {                                   // pass 2: isi kekurangan
-      if (pick.length >= LESSON_QS) break;
-      if (used.has(r.q.id)) continue;
-      pick.push(r.q); used.add(r.q.id);
-    }
-    plan.push(pick);
+      let sc = 0;
+      lxQuestionTokens(q).forEach(w => { if (want.has(w)) sc++; });
+      if (st.fam && q.fam && [].concat(st.fam).includes(q.fam)) sc += 100;
+      return { q, sc, h: hashStr(q.id + '|' + t.id) };
+    }).filter(r => r.sc > 0).sort((a, b) => (b.sc - a.sc) || (a.h - b.h));
+    return inlineLessonQuestions(t, st, i).concat(ranked.map(r => r.q));
   });
-  lxPlans[key] = plan;
+  lxChoices.set(t.id, choices);
+  return choices;
+}
+function lessonPlan(t) {
+  if (lxPlans.has(t.id)) return lxPlans.get(t.id);
+  const used = new Set();
+  const plan = lessonChoices(t).map(pool => {
+    const pick = selectQuestions(pool, LESSON_QS, used);
+    pick.forEach(q => used.add(questions.key(q)));
+    return pick;
+  });
+  lxPlans.set(t.id, plan);
   return plan;
 }
 
 /* v31: soal PENGGANTI. Jika jawaban salah, soal itu tidak diulang persis, melainkan diganti soal lain
    dengan KONSEP yang sama (label fam sama; bila tidak ada -> sub-topik sama + kemiripan kata kunci). */
 function lessonReplacement(L, q) {
-  const pool = materiPool(L.t).filter(x => x && x.q && x.options && x.options.length >= 2 && typeof x.ans === 'number' && x.q.length <= 650);
-  const otherPlan = new Set(); lessonPlan(L.t).forEach(a => a.forEach(x => otherPlan.add(x.id)));
-  const planRsv = planReservedSet();   // v34: soal Try Out/latihan Planning jangan dipakai sebagai soal pengganti
-  const qt = lxQuestionTokens(q), head = String(q.q).slice(0, 60).toLowerCase();
-  let best = null, bestSc = 0, fallback = null, fbSc = 0;
-  pool.forEach(x => {
-    if (L.used.has(x.id) || String(x.q).slice(0, 60).toLowerCase() === head) return;
-    let sc = 0;
-    if (q.fam && x.fam === q.fam) sc += 100;
-    if (x.sub && x.sub === q.sub) sc += 10;
-    if (q.trick && x.trick && String(x.trick).slice(0, 40) === String(q.trick).slice(0, 40)) sc += 20;
-    let ov = 0; lxQuestionTokens(x).forEach(w => { if (qt.has(w)) ov++; });
-    sc += Math.min(ov, 30) / 3 + Math.random();
-    if (sc < 10) return;                                       // harus sekonsep / sesub-topik
-    if (otherPlan.has(x.id) || planRsv.has(x.id)) { if (sc > fbSc) { fbSc = sc; fallback = x; } return; }
-    if (sc > bestSc) { bestSc = sc; best = x; }
-  });
-  return best || fallback || null;
+  const choices = lessonChoices(L.t)[L.i];
+  const otherPlan = new Set(lessonPlan(L.t).flat().map(x => x.id));
+  const planRsv = planReservedSet();
+  const qt = lxQuestionTokens(q);
+  const idx = planQIndex();
+  const alreadyUsed = new Set([...L.used].map(id => idx.get(id)).filter(Boolean).map(questions.key));
+  const candidates = choices.filter(x => !seenBefore(x) && !L.used.has(x.id) && !alreadyUsed.has(questions.key(x)))
+    .map(x => {
+      let common = 0;
+      lxQuestionTokens(x).forEach(w => { if (qt.has(w)) common++; });
+      const concept = q.fam && x.fam === q.fam;
+      const relevant = concept || x.sub === q.sub || common >= 5;
+      const score = (concept ? 100 : 0) + (x.sub === q.sub ? 12 : 0) + Math.min(common, 24)
+        - (otherPlan.has(x.id) || planRsv.has(x.id) ? 3 : 0);
+      return { x, relevant, score };
+    }).filter(c => c.relevant).sort((a, b) => b.score - a.score);
+  return candidates[0]?.x || null;
 }
 /* v31: materi bertambah di bagian akhir (sebelum "Cara Menjawab Cepat") -> pindahkan penanda selesai langkah tips lama */
 function lessonMigrateV31() {
@@ -929,10 +985,30 @@ function lessonOpen(id, i) {
   const t = MATERI.find(x => x.id === id); if (!t) return;
   const steps = lessonSteps(t); if (!steps[i]) return;
   if (i > 0 && !lessonDone(t)[i - 1]) { toast('Selesaikan langkah sebelumnya dulu ya 🔒'); return; }
-  const qs = (lessonPlan(t)[i] || []).slice();
   const pt = lessonDone(t)[i] ? null : lessonPart(t, i);
-  const resume = !!(pt && pt.total === qs.length && pt.solved < qs.length);      // materi sudah dibaca -> lanjut ke soal sisa
-  lesson = { t, steps, i, phase: resume ? 'quiz' : 'read', queue: resume ? qs.slice(pt.solved) : qs, total: qs.length, solved: resume ? pt.solved : 0, picked: null, checked: false, ok: false, wrongIds: new Set(), used: new Set(qs.map(x => x.id)), answered: 0, correct: 0, pending: null };
+  const plan = lessonPlan(t);
+  const reserved = new Set(plan.flatMap((qs, n) => n === i ? [] : qs.map(questions.key)));
+  const choices = lessonChoices(t)[i];
+  const ordered = (plan[i] || []).concat(choices.filter(q => !reserved.has(questions.key(q))), choices);
+  const idx = planQIndex();
+  const used = new Set((pt?.used || []).map(questions.resolve));
+  const saved = Array.isArray(pt?.queue) ? pt.queue.map(id => idx.get(questions.resolve(id))).filter(Boolean) : [];
+  const savedKeys = new Set();
+  const queue = saved.filter(q => {
+    const key = questions.key(q);
+    if (savedKeys.has(key)) return false;
+    savedKeys.add(key);
+    return true;
+  });
+  const needed = pt && pt.total > pt.solved ? pt.total - pt.solved : LESSON_QS;
+  const available = ordered.filter(q => !used.has(q.id));
+  queue.push(...selectQuestions(available, needed - queue.length, savedKeys));
+  const resume = !!(pt && queue.length);
+  const solved = resume ? pt.solved : 0;
+  queue.forEach(q => used.add(q.id));
+  lesson = { t, steps, i, phase: resume ? 'quiz' : 'read', queue, total: solved + queue.length, solved,
+    picked: null, checked: false, ok: false, used, answered: resume ? (pt.answered ?? solved) : 0,
+    correct: resume ? (pt.correct ?? solved) : 0, pending: null };
   document.documentElement.classList.add('lx-open');
   let el = $('#lesson');
   if (!el) {
@@ -977,6 +1053,7 @@ function lessonPaint() {
     foot = `<div class="lx-foot"><div class="lx-foot-in"><button class="lx-btn lx-blue" onclick="App.lessonStartQuiz()">${L.total ? 'Lanjut ke soal' : 'Selesai membaca'} ${icon('arrowR', 'h-5 w-5')}</button></div></div>`;
   } else if (L.phase === 'quiz') {
     const q = L.queue[0];
+    markSeen(q);
     const opts = q.options.map((o, k) => {
       let c = '';
       if (L.checked) c = k === q.ans ? 'is-ok' : (k === L.picked ? 'is-bad' : '');
@@ -993,7 +1070,7 @@ function lessonPaint() {
     } else {
       foot = `<div class="lx-sheet ${L.ok ? 'ok' : 'bad'}" role="status" aria-live="polite"><div class="lx-sheet-in">
           <h3>${L.ok ? '🎉 Benar!' : '😅 Belum tepat'}</h3>
-          <div class="lx-why">${!L.ok ? `<div><b>Jawaban benar:</b> ${LETTERS[q.ans]}. ${escO(q.options[q.ans])}</div>` : ''}${q.explanation ? `<div class="mt-1.5"><b>Pembahasan:</b> ${esc(q.explanation)}</div>` : ''}${!L.ok ? `<div class="mt-1.5"><b>🔁 Berikutnya:</b> ${L.pending ? 'soal ini diganti soal baru dengan konsep yang sama, supaya kamu belajar dari kesalahan.' : 'soal ini akan diulang di akhir.'}</div>` : ''}${q.trick && !String(q.explanation || '').includes(q.trick) ? `<div class="mt-1.5"><b>Trik:</b> ${esc(q.trick)}</div>` : ''}</div>
+          <div class="lx-why">${!L.ok ? `<div><b>Jawaban benar:</b> ${LETTERS[q.ans]}. ${escO(q.options[q.ans])}</div>` : ''}${q.explanation ? `<div class="mt-1.5"><b>Pembahasan:</b> ${esc(q.explanation)}</div>` : ''}${!L.ok ? `<div class="mt-1.5"><b>🔁 Berikutnya:</b> ${L.pending ? 'soal ini diganti soal baru dengan konsep yang sama, supaya kamu belajar dari kesalahan.' : 'baca pembahasannya, lalu lanjut.'}</div>` : ''}${q.trick && !String(q.explanation || '').includes(q.trick) ? `<div class="mt-1.5"><b>Trik:</b> ${esc(q.trick)}</div>` : ''}</div>
           <button class="lx-btn ${L.ok ? 'lx-green' : 'lx-red'} mt-3" onclick="App.lessonNext()">${L.ok ? 'Lanjut' : 'Mengerti, lanjut'}</button>
         </div></div>`;
     }
@@ -1023,7 +1100,7 @@ const lessonApi = {
   lessonStartQuiz() {
     if (!lesson) return;
     if (!lesson.total) { lessonMarkDone(lesson.t, lesson.i); lesson.phase = 'result'; }
-    else { lesson.phase = 'quiz'; lessonSetPart(lesson.t, lesson.i, lesson.solved, lesson.total); }   // materi selesai dibaca = tersimpan
+    else { lesson.phase = 'quiz'; lessonSetPart(lesson); }   // materi selesai dibaca = tersimpan
     lessonPaint();
   },
   lessonReread() { if (!lesson || lesson.phase !== 'quiz') return; lesson.phase = 'read'; lesson.picked = null; lesson.checked = false; lessonPaint(); },
@@ -1032,19 +1109,21 @@ const lessonApi = {
     if (!lesson || lesson.checked || lesson.picked === null) return;
     const q = lesson.queue[0];
     lesson.ok = lesson.picked === q.ans; lesson.checked = true;
-    markSeen(q.id);
-    lesson.answered++; if (lesson.ok) lesson.correct++;
-    lesson.pending = null;
-    if (!lesson.ok) { lesson.wrongIds.add(q.id); lesson.pending = lessonReplacement(lesson, q); if (lesson.pending) lesson.used.add(lesson.pending.id); }
+    lesson.answered++;
+    if (lesson.ok) lesson.correct++;
+    lesson.pending = lesson.ok ? null : lessonReplacement(lesson, q);
     lessonPaint();
   },
   lessonNext() {
     if (!lesson || !lesson.checked) return;
-    if (lesson.ok) { lesson.queue.shift(); lesson.solved++; if (lesson.queue.length) lessonSetPart(lesson.t, lesson.i, lesson.solved, lesson.total); }
-    else {                                                  // salah -> diganti soal sekonsep (v31); jika tak ada, soal yang sama diulang di akhir
-      const bad = lesson.queue.shift();
-      if (lesson.pending) { markSeen(lesson.pending.id); lesson.queue.push(lesson.pending); } else lesson.queue.push(bad);
+    lesson.queue.shift();
+    if (lesson.pending) {
+      lesson.queue.push(lesson.pending);
+      lesson.used.add(lesson.pending.id);
+    } else {
+      lesson.solved++;
     }
+    if (lesson.queue.length) lessonSetPart(lesson);
     lesson.pending = null;
     lesson.picked = null; lesson.checked = false; lesson.ok = false;
     if (!lesson.queue.length) { lessonMarkDone(lesson.t, lesson.i); lesson.phase = 'result'; }
@@ -1266,11 +1345,11 @@ function planSummary(days) {
    Soal yang sudah dipakai Try Out/latihan lain di planning yang sama dihindari. */
 function planPickQs(primary, secondary, n, ctx, seed) {
   const out = [], mine = new Set();
-  const valid = q => q && q.q && q.options && q.options.length >= 2 && typeof q.ans === 'number' && q.q.length <= 650;
+  const valid = q => questions.valid(q) && q.q.length <= 650;
   const run = (topics, limit) => {
     const lists = topics.map(t => materiPool(t).filter(valid).map(q => ({
-      q, h: hashStr(q.id + '|' + seed),
-      tier: (ctx.lesson.has(q.id) ? 2 : 0) + (seen.has(q.id) ? 1 : 0) + (ctx.taken.has(q.id) ? 4 : 0)
+      q, key: questions.key(q), h: hashStr(q.id + '|' + seed),
+      tier: (ctx.lesson.has(questions.key(q)) ? 1 : 0) + (seenBefore(q) ? 4 : 0) + (ctx.taken.has(questions.key(q)) ? 2 : 0)
     })).sort((a, b) => (a.tier - b.tier) || (a.h - b.h)));
     const order = shuffle(lists.map((_, i) => i), seed + 'o');
     for (let mt = 0; mt <= limit && out.length < n; mt++) {
@@ -1279,8 +1358,8 @@ function planPickQs(primary, secondary, n, ctx, seed) {
         moved = false;
         for (const i of order) {
           if (out.length >= n) break;
-          const c = lists[i].find(x => x.tier <= mt && !mine.has(x.q.id));
-          if (c) { out.push(c.q); mine.add(c.q.id); moved = true; }
+          const c = lists[i].find(x => x.tier <= mt && !mine.has(x.key));
+          if (c) { out.push(c.q); mine.add(c.key); moved = true; }
         }
       }
     }
@@ -1288,15 +1367,17 @@ function planPickQs(primary, secondary, n, ctx, seed) {
   if (secondary.length) {
     run(primary, 1);
     if (out.length < n) run(secondary, 1);
+    if (out.length < n) run(primary, 3);
+    if (out.length < n) run(secondary, 3);
     if (out.length < n) run(primary, 7);
     if (out.length < n) run(secondary, 7);
   } else run(primary, 7);
-  out.forEach(q => ctx.taken.add(q.id));
+  out.forEach(q => ctx.taken.add(questions.key(q)));
   return shuffle(out, seed + 'f').map(q => q.id);
 }
 function planGen(cfg) {
   const days = planBuild(cfg), sets = {}, ctx = { lesson: new Set(), taken: new Set() };
-  planLists(cfg).forEach(l => l.topics.forEach(t => lessonPlan(t).forEach(a => a.forEach(q => ctx.lesson.add(q.id)))));
+  planLists(cfg).forEach(l => l.topics.forEach(t => lessonPlan(t).forEach(a => a.forEach(q => ctx.lesson.add(questions.key(q))))));
   days.filter(d => d.kind === 'tryout').forEach(d => { sets[d.set] = planPickQs(d.topics, [], d.n, ctx, cfg.at + d.set); });
   days.filter(d => d.drill).forEach(d => {
     const prim = []; d.segs.forEach(s => { if (!prim.includes(s.t)) prim.push(s.t); });
@@ -1307,14 +1388,17 @@ function planGen(cfg) {
   return sets;
 }
 const planEnsureSets = () => (planCfg && planQ && planQ.at === planCfg.at) ? planQ.sets : (planCfg ? planGen(planCfg) : null);
-const planReservedSet = () => { const s = new Set(); if (planCfg && planQ && planQ.at === planCfg.at) Object.values(planQ.sets).forEach(a => a.forEach(id => s.add(id))); return s; };
+const planReservedSet = () => { const s = new Set(); if (planCfg && planQ && planQ.at === planCfg.at) Object.values(planQ.sets).forEach(a => a.forEach(id => s.add(questions.resolve(id)))); return s; };
 let planIdx = null, planIdxN = -1;
 function planQIndex() {
   const n = Object.values(BANK).reduce((a, x) => a + x.length, 0) + MATERI.length;
   if (planIdx && planIdxN === n) return planIdx;
   planIdx = new Map();
   Object.values(BANK).forEach(arr => arr.forEach(q => planIdx.set(q.id, q)));
-  MATERI.forEach(t => customQuestions(t).forEach(q => planIdx.set(q.id, q)));
+  MATERI.forEach(t => {
+    customQuestions(t).forEach(q => planIdx.set(q.id, q));
+    lessonSteps(t).forEach((st, i) => inlineLessonQuestions(t, st, i).forEach(q => planIdx.set(q.id, q)));
+  });
   planIdxN = n;
   return planIdx;
 }
@@ -1325,13 +1409,26 @@ function planPackByKey(key) {
   const d = planBuild(cfg).find(x => (x.kind === 'tryout' ? x.packKey : (x.drill && x.drill.key)) === key);
   if (!d) return null;
   const sets = planEnsureSets(), idx = planQIndex();
-  const qs = ((sets && sets[d.set]) || []).map(id => idx.get(id)).filter(Boolean);
+  const base = ((sets && sets[d.set]) || []).map(id => idx.get(questions.resolve(id))).filter(Boolean);
+  const blocked = new Set(Object.entries(sets || {}).filter(([set]) => set !== d.set)
+    .flatMap(([, ids]) => ids.map(id => idx.get(questions.resolve(id))).filter(Boolean).map(questions.key)));
+  const daily = [...new Set(d.segs.map(seg => seg.t))];
+  const pool = (daily.length ? daily.concat(d.topics.filter(t => !daily.includes(t))) : d.topics)
+    .flatMap(materiPool).filter(q => questions.valid(q) && q.q.length <= 650);
+  const count = d.n || d.drill.n;
+  const free = q => !seenBefore(q) && !blocked.has(questions.key(q));
+  const qs = selectQuestions(base.filter(free), count);
+  const used = new Set(qs.map(questions.key));
+  const replacements = selectQuestions(pool.filter(free), count - qs.length, used);
+  qs.push(...replacements);
+  replacements.forEach(q => used.add(questions.key(q)));
+  qs.push(...selectQuestions(base.concat(pool), count - qs.length, used));
   if (!qs.length) return null;
   const isTo = d.kind === 'tryout', gname = d.g === 'SKB' ? 'SKB ' + planCatName(cfg.cat) : d.g;
   return {
-    key, group: 'PLAN', kind: 'CAT', mode: 'PLAN', plan: true,
+    key, group: 'PLAN', kind: 'CAT', mode: 'PLAN', plan: true, planSet: d.set, target: cfg.cat === 'PRAKOM' ? PRAKOM_TARGET : null,
     title: isTo ? `Try Out ${gname}` : `Latihan Harian ${d.g} · Hari ${d.no}`,
-    compose: isTo ? `${qs.length} soal campuran dari seluruh materi ${gname} (Hari ${d.fromNo}–${d.toNo})` : `${qs.length} soal baru dari materi Hari ${d.no}`,
+    compose: isTo ? `${qs.length} soal campuran dari seluruh materi ${gname} (Hari ${d.fromNo}–${d.toNo})` : `${qs.length} soal latihan materi Hari ${d.no}`,
     questions: qs, minutes: isTo ? (d.g === 'TIU' ? 45 : 30) : Math.max(10, qs.length)
   };
 }
@@ -1528,7 +1625,7 @@ function planDayOpen(no) {
 const planApi = {
   planSetup() {
     const c = planCfg, cats = planSkbCats();
-    planDraft = c ? { test: c.test, cat: c.cat, days: c.days } : { test: 'SKD', cat: '', days: 14 };
+    planDraft = c ? { test: c.test, cat: c.cat, days: c.days } : { test: 'SKD', cat: '', days: 7 };
     if (planDraft.test === 'SKB' && !cats.includes(planDraft.cat)) planDraft.cat = cats[0] || '';
     planPaintSetup();
   },
@@ -1578,6 +1675,10 @@ const planApi = {
    MESIN UJIAN
    ========================================================================== */
 function startExam(pack, opts = {}) {
+  if (pack.planSet && planQ && pack.key.startsWith('PLAN-' + planQ.at + '-')) {
+    planQ.sets[pack.planSet] = pack.questions.map(q => q.id);
+    store.set(PLANQ_KEY, planQ);
+  }
   const qs = pack.questions.map((q, i) => Object.assign({}, q, { no: i + 1 }));
   exam = {
     pack, qs,
@@ -1703,6 +1804,7 @@ const xb = (cls, ic, short, long, onclick, dis) =>
 function paintQuestion() {
   const box = $('#x-q'); if (!box || !exam) return;
   const q = exam.qs[exam.idx], chosen = exam.answers[exam.idx];
+  if (!exam.finished) markSeen(q);
   const key = showKey();
   const cs = catStyle(q.category);
   const catLabel = ['TWK', 'TIU', 'TKP'].includes(q.category) ? q.category : 'SKB';
@@ -1855,6 +1957,12 @@ function openResult() {
     verdict = `<div role="alert" class="alert border-primary/30 bg-primary/10 text-sm"><span>${msg}</span></div>`;
   }
 
+  const target = full ? SKD_TARGET : (exam.pack.group === 'SKB_PRAKOM' || exam.pack.target ? Math.ceil(r.max * PRAKOM_TARGET) : null);
+  if (target) {
+    const msg = r.total >= target ? 'Target latihan tercapai.' : `Perlu tambahan ${target - r.total} poin untuk mencapai target latihan.`;
+    verdict += `<p class="text-sm text-base-content/80"><b>Target ${full ? 'SKD ' + SKD_TARGET + '/550' : 'SKB Prakom 90%'}.</b> ${msg}</p>`;
+  }
+
   const weak = Object.values(r.bySub).filter(o => o.score / o.max < 0.8)
     .sort((a, b) => a.score / a.max - b.score / b.max).slice(0, 5);
   const weakHtml = weak.length ? `
@@ -1933,12 +2041,16 @@ function toast(msg) {
 }
 
 /* ---------- dialog: mulai paket ---------- */
+let pendingPack = null;
 function openStart(key) {
-  const p = findPack(key); if (!p) return;
+  const pack = findPack(key); if (!pack) return;
+  const p = pendingPack = preparePack(pack);
   const d = $('#dlg-start');
-  const rules = p.kind === 'CAT' && p.group === 'SKD_TKP' || p.kind === 'FULL'
+  const hasTkp = p.questions.some(q => q.category === 'TKP');
+  const rules = p.kind === 'FULL'
     ? 'TWK &amp; TIU: benar +5, salah 0. TKP: tiap opsi bernilai 1–5. Soal kosong bernilai 0.'
-    : 'Benar +5, salah atau kosong 0.';
+    : hasTkp ? 'TKP: tiap opsi bernilai 1–5, kosong 0.' : 'Benar +5, salah atau kosong 0.';
+  const fresh = p.questions.filter(q => !seenBefore(q)).length;
   d.innerHTML = `
   <div class="modal-box max-w-md">
     <h3 class="text-xl font-extrabold text-neutral">${esc(p.title)}</h3>
@@ -1950,6 +2062,7 @@ function openStart(key) {
     </div>
     <ul class="mt-4 space-y-1.5 text-sm text-base-content/80">
       <li class="flex gap-2">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>${rules}</span></li>
+      <li class="flex gap-2">${icon('bolt', 'h-4 w-4 shrink-0 text-primary')}<span>${fresh} soal belum pernah dibuka${fresh < p.questions.length ? ` · ${p.questions.length - fresh} soal untuk pengulangan` : ''}</span></li>
       <li class="flex gap-2">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Waktu bisa dijeda dari menu titik tiga (⋮) di pojok kanan atas.</span></li>
       <li class="hidden gap-2 md:flex">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Pintasan keyboard: A–E untuk memilih, ← → untuk pindah soal.</span></li>
     </ul>
@@ -2059,7 +2172,9 @@ const App = {
   },
 
   confirmStart(key) {
-    const p = findPack(key); if (!p) return;
+    const p = pendingPack;
+    if (!p || p.key !== key) return;
+    pendingPack = null;
     const inst = $('#st-instant').checked;
     store.set('cpns_instant', inst);
     $('#dlg-start').close();
@@ -2067,11 +2182,9 @@ const App = {
   },
   startMateriPractice(id) {
     const t = MATERI.find(x => x.id === id); if (!t) return;
-    const pool = materiPool(t);
+    const pool = materiPool(t).filter(questions.valid);
     if (!pool.length) { toast('Belum ada soal untuk topik ini.'); return; }
-    const fresh = shuffle(pool.filter(q => !seen.has(q.id)));
-    const rest = shuffle(pool.filter(q => seen.has(q.id)));
-    const qs = fresh.concat(rest).slice(0, 10);
+    const qs = selectQuestions(shuffle(pool), 10);
     startExam({
       key: 'MATERI-' + id, group: 'MATERI', kind: 'LATIHAN', mode: 'LATIHAN', noSave: true, minutes: 0,
       title: 'Latihan: ' + t.title, compose: `${qs.length} soal latihan topik`, questions: qs
@@ -2082,7 +2195,6 @@ const App = {
   pick(i) {
     if (!exam || exam.finished || exam.paused) return;
     exam.answers[exam.idx] = i;
-    markSeen(exam.qs[exam.idx].id);
     paintScores(); paintQuestion(); paintSide();
     if (exam.instant) setTimeout(() => { const f = $('#x-q .fade-in'); if (f) f.scrollIntoView({ behavior: 'smooth', block: window.innerWidth < 1024 ? 'start' : 'nearest' }); }, 40);
   },
@@ -2116,7 +2228,7 @@ const App = {
     const d = $('#dlg-result'); if (d.open) d.close();
     const p = exam.pack, inst = exam.instant;
     if (p.group === 'MATERI') App.startMateriPractice(p.key.replace('MATERI-', ''));
-    else startExam(findPack(p.key) || p, { instant: inst });
+    else startExam(exam.finished ? preparePack(findPack(p.key) || p) : p, { instant: inst });
     if (document.activeElement) document.activeElement.blur();
   },
   async leaveExam() {
@@ -2195,7 +2307,7 @@ window.registerCPNSQuestions({
   },
   async resetProgress() {
     if (!await ask({ title: 'Reset progres?', text: 'Riwayat soal yang pernah dikerjakan dan skor terbaik semua paket akan dihapus.', ok: 'Reset', danger: true })) return;
-    seen.clear(); results = {};
+    seen.clear(); seenKeys.clear(); seenPatterns.clear(); results = {};
     store.del('cpns_seen_qids_v2'); store.del('cpns_results_v3');
     toast('Progres direset.'); route();
   }
@@ -2238,8 +2350,23 @@ function init() {
     const s = document.createElement('script'); s.src = src; s.async = true; s.onerror = () => {};
     document.head.appendChild(s);
   });
-  indexBuckets();
-  window.__onDbChange = () => { indexBuckets(); if (!exam && location.hash !== '#/ujian') route(); };
+  function updateBankIndex() {
+    indexBuckets();
+    const ids = Array.from(seen, questions.resolve);
+    seen.clear();
+    ids.forEach(id => seen.add(id));
+    const idx = planQIndex();
+    seen.forEach(id => {
+      const q = idx.get(id);
+      if (q) { seenKeys.add(questions.key(q)); seenPatterns.add(questions.pattern(q)); }
+    });
+  }
+  updateBankIndex();
+  window.__onDbChange = () => {
+    lxChoices.clear(); lxPlans.clear();
+    updateBankIndex();
+    if (!exam && location.hash !== '#/ujian') route();
+  };
   route();
 }
 init();
