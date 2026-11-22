@@ -1,10 +1,11 @@
-/* Service worker CAT CPNS — agar bisa dipasang & dibuka offline.
+/* Service worker GOCPNS — agar bisa dipasang & dibuka offline.
    Strategi: jaringan dulu (selalu dapat versi terbaru), cadangan dari cache saat offline.
    Naikkan VERSI jika menambah/mengganti file agar cache lama dibersihkan. */
-const VERSI = 'cat-cpns-v39';
+const VERSI = 'gocpns-v40:' + self.registration.scope;
 const INTI = [
   './', './index.html', './manifest.webmanifest',
   './css/app.css',
+  './db/skd/db_skd_gocpns.js', './db/skb/db_skb_prakom_gocpns.js', './js/materi_gocpns.js',
   './js/db-core.js', './js/materi.js', './js/materi_extra.js', './js/materi_extra2.js', './js/materi_extra3.js', './js/materi_fix_v23.js', './js/materi_uud_pasal_v23.js', './db/skd/db_skd_tkp_v4.js', './db/skd/db_skd_tkp_v5.js', './db/skd/db_skd_tkp_v6.js', './db/skd/db_skd_twk_v4.js', './db/skb/db_skb_prakom_v4.js', './js/patches_v21.js', './js/patches_v24.js', './js/materi_tiu_v25.js', './js/materi_tiu_studi_v27.js', './js/patches_v25.js', './js/patches_v28.js', './db/skd/db_skd_fix_v30.js', './js/patches_v30.js', './db/skd/db_skd_tiu_v4.js', './db/skd/db_skd_tiu_figural.js', './db/skb/db_skb_prakom_v3.js', './js/materi_v31_core.js', './js/materi_twk_v31.js', './js/materi_twk_v31b.js', './js/materi_tiu_v31.js', './js/materi_tiu_sulit_v31.js', './db/skd/db_skd_twk_v31.js', './db/skd/db_skd_tiu_v31a.js', './db/skd/db_skd_tiu_v31b.js', './db/skd/db_skd_tkp_v7.js', './js/materi_tiu_v32.js', './db/skd/db_skd_tiu_v32.js', './db/skd/db_skd_twk_v32.js', './js/patches_v35.js', './js/materi_skb_hukum_v35.js', './js/materi_skb_keuangan_v35.js', './js/materi_skb_pendidikan_v35.js', './js/materi_skb_kesehatan_v35.js', './db/skb/db_skb_hukum_v35.js', './db/skb/db_skb_keuangan_v35.js', './db/skb/db_skb_pendidikan_v35.js', './db/skb/db_skb_kesehatan_v35.js', './db/skd/db_skd_tiu_v36.js', './db/skd/db_skd_twk_v36.js', './db/skd/db_skd_tkp_v36.js', './js/materi_tiu_v36.js', './js/materi_twk_v36.js', './js/materi_tkp_v36.js', './js/dedupe_v35.js', './js/config.js', './js/auth.js', './js/app.js', './js/notif_v37.js',
   './db/skd/db_skd_twk.js', './db/skd/db_skd_tiu.js', './db/skd/db_skd_tkp.js',
   './db/skd/db_skd_twk_v2.js', './db/skd/db_skd_twk_v3.js', './db/skd/db_skd_tiu_v2.js', './db/skd/db_skd_tiu_v3.js', './db/skd/db_skd_tkp_v2.js', './db/skd/db_skd_tkp_v3.js', './db/skb/db_skb_prakom_v2.js',
@@ -21,22 +22,29 @@ const INTI = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSI).then(c => Promise.all(INTI.map(u => c.add(u).catch(() => {})))).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSI).then(c => c.addAll(INTI)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSI).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSI && (/^cat-cpns-v\d+$/.test(k) || (k.startsWith('gocpns-v') && k.endsWith(':' + self.registration.scope)))).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
-  e.respondWith(
-    fetch(req).then(res => {
-      if (res && res.ok) { const salin = res.clone(); caches.open(VERSI).then(c => c.put(req, salin)); }
-      return res;
-    }).catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || (req.mode === 'navigate' ? caches.match('./index.html') : Response.error())))
-  );
+  const cache = caches.open(VERSI);
+  e.respondWith(fetch(req).then(res => {
+    if (res.ok) {
+      const copy = res.clone();
+      e.waitUntil(cache.then(c => c.put(req, copy)).catch(() => {}));
+    }
+    return res;
+  }).catch(async () => {
+    const c = await cache;
+    return (await c.match(req, { ignoreSearch: true }))
+      || (req.mode === 'navigate' && await c.match('./index.html'))
+      || Response.error();
+  }));
 });
 
 /* v37: klik notifikasi pengingat belajar -> buka/fokuskan aplikasi ke materi terkait */

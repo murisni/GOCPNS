@@ -7,17 +7,22 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="CAT CPNS">
+  <meta name="apple-mobile-web-app-title" content="GOCPNS">
   <meta name="format-detection" content="telephone=no">
-  <title>CAT CPNS — Materi, Latihan SKD &amp; SKB</title>
+  <title>GOCPNS — Materi, Latihan SKD &amp; SKB</title>
   <meta name="description" content="Belajar materi, latihan paket soal SKD dan SKB CPNS dengan simulasi CAT.">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest?v=40">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=40">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=40">
   <link rel="stylesheet" href="css/app.css?v=37">
 </head>
 <body class="min-h-dvh font-sans antialiased">
-  <div id="app"></div>
+  <div id="app">
+    <div class="flex min-h-dvh flex-col items-center justify-center gap-3">
+      <img src="icons/icon-192.png?v=40" width="64" height="64" class="rounded-2xl" alt="">
+      <p class="text-xl font-extrabold tracking-tight text-neutral">GOCPNS</p>
+    </div>
+  </div>
 
   <!-- Dialog bersama (diisi lewat JS) -->
   <dialog id="dlg-confirm" class="modal modal-bottom sm:modal-middle">
@@ -39,7 +44,7 @@
   <dialog id="dlg-menu" class="modal modal-bottom sm:modal-middle"></dialog>
 
   <!-- 1) inti bank soal  2) file bank soal  3) materi  4) aplikasi -->
-  <script src="js/db-core.js"></script>
+  <script src="js/db-core.js?v=40"></script>
   <script src="db/skd/db_skd_twk.js"></script>
   <script src="db/skd/db_skd_twk_v2.js"></script>
   <script src="db/skd/db_skd_twk_v3.js?v=22"></script>
@@ -104,17 +109,20 @@
   <script src="js/materi_tiu_v36.js?v=36"></script>
   <script src="js/materi_twk_v36.js?v=36"></script>
   <script src="js/materi_tkp_v36.js?v=36"></script>
-  <script src="js/dedupe_v35.js?v=35"></script>
+  <script src="db/skd/db_skd_gocpns.js?v=40"></script>
+  <script src="db/skb/db_skb_prakom_gocpns.js?v=40"></script>
+  <script src="js/materi_gocpns.js?v=40"></script>
+  <script src="js/dedupe_v35.js?v=40"></script>
   <script src="js/config.js?v=22"></script>
-  <script src="js/auth.js?v=22"></script>
-  <script src="js/app.js?v=37"></script>
+  <script src="js/auth.js?v=40"></script>
+  <script src="js/app.js?v=40"></script>
   <script src="js/notif_v37.js?v=37"></script>
 
   <!-- PWA: modal ajakan pasang aplikasi + tombol cadangan + service worker (hanya jalan di HTTPS / localhost) -->
   <dialog id="dlg-pwa" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box max-w-sm text-center outline-none" tabindex="-1" autofocus>
-      <img src="icons/icon-192.png" alt="" class="mx-auto h-16 w-16 rounded-2xl shadow-md">
-      <h3 class="mt-4 text-lg font-extrabold text-neutral">Pasang CAT CPNS di perangkatmu</h3>
+      <img src="icons/icon-192.png?v=40" alt="" class="mx-auto h-16 w-16 rounded-2xl shadow-md">
+      <h3 class="mt-4 text-lg font-extrabold text-neutral">Pasang GOCPNS di perangkatmu</h3>
       <p class="mt-1 text-sm text-base-content/70">Buka lebih cepat dari layar utama, tampil layar penuh, dan tetap bisa dipakai tanpa internet.</p>
       <p id="pwa-ios" hidden class="mt-3 rounded-xl bg-base-200 p-3 text-left text-sm">Ketuk ikon <b>Bagikan</b> (kotak dengan panah ke atas) di browser, lalu pilih <b>Tambah ke Layar Utama</b>.</p>
       <div class="modal-action act-stack">
