@@ -29,6 +29,7 @@ const ICON = {
   lock: 'M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z',
   tick: 'M4.5 12.75l6 6 9-13.5',
   menu: 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5',
+  bell: 'M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0',
   puzzle: 'M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z',
   book: 'M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25',
   clipboard: 'M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3l1.5 1.5 3-3.75',
@@ -272,6 +273,7 @@ function navbar(active) {
   <div class="mrow sm:hidden">
     <button type="button" class="mburger" onclick="App.toggleHMenu(event)" aria-label="Menu" aria-haspopup="true" aria-expanded="false" aria-controls="hmenu">${icon('menu', 'h-6 w-6')}</button>
     <div id="hmenu" class="hmenu" role="menu" hidden>
+      <button type="button" role="menuitem" onclick="App.hmenu('notif')">${icon('bell', 'h-5 w-5')}<span>Pengingat belajar</span></button>
       <button type="button" role="menuitem" onclick="App.hmenu('db')">${icon('db', 'h-5 w-5')}<span>Input DB</span></button>
       ${au ? `<button type="button" role="menuitem" onclick="App.hmenu('profile')">${icon('user', 'h-5 w-5')}<span>${srv && !usr ? 'Profil / Masuk' : 'Profil'}</span>${srv ? `<i class="hmenu-dot ${usr ? 'on' : ''}" aria-hidden="true"></i>` : ''}</button>` : ''}
     </div>
@@ -287,6 +289,7 @@ function navbar(active) {
       <div class="navbar-center flex"><ul class="menu menu-horizontal gap-1 px-1">${li}</ul></div>
       <div class="navbar-end gap-1">
         ${window.Auth ? `<button class="btn btn-ghost btn-sm gap-2 rounded-xl text-slate-700 hover:bg-slate-100" onclick="Auth.openProfile()" aria-label="Profil dan akun">${icon('user', 'h-4 w-4')}<span class="font-semibold">${window.Auth.user() ? esc(window.Auth.user()) : (window.Auth.hasServer ? 'Masuk' : 'Profil')}</span></button>` : ''}
+        <button class="btn btn-ghost btn-sm gap-2 text-slate-700 hover:bg-slate-100 rounded-xl" onclick="CPNSNotif.open()" aria-label="Pengingat belajar">${icon('bell', 'h-5 w-5')}<span class="hidden lg:inline">Pengingat</span></button>
         <button class="btn btn-ghost btn-sm gap-2 text-slate-700 hover:bg-slate-100 rounded-xl" onclick="App.openDb()" aria-label="Kelola database soal">${icon('db', 'h-4 w-4')}<span class="font-semibold">Database</span></button>
       </div>
     </div>
@@ -2050,7 +2053,8 @@ const App = {
   hmenu(which) {
     const m = $('#hmenu'); if (m) m.hidden = true;
     const b = $('.mburger'); if (b) b.setAttribute('aria-expanded', 'false');
-    if (which === 'db') openDb();
+    if (which === 'notif' && window.CPNSNotif) window.CPNSNotif.open();
+    else if (which === 'db') openDb();
     else if (which === 'profile' && window.Auth) window.Auth.openProfile();
   },
 
