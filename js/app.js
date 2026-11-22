@@ -157,7 +157,7 @@ const SKB_SIZE = 20;   // soal per paket SKB
 const FULL_MIX = { TWK: 30, TIU: 35, TKP: 45 };  // komposisi tryout SKD
 const PASSING = { TWK: 65, TIU: 80, TKP: 166 };
 const SKD_TARGET = 505;
-const PRAKOM_TARGET = 0.9;
+const SKB_TARGET = 0.9;
 
 const SKD_GROUPS = {
   SKD_FULL: { label: 'Tryout Lengkap', short: 'Tryout', desc: '30 TWK + 35 TIU + 45 TKP • 100 menit — acuan format CPNS 2024.' },
@@ -173,7 +173,44 @@ const SKB_META = {
   SKB_PENDIDIKAN: { name: 'Pendidikan, Guru & Dosen', short: 'Pendidikan', desc: 'Kompetensi pendidik, asesmen, taksonomi Bloom (HOTS), teori belajar konstruktivistik.' }
 };
 const skbKeys = () => Object.keys(BANK).filter(k => k.startsWith('SKB_') && BANK[k].length);
+const TARGET_KEY = 'cpns_target_v1';
 const skbMeta = k => SKB_META[k] || { name: k.replace('SKB_', '').replace(/_/g, ' '), short: k.replace('SKB_', ''), desc: 'Bank soal tambahan.' };
+
+const targetSkbKeys = () => skbKeys().filter(key => key !== 'SKB_SKD' && /^SKB_[A-Z0-9_]+$/.test(key));
+let studyTarget = store.get(TARGET_KEY, null);
+function targetPreference() {
+  if (studyTarget) return { role: String(studyTarget.role || ''), bucket: String(studyTarget.bucket || '') };
+  return { role: '', bucket: planCfg?.cat ? 'SKB_' + planCfg.cat : '' };
+}
+function saveStudyTarget(role, bucket) {
+  const previous = targetPreference();
+  const next = { role: String(role || '').trim().slice(0, 100),
+    bucket: targetSkbKeys().includes(bucket) ? bucket : '' };
+  if (previous.role !== next.role || previous.bucket !== next.bucket || !studyTarget) {
+    studyTarget = { ...next, at: Date.now() };
+    store.set(TARGET_KEY, studyTarget);
+  }
+  return next;
+}
+
+function targetEditorHTML() {
+  const current = targetPreference();
+  const selected = key => key === current.bucket ? ' selected' : '';
+  const choices = targetSkbKeys().map(key => `<option value="${esc(key)}"${selected(key)}>${esc(skbMeta(key).name)} · ${bankLen(key)} soal</option>`).join('');
+  const activePlan = planCfg?.cat ? ' Planning yang sudah dibuat bisa disesuaikan lewat Atur planning.' : '';
+  return `<form class="mt-4 rounded-2xl border border-base-300 p-3 text-left" onsubmit="return App.saveTarget(event)">
+    <h4 class="text-sm font-extrabold">Target jabatan dan SKB</h4>
+    <label class="mt-2 block text-xs font-bold" for="target-role">Nama jabatan (opsional)</label>
+    <input id="target-role" name="targetRole" class="input input-bordered input-sm mt-1 w-full"
+      maxlength="100" value="${esc(current.role)}" placeholder="Misalnya Auditor Ahli Pertama">
+    <label class="mt-2 block text-xs font-bold" for="target-bucket">Bidang latihan SKB</label>
+    <select id="target-bucket" name="targetBucket" class="select select-bordered select-sm mt-1 w-full">
+      <option value="">Belum dipilih</option>${choices}</select>
+    <p class="mt-2 text-xs text-base-content/70">Pilih bidang yang paling sesuai. Cakupan latihan mengikuti bank bidang yang dipilih.${activePlan}</p>
+    <button class="btn btn-primary btn-sm mt-2" type="submit">Simpan target</button>
+    <p class="mt-1 text-xs" role="status" data-target-status></p>
+  </form>`;
+}
 
 function chunk(arr, size) { const out = []; for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size)); return out; }
 
@@ -387,9 +424,10 @@ function renderHome() {
   const topicDone = rows.filter(x => x.p.total && x.p.pct === 100).length;
   const last = rows.filter(x => x.at).sort((a, b) => b.at - a.at)[0] || null;
   const open = x => x.p.pct < 100;
+  const preferred = targetPreference();
   /* v29: pilih topik "lanjutkan" untuk tiap jalur (TWK / TIU / TKP / SKB) secara terpisah */
   const pickFor = g => {
-    const gr = rows.filter(x => x.t.group === g);
+    const gr = rows.filter(x => x.t.group === g && (g !== 'SKB' || (preferred.bucket ? 'SKB_' + x.t.skbCategory === preferred.bucket : x.at > 0)));
     const lastG = gr.filter(x => x.at).sort((a, b) => b.at - a.at)[0] || null;
     let c = null, lb = 'Mulai belajar';
     if (lastG && open(lastG)) { c = lastG; lb = 'Lanjutkan belajar'; }
@@ -486,13 +524,14 @@ function renderHome() {
     <div class="home-wrap mx-auto w-full max-w-xl pb-2 pt-1 sm:pt-8">
       <header class="mb-4 px-0.5">
         <h1 class="text-2xl font-extrabold leading-tight tracking-tight text-neutral">${sapa}!</h1>
-        <p class="mt-0.5 text-sm text-slate-600"><a href="#/materi/rencana-7-hari" class="link link-primary font-bold">Panduan 7 hari</a> · Target SKD 500+ dan SKB Prakom 90%</p>
+        <p class="mt-0.5 text-sm text-slate-600"><a href="#/planning" class="link link-primary font-bold">Planning 7 hari</a> · Target SKD 500+${preferred.bucket ? ` dan SKB ${esc(skbMeta(preferred.bucket).short)} 90%` : ''}</p>
+        <p class="mt-1 text-xs"><a href="#/materi/rencana-7-hari" class="link link-primary">Panduan 7 hari dan rumus cepat TIU</a></p>
       </header>
       <div class="home-grid">
       <div class="home-col home-col-left">
       ${resume}
       ${cont}
-      ${Object.keys(reviews).length ? `<button type="button" class="lx-btn lx-blue mb-4" onclick="App.openReview()">${icon('bolt')} Latihan dari hasil tryout</button>` : ''}
+      ${reviewIssues('ALL').length ? `<button type="button" class="lx-btn lx-blue mb-4" onclick="App.openReview()">${icon('bolt')} Latihan dari hasil tryout</button>` : ''}
       ${stats}
       </div>
       <section class="home-col home-col-right" aria-label="Pilih jalur belajar">
@@ -599,7 +638,8 @@ function renderSkd() {
 function renderSkb(key) {
   if (!key || !BANK[key]) {
     const icons = { SKB_PRAKOM: 'db', SKB_KESEHATAN: 'check', SKB_HUKUM: 'clipboard', SKB_KEUANGAN: 'trophy', SKB_PENDIDIKAN: 'book' };
-    const cards = skbKeys().map(k => {
+    const preferred = targetPreference().bucket;
+    const cards = skbKeys().sort((a, b) => Number(b === preferred) - Number(a === preferred)).map(k => {
       const m = skbMeta(k), n = bankLen(k), ps = packsFor(k), np = ps.length;
       const done = ps.filter(p => results[p.key]).length;
       const all = np > 0 && done === np;
@@ -608,7 +648,7 @@ function renderSkb(key) {
       <a href="#/skb/${k}" class="flex min-w-0 items-center gap-3.5 rounded-3xl border-2 border-b-4 ${all ? 'border-green-300 bg-green-50/60' : 'border-slate-200 bg-white'} p-4 transition active:translate-y-[2px] active:border-b-2 sm:hover:border-indigo-300">
         <span class="relative grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-indigo-500 text-white">${icon(icons[k] || 'briefcase', 'h-8 w-8')}${all ? `<span class="absolute -right-1.5 -top-1.5 grid h-6 w-6 place-items-center rounded-full bg-green-500 ring-2 ring-white">${icon('tick', 'h-3.5 w-3.5')}</span>` : ''}</span>
         <span class="min-w-0 flex-1">
-          <span class="block text-base font-extrabold leading-snug text-slate-900">${esc(m.name)}</span>
+          <span class="block text-base font-extrabold leading-snug text-slate-900">${esc(m.name)}${k === preferred ? ' · Targetmu' : ''}</span>
           <span class="mt-0.5 line-clamp-2 block text-xs leading-snug text-slate-500">${esc(m.desc)}</span>
           <span class="mt-2 flex items-center gap-2.5"><span class="lx-track !h-2.5"><span class="lx-fill block" style="width:${pct}%"></span></span><span class="shrink-0 text-[0.7rem] font-bold text-slate-600">${done}/${np} paket</span></span>
           <span class="mt-1 block text-[0.7rem] font-semibold text-indigo-600">${fmtNum(n)} soal</span>
@@ -1222,7 +1262,7 @@ let planQ = store.get(PLANQ_KEY, null);
 let planDraft = null;
 
 function planSanitize(c) {
-  if (c?.test === 'GABUNG') return { test: 'GABUNG', cat: 'PRAKOM', days: 7, at: c.at || Date.now() };
+  if (c?.test === 'GABUNG') return { test: 'GABUNG', cat: typeof c.cat === 'string' ? c.cat : 'PRAKOM', days: 7, at: c.at || Date.now(), updated: c.updated || c.at };
   if (!c || (c.test !== 'SKD' && c.test !== 'SKB')) return null;
   const days = Math.round(Number(c.days));
   if (!(days >= 1)) return null;
@@ -1236,6 +1276,7 @@ const planDlg = id => {
 const stepCount = t => (t.sections || []).length + ((t.tips || []).length ? 1 : 0);   // sama dengan lessonSteps(t).length
 const planSkbCats = () => MATERI.reduce((a, t) => { if (t.group === 'SKB' && t.skbCategory && !a.includes(t.skbCategory)) a.push(t.skbCategory); return a; }, []);
 const planCatName = c => skbMeta('SKB_' + c).name;
+const planFieldOptions = test => test === 'GABUNG' ? targetSkbKeys().map(key => key.slice(4)) : planSkbCats();
 function planLists(cfg) {
   const L = cfg.test === 'SKB'
     ? [{ g: 'SKB', topics: MATERI.filter(t => t.group === 'SKB' && t.skbCategory === cfg.cat) }]
@@ -1432,7 +1473,7 @@ function planPackByKey(key) {
   if (!qs.length) return null;
   const isTo = d.kind === 'tryout', gname = d.g === 'SKB' ? 'SKB ' + planCatName(cfg.cat) : d.g;
   return {
-    key, group: 'PLAN', kind: 'CAT', mode: 'PLAN', plan: true, planSet: d.set, target: cfg.cat === 'PRAKOM' ? PRAKOM_TARGET : null,
+    key, group: 'PLAN', kind: 'CAT', mode: 'PLAN', plan: true, planSet: d.set, skbBucket: cfg.test === 'SKB' ? 'SKB_' + cfg.cat : null,
     title: isTo ? `Try Out ${gname}` : `Latihan Harian ${d.g} · Hari ${d.no}`,
     compose: isTo ? `${qs.length} soal campuran dari seluruh materi ${gname} (Hari ${d.fromNo}–${d.toNo})` : `${qs.length} soal latihan materi Hari ${d.no}`,
     questions: qs, minutes: isTo ? (d.g === 'TIU' ? 45 : 30) : Math.max(10, qs.length)
@@ -1443,22 +1484,26 @@ function planPackByKey(key) {
 const COMBINED_DAYS = ['Ukur kemampuan awal', 'Perbaiki konsep terlemah', 'Latih akurasi dan kecepatan',
   'Uji kembali konsep sulit', 'Simulasi kedua', 'Perbaiki kesalahan yang masih muncul', 'Ukur kesiapan akhir'];
 const isSimulationDay = day => [1, 5, 7].includes(day);
-const combinedKey = (cfg, day, scope) => `PLAN-${cfg.at}-GABUNG-${day}-${scope}`;
+const combinedKey = (cfg, day, scope) => `PLAN-${cfg.at}-GABUNG-${day}-${scope === 'SKD' ? 'SKD' : cfg.cat}`;
 
 function combinedPack(cfg, key) {
-  const match = /-GABUNG-([1-7])-(SKD|PRAKOM)$/.exec(key);
+  const match = /-GABUNG-([1-7])-(SKD|[A-Z0-9_]+)$/.exec(key);
   if (!match) return null;
-  const day = Number(match[1]), scope = match[2], prakom = scope === 'PRAKOM';
-  const label = prakom ? 'SKB Prakom' : 'SKD';
-  const common = { key, plan: true, target: prakom ? PRAKOM_TARGET : null };
+  const day = Number(match[1]), isSkb = match[2] !== 'SKD';
+  const field = 'SKB_' + cfg.cat;
+  if (isSkb && (match[2] !== cfg.cat || !targetSkbKeys().includes(field))) return null;
+  const scope = isSkb ? field : 'SKD';
+  const label = isSkb ? 'SKB ' + skbMeta(field).short : 'SKD';
+  const common = { key, plan: true, skbBucket: isSkb ? field : null };
   if (isSimulationDay(day)) {
-    const group = prakom ? 'SKB_PRAKOM' : 'SKD_FULL', packs = packsFor(group);
+    const group = isSkb ? field : 'SKD_FULL', packs = packsFor(group);
     if (!packs.length) return null;
-    const base = packs[([1, 5, 7].indexOf(day)) % packs.length];
+    const fullSets = isSkb ? packs.filter(p => p.questions.length === Math.min(SKB_SIZE, bankLen(field))) : packs;
+    const base = fullSets[([1, 5, 7].indexOf(day)) % fullSets.length];
     const pack = preparePack(base);
     return { ...pack, ...common, title: `Simulasi ${label} · Hari ${day}`, forceTimed: true };
   }
-  const fallback = prakom ? BANK.SKB_PRAKOM : Object.keys(FULL_MIX).flatMap(c => BANK['SKD_' + c] || []);
+  const fallback = isSkb ? BANK[field] : Object.keys(FULL_MIX).flatMap(c => BANK['SKD_' + c] || []);
   const targeted = weaknessQuestions(scope);
   const qs = targeted.length ? targeted : selectQuestions(shuffle(fallback || []), 12);
   if (!qs.length) return null;
@@ -1468,18 +1513,26 @@ function combinedPack(cfg, key) {
 }
 
 function renderCombinedPlan(cfg) {
+  const field = 'SKB_' + cfg.cat;
+  const fieldName = skbMeta(field).short;
+  const count = Math.min(SKB_SIZE, bankLen(field));
+  const preferred = targetPreference();
+  const canPractice = targetSkbKeys().includes(field);
   const rows = COMBINED_DAYS.map((title, i) => {
     const day = i + 1, sim = isSimulationDay(day);
-    const skd = combinedKey(cfg, day, 'SKD'), skb = combinedKey(cfg, day, 'PRAKOM');
+    const skd = combinedKey(cfg, day, 'SKD'), skb = combinedKey(cfg, day, 'SKB');
     return `<details class="mb-3 rounded-2xl border border-base-300 bg-base-100 p-3" ${!results[skd] || !results[skb] ? 'data-pending' : ''}>
       <summary class="cursor-pointer text-sm font-extrabold">Hari ${day} · ${title} · ${Number(!!results[skd]) + Number(!!results[skb])}/2 tugas</summary>
       <div class="mt-3 space-y-2">
         ${planPackRow(skd, sim ? 'Tryout SKD lengkap' : 'Latihan terarah SKD', sim ? '110 soal · 100 menit' : 'Berdasarkan hasil terbaru jika tersedia', results[skd], 'SKD')}
-        ${planPackRow(skb, sim ? 'Simulasi SKB Prakom' : 'Latihan terarah Prakom', sim ? '20 soal · target 18 benar' : 'Berdasarkan hasil terbaru jika tersedia', results[skb], 'SKB')}
+        ${canPractice ? planPackRow(skb, sim ? 'Simulasi SKB ' + fieldName : 'Latihan terarah ' + fieldName,
+          sim ? `${count} soal · target ${Math.ceil(count * SKB_TARGET)} benar` : 'Berdasarkan hasil terbaru jika tersedia', results[skb], 'SKB')
+          : '<p class="text-sm text-base-content/70">Bank soal bidang ini belum tersedia di perangkat ini. Pilih bidang lain lewat Atur planning.</p>'}
       </div></details>`;
   }).join('');
   shell('planning', `<div class="mx-auto max-w-xl">
-    ${pageHead('Planning 7 Hari', 'SKD 505/550 dan SKB Prakom 90%')}
+    ${pageHead('Planning 7 Hari', `SKD 505/550 · SKB ${esc(fieldName)} 90%`)}
+    ${preferred.bucket === field && preferred.role ? `<p class="mb-3 text-sm text-slate-600">Target jabatan <b>${esc(preferred.role)}</b></p>` : ''}
     ${rows}
     <div class="pl-actions">
       <button type="button" class="lx-btn lx-blue" onclick="App.planSetup()">Atur planning</button>
@@ -1567,12 +1620,12 @@ function renderPlanning() {
 
 /* ---------- lembar "Atur planning" ---------- */
 function planPaintSetup() {
-  const d = planDlg('dlg-plan'), dr = planDraft, cats = planSkbCats();
+  const d = planDlg('dlg-plan'), dr = planDraft, cats = planFieldOptions(dr.test);
   const box = d.querySelector('.modal-box'), keep = box ? box.scrollTop : 0;
-  const minD = planMinDays(dr), maxD = planMaxDays(dr);
-  dr.days = Math.max(minD, Math.min(dr.days, maxD));
   const combined = dr.test === 'GABUNG';
-  const okSave = dr.test !== 'SKB' || !!dr.cat;
+  const okSave = dr.test === 'SKD' || cats.includes(dr.cat);
+  const minD = planMinDays(dr), maxD = okSave || combined ? planMaxDays(dr) : PLAN_MAX;
+  dr.days = Math.max(minD, Math.min(dr.days, maxD));
   const days = okSave && !combined ? planBuild(dr) : [];
   const prev = planSummary(days).map(r => `<li class="flex items-baseline justify-between gap-3"><span class="font-extrabold text-slate-800">${esc(r.g)}</span><span class="text-right text-slate-600">${r.learn} hari belajar + Try Out<span class="block text-[0.7rem] text-slate-500">±${planRange(r.min, r.max)} langkah/hari${r.drill ? ` + latihan harian ${PLAN_DRILL_N} soal` : ''}</span></span></li>`).join('');
   const opt = (on, act, txt, sub) => `<button type="button" class="pl-opt ${on ? 'on' : ''}" aria-pressed="${on}" onclick="${act}">${txt}${sub ? `<span class="block text-[0.68rem] font-semibold opacity-75">${sub}</span>` : ''}</button>`;
@@ -1587,9 +1640,9 @@ function planPaintSetup() {
 
     <div class="pl-label mt-4">Tes yang dipelajari</div>
     <div class="pl-seg">${opt(dr.test === 'SKD', "App.planSetTest('SKD')", 'SKD', 'TWK · TIU · TKP')}${opt(dr.test === 'SKB', "App.planSetTest('SKB')", 'SKB', 'Satu bidang formasi')}</div>
-    <div class="mt-2">${opt(combined, "App.planSetTest('GABUNG')", 'SKD + SKB Prakom', '7 hari · simulasi dan latihan kelemahan')}</div>
+    <div class="mt-2">${opt(combined, "App.planSetTest('GABUNG')", 'SKD + SKB', '7 hari · simulasi dan latihan kelemahan')}</div>
 
-    ${dr.test === 'SKB' ? `
+    ${dr.test !== 'SKD' ? `
     <div class="pl-label mt-4">Bidang SKB</div>
     <div class="pl-chips">${cats.length
       ? cats.map(c => `<button type="button" class="pl-chip ${dr.cat === c ? 'on' : ''}" aria-pressed="${dr.cat === c}" onclick="App.planSetCat('${esc(c)}')">${esc(planCatName(c))}</button>`).join('')
@@ -1685,27 +1738,39 @@ function planDayOpen(no) {
 
 const planApi = {
   planSetup() {
-    const c = planCfg, cats = planSkbCats();
+    const c = planCfg, preferred = targetPreference().bucket.slice(4);
     planDraft = c ? { test: c.test, cat: c.cat, days: c.days } : { test: 'GABUNG', cat: '', days: 7 };
-    if (planDraft.test === 'SKB' && !cats.includes(planDraft.cat)) planDraft.cat = cats[0] || '';
+    if (preferred && planFieldOptions(planDraft.test).includes(preferred)) planDraft.cat = preferred;
     planPaintSetup();
   },
   planSetTest(t) {
     if (!planDraft) return;
     planDraft.test = t;
-    if (t === 'SKB' && !planDraft.cat) planDraft.cat = planSkbCats()[0] || '';
+    const cats = planFieldOptions(t);
+    if (t !== 'SKD' && !cats.includes(planDraft.cat)) {
+      const preferred = targetPreference().bucket.slice(4);
+      planDraft.cat = cats.includes(preferred) ? preferred : '';
+    }
     planPaintSetup();
   },
-  planSetCat(c) { if (!planDraft) return; planDraft.cat = c; planPaintSetup(); },
+  planSetCat(c) { if (!planDraft || !planFieldOptions(planDraft.test).includes(c)) return; planDraft.cat = c; planPaintSetup(); },
   planSetDays(v) { if (!planDraft) return; const n = Math.round(Number(v)); planDraft.days = n >= 1 ? n : planDraft.days; planPaintSetup(); },
   planStep(k) { if (!planDraft) return; planDraft.days += k; planPaintSetup(); },
   planSave() {
     if (!planDraft) return;
     const c = planSanitize(Object.assign({}, planDraft, { at: Date.now() }));
-    if (!c || (c.test === 'SKB' && !c.cat)) return;
+    if (!c || (c.test !== 'SKD' && !planFieldOptions(c.test).includes(c.cat))) return;
     c.days = Math.max(planMinDays(c), Math.min(c.days, planMaxDays(c)));
-    planCfg = c; planQ = null; store.set(PLAN_KEY, c);
-    if (c.test !== 'GABUNG') planGen(c);
+    const unchanged = planCfg?.test === c.test && planCfg.cat === c.cat && planCfg.days === c.days;
+    if (unchanged || (c.test === 'GABUNG' && planCfg?.test === 'GABUNG')) c.at = planCfg.at;
+    c.updated = Date.now();
+    planCfg = c;
+    store.set(PLAN_KEY, c);
+    if (c.cat) saveStudyTarget(targetPreference().role, 'SKB_' + c.cat);
+    if (!unchanged) {
+      planQ = null; store.del(PLANQ_KEY);
+      if (c.test !== 'GABUNG') planGen(c);
+    }
     const d = $('#dlg-plan'); if (d && d.open) d.close();
     toast(`Planning ${c.days} hari dibuat.`);
     if (location.hash === '#/planning') renderPlanning(); else go('#/planning');
@@ -1977,9 +2042,8 @@ const numsDialogInner = () => `<div class="mb-1 flex items-center justify-betwee
 /* ---------- Riwayat kesalahan & latihan bertopik ---------- */
 function reviewBucket(q, pack) {
   if (['TWK', 'TIU', 'TKP'].includes(q.category)) return 'SKD_' + q.category;
-  const bucket = bucketOfId[q.id];
-  if (bucket === 'SKB_PRAKOM' || pack.group === 'SKB_PRAKOM' || pack.target === PRAKOM_TARGET) return 'SKB_PRAKOM';
-  return null;
+  const bucket = bucketOfId[q.id] || pack.skbBucket || pack.group;
+  return bucket?.startsWith('SKB_') ? bucket : null;
 }
 
 function examIssues() {
@@ -2010,9 +2074,12 @@ function saveReview() {
 
 function reviewIssues(scope) {
   if (scope === 'sesi') return examIssues();
+  const selected = targetPreference().bucket;
   return Object.entries(reviews).flatMap(([bucket, rec]) => {
-    const group = bucket === 'SKB_PRAKOM' ? 'PRAKOM' : 'SKD';
-    return scope === 'ALL' || scope === group ? rec.issues : [];
+    const include = scope === 'ALL'
+      ? bucket.startsWith('SKD_') || !selected || bucket === selected
+      : scope === bucket || (scope === 'SKD' && bucket.startsWith('SKD_'));
+    return include ? rec.issues : [];
   });
 }
 
@@ -2081,7 +2148,8 @@ function startWeakness(scope, number) {
   const qs = weaknessQuestions(scope, number);
   if (!qs.length) { toast('Soal baru untuk topik ini sudah habis. Gunakan pembahasan atau coba topik lain.'); return; }
   ['#dlg-review', '#dlg-result'].forEach(id => { const d = $(id); if (d?.open) d.close(); });
-  const reviewScope = scope === 'sesi' ? 'ALL' : scope;
+  const bucket = reviewBucket(qs[0], {});
+  const reviewScope = scope === 'sesi' ? (bucket?.startsWith('SKB_') ? bucket : 'SKD') : scope;
   startExam({ key: 'KELEMAHAN', group: 'REVIEW', kind: 'LATIHAN', mode: 'REVIEW',
     adaptive: true, reviewScope, noSave: true, minutes: 0, title: 'Latihan kelemahan',
     compose: `${qs.length} soal baru dari topik prioritas`, questions: qs }, { instant: true });
@@ -2132,10 +2200,11 @@ function openResult() {
     verdict = `<div role="alert" class="alert border-primary/30 bg-primary/10 text-sm"><span>${msg}</span></div>`;
   }
 
-  const target = full ? SKD_TARGET : (exam.pack.group === 'SKB_PRAKOM' || exam.pack.target ? Math.ceil(r.max * PRAKOM_TARGET) : null);
+  const field = exam.pack.skbBucket || exam.pack.group;
+  const target = full ? SKD_TARGET : (field.startsWith('SKB_') ? Math.ceil(r.max * SKB_TARGET) : null);
   if (target) {
     const msg = r.total >= target ? 'Target latihan tercapai.' : `Perlu tambahan ${target - r.total} poin untuk mencapai target latihan.`;
-    verdict += `<p class="text-sm text-base-content/80"><b>Target ${full ? 'SKD ' + SKD_TARGET + '/550' : 'SKB Prakom 90%'}.</b> ${msg}</p>`;
+    verdict += `<p class="text-sm text-base-content/80"><b>Target ${full ? 'SKD ' + SKD_TARGET + '/550' : 'SKB ' + esc(skbMeta(field).short) + ' 90%'}.</b> ${msg}</p>`;
   }
 
   const weak = Object.values(r.bySub).filter(o => o.score / o.max < 0.8)
@@ -2397,6 +2466,15 @@ const App = {
     if (ok) finishExam();
   },
   openResult,
+  targetEditorHTML,
+  saveTarget(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    saveStudyTarget(form.elements.targetRole.value, form.elements.targetBucket.value);
+    form.querySelector('[data-target-status]').textContent = 'Target tersimpan.';
+    if (!exam || exam.finished) route();
+    return false;
+  },
   openReview,
   startWeakness,
   async restartExam(skipAsk) {

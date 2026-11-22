@@ -4,7 +4,7 @@
 (function () {
   const API = window.CPNS_API || '', HAS_SERVER = !!API && !/GANTI/.test(API), SK = 'cpns_session_v1', GUEST = 'cpns_guest_v1';
   const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3',
-    'cpns_review_v1', 'cpns_plan_v1', 'cpns_plan_q_v1'];
+    'cpns_review_v1', 'cpns_plan_v1', 'cpns_plan_q_v1', 'cpns_target_v1'];
   const dict = value => value && typeof value === 'object' && !Array.isArray(value);
   const records = value => Object.entries(value || {}).filter(([key]) => !['__proto__', 'constructor', 'prototype'].includes(key));
   const rd = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
@@ -56,7 +56,7 @@
         R[key] = { attempts: Math.max(next.attempts || 0, prev.attempts || 0), best, last: newer ? last : prev.last };
       }
       for (const [bucket, next] of records(source.cpns_review_v1)) {
-        if (['SKD_TWK', 'SKD_TIU', 'SKD_TKP', 'SKB_PRAKOM'].includes(bucket) &&
+        if ((/^(?:SKD_(TWK|TIU|TKP)|SKB_[A-Z0-9_]+)$/.test(bucket)) &&
             dict(next) && Array.isArray(next.issues) && (!review[bucket] || next.at >= review[bucket].at)) {
           review[bucket] = { at: next.at, issues: next.issues.filter(entry => dict(entry) && entry.bucket === bucket &&
             typeof entry.id === 'string' && typeof entry.sub === 'string' && Number.isFinite(entry.score) && Number.isFinite(entry.time)) };
@@ -65,13 +65,15 @@
     }
 
     const ap = a.cpns_plan_v1, bp = b.cpns_plan_v1;
-    const plan = (ap?.at || 0) > (bp?.at || 0) ? ap : bp || ap || null;
+    const plan = (ap?.updated || ap?.at || 0) > (bp?.updated || bp?.at || 0) ? ap : bp || ap || null;
+    const aTarget = a.cpns_target_v1, bTarget = b.cpns_target_v1;
+    const target = (aTarget?.at || 0) > (bTarget?.at || 0) ? aTarget : bTarget || aTarget || null;
     const sets = plan && !plan.reset ? [a.cpns_plan_q_v1, b.cpns_plan_q_v1].filter(p => p && p.at === plan.at) : [];
     return {
       cpns_lesson_v1: L, cpns_results_v3: R, cpns_review_v1: review,
       cpns_seen_qids_v2: Array.from(new Set([a.cpns_seen_qids_v2, b.cpns_seen_qids_v2]
         .flatMap(ids => Array.isArray(ids) ? ids.filter(id => typeof id === 'string') : []))),
-      cpns_plan_v1: plan, cpns_plan_q_v1: sets.length ? { at: plan.at, sets: Object.assign({}, ...sets.map(p => p.sets)) } : null
+      cpns_target_v1: target, cpns_plan_v1: plan, cpns_plan_q_v1: sets.length ? { at: plan.at, sets: Object.assign({}, ...sets.map(p => p.sets)) } : null
     };
   }
 
@@ -287,7 +289,7 @@
       if (!copied || !code) return;
       q('#rs-go').disabled = true; q('#rs-go').classList.add('loading');
       clearTimeout(timer);
-      KEYS.forEach(del); del('cpns_dirty');
+      KEYS.filter(key => key !== 'cpns_target_v1').forEach(del); del('cpns_dirty');
       if (sess()) { wr('cpns_dirty', 1); await push(false); }
       location.reload();
     };
@@ -298,7 +300,8 @@
     d.innerHTML = `
       <div class="modal-box max-w-sm">
         <h3 class="text-center text-lg font-extrabold">Pindahkan progres</h3>
-        <p class="mt-1 text-center text-sm text-base-content/70">Kode ini membawa progres materi, hasil latihan, daftar kelemahan, dan Planning. Salin di perangkat lama lalu tempel di perangkat baru.</p>
+        <p class="mt-1 text-center text-sm text-base-content/70">Kode ini membawa progres materi, hasil latihan, daftar kelemahan, target jabatan, dan Planning. Salin di perangkat lama lalu tempel di perangkat baru.</p>
+        ${!HAS_SERVER && window.App ? window.App.targetEditorHTML() : ''}
         <button id="bk-copy" class="btn btn-primary mt-4 w-full">Salin kode progres</button>
         <textarea id="bk-out" readonly rows="3" class="textarea textarea-bordered mt-2 hidden w-full text-xs" aria-label="Kode progres"></textarea>
         <div class="divider my-3 text-xs">atau pulihkan</div>
@@ -350,6 +353,7 @@
         <p class="mt-1 text-sm text-base-content/70">${u
           ? (dirty ? 'Ada progres yang menunggu tersinkron. Akan terkirim otomatis saat online.' : 'Progres belajarmu tersimpan otomatis di akun ini.')
           : 'Progres hanya tersimpan di perangkat ini. Masuk agar bisa dibuka di HP atau browser lain.'}</p>
+        ${window.App ? window.App.targetEditorHTML() : ''}
         <div class="mt-5 flex flex-col gap-2">
           ${u
             ? '<button id="pf-out" class="btn btn-outline btn-error w-full">Keluar dari akun</button>'
