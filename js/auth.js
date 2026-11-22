@@ -3,9 +3,12 @@
    salinannya dikirim ke server (api/sync.php) agar bisa dibuka di browser / HP lain. */
 (function () {
   const API = window.CPNS_API || '', HAS_SERVER = !!API && !/GANTI/.test(API), SK = 'cpns_session_v1', GUEST = 'cpns_guest_v1';
-  const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3'];
+  const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3',
+    'cpns_review_v1', 'cpns_plan_v1', 'cpns_plan_q_v1'];
+  const dict = value => value && typeof value === 'object' && !Array.isArray(value);
+  const records = value => Object.entries(value || {}).filter(([key]) => !['__proto__', 'constructor', 'prototype'].includes(key));
   const rd = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
-  const wr = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* abaikan */ } };
+  const wr = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
   const del = k => { try { localStorage.removeItem(k); } catch (e) { /* abaikan */ } };
   const sess = () => rd(SK);
   const snapshot = () => KEYS.reduce((o, k) => { const v = rd(k); if (v != null) o[k] = v; return o; }, {});
@@ -22,43 +25,92 @@
   /* gabung dua data progres tanpa menghilangkan apa pun */
   function merge(a, b) {
     a = a || {}; b = b || {};
-    const L = {};
-    [a, b].forEach(s => { const l = s.cpns_lesson_v1 || {}; Object.keys(l).forEach(id => {
-      const e = L[id] || (L[id] = { done: {}, at: 0 });
-      Object.assign(e.done, l[id].done || {}); e.at = Math.max(e.at, l[id].at || 0);
-      Object.entries(l[id].part || {}).forEach(([i, next]) => {
-        const part = e.part || (e.part = {});
-        const prev = part[i];
-        if (!prev || next.solved > prev.solved || (next.solved === prev.solved && (next.at || 0) >= (prev.at || 0))) {
-          part[i] = next;
+    const L = Object.create(null);
+    for (const source of [a, b]) {
+      for (const [id, item] of records(source.cpns_lesson_v1)) {
+        if (!dict(item)) continue;
+        const e = L[id] || (L[id] = { done: Object.create(null), at: 0 });
+        for (const [i, done] of records(item.done)) if (done) e.done[i] = done;
+        e.at = Math.max(e.at, item.at || 0);
+        for (const [i, next] of records(item.part)) {
+          if (!dict(next)) continue;
+          const part = e.part || (e.part = Object.create(null));
+          const prev = part[i];
+          if (!prev || next.solved > prev.solved || (next.solved === prev.solved && (next.at || 0) >= (prev.at || 0))) part[i] = next;
         }
-      });
-    }); });
+      }
+    }
     Object.values(L).forEach(e => {
-      if (e.part) Object.keys(e.done).forEach(i => { if (e.done[i]) delete e.part[i]; });
+      if (e.part) Object.keys(e.done).forEach(i => delete e.part[i]);
     });
-    const R = {}, ra = a.cpns_results_v3 || {}, rb = b.cpns_results_v3 || {};
-    new Set([...Object.keys(ra), ...Object.keys(rb)]).forEach(k => {
-      R[k] = !ra[k] ? rb[k] : !rb[k] ? ra[k] : ((rb[k].attempts || 0) > (ra[k].attempts || 0) ? rb[k] : ra[k]);
-    });
+
+    const R = Object.create(null), review = Object.create(null);
+    for (const source of [a, b]) {
+      for (const [key, next] of records(source.cpns_results_v3)) {
+        if (!dict(next) || !dict(next.best)) continue;
+        const last = dict(next.last) ? next.last : next.best;
+        const prev = R[key];
+        if (!prev) { R[key] = { ...next, last }; continue; }
+        const newer = (last.date || 0) >= (prev.last.date || 0);
+        const best = next.best.score > prev.best.score || (next.best.score === prev.best.score && newer) ? next.best : prev.best;
+        R[key] = { attempts: Math.max(next.attempts || 0, prev.attempts || 0), best, last: newer ? last : prev.last };
+      }
+      for (const [bucket, next] of records(source.cpns_review_v1)) {
+        if (['SKD_TWK', 'SKD_TIU', 'SKD_TKP', 'SKB_PRAKOM'].includes(bucket) &&
+            dict(next) && Array.isArray(next.issues) && (!review[bucket] || next.at >= review[bucket].at)) {
+          review[bucket] = { at: next.at, issues: next.issues.filter(entry => dict(entry) && entry.bucket === bucket &&
+            typeof entry.id === 'string' && typeof entry.sub === 'string' && Number.isFinite(entry.score) && Number.isFinite(entry.time)) };
+        }
+      }
+    }
+
+    const ap = a.cpns_plan_v1, bp = b.cpns_plan_v1;
+    const plan = (ap?.at || 0) > (bp?.at || 0) ? ap : bp || ap || null;
+    const sets = plan && !plan.reset ? [a.cpns_plan_q_v1, b.cpns_plan_q_v1].filter(p => p && p.at === plan.at) : [];
     return {
-      cpns_lesson_v1: L, cpns_results_v3: R,
-      cpns_seen_qids_v2: Array.from(new Set([...(a.cpns_seen_qids_v2 || []), ...(b.cpns_seen_qids_v2 || [])]))
+      cpns_lesson_v1: L, cpns_results_v3: R, cpns_review_v1: review,
+      cpns_seen_qids_v2: Array.from(new Set([a.cpns_seen_qids_v2, b.cpns_seen_qids_v2]
+        .flatMap(ids => Array.isArray(ids) ? ids.filter(id => typeof id === 'string') : []))),
+      cpns_plan_v1: plan, cpns_plan_q_v1: sets.length ? { at: plan.at, sets: Object.assign({}, ...sets.map(p => p.sets)) } : null
     };
   }
 
+  function restore(data) {
+    const before = snapshot(), merged = merge(data, before), written = [];
+    for (const key of KEYS) {
+      if (!wr(key, merged[key])) {
+        for (const restored of written) del(restored);
+        for (const restored of written) if (Object.hasOwn(before, restored)) wr(restored, before[restored]);
+        throw new Error('Penyimpanan perangkat penuh atau diblokir. Simpan kode dan coba lagi.');
+      }
+      written.push(key);
+    }
+  }
+
   /* ---------- kirim ke server (ditunda agar hemat) ---------- */
-  let timer = null;
+  let timer = null, pending = null, revision = 0;
   async function push(keepalive) {
-    const s = sess(); if (!s) return;
-    try {
-      await fetch(API, { method: 'POST', keepalive: !!keepalive, headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'push', username: s.u, token: s.t, data: snapshot() }) })
-        .then(r => { if (r.status === 401) { del(SK); } else if (r.ok) del('cpns_dirty'); });
-    } catch (e) { wr('cpns_dirty', 1); }
+    if (pending) {
+      await pending;
+      if (keepalive || !rd('cpns_dirty')) return null;
+      return push(false);
+    }
+    const s = sess(); if (!s) return null;
+    const sent = revision;
+    pending = (async () => {
+      try {
+        const r = await fetch(API, { method: 'POST', keepalive: !!keepalive, headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'push', username: s.u, token: s.t, data: snapshot() }) });
+        if (r.ok && sent === revision) del('cpns_dirty');
+        else if (!r.ok) wr('cpns_dirty', 1);
+        return r.ok;
+      } catch (e) { wr('cpns_dirty', 1); return false; }
+    })();
+    try { return await pending; } finally { pending = null; }
   }
   function touch(k) {
     if (!sess() || KEYS.indexOf(k) < 0) return;
+    revision++;
     wr('cpns_dirty', 1); clearTimeout(timer); timer = setTimeout(() => push(false), 1500);
   }
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && rd('cpns_dirty')) push(true); });
@@ -71,20 +123,30 @@
   const unb64 = t => { t = t.replace(/-/g, '+').replace(/_/g, '/'); while (t.length % 4) t += '='; const s = atob(t), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; };
   async function toCode() {
     const json = JSON.stringify(snapshot());
-    if (window.CompressionStream) {
-      const buf = new Uint8Array(await new Response(new Blob([json]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer());
-      return 'CPNS1.' + b64(buf);
+    if (window.CompressionStream && window.DecompressionStream) {
+      try {
+        const buf = new Uint8Array(await new Response(new Blob([json]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer());
+        return 'CPNS1.' + b64(buf);
+      } catch (e) { /* Browser lama dapat memakai format tanpa kompresi. */ }
     }
     return 'CPNS0.' + b64(new TextEncoder().encode(json));
   }
   async function fromCode(code) {
     const m = /^CPNS([01])\.([A-Za-z0-9_-]+)$/.exec(String(code).replace(/\s+/g, ''));
     if (!m) throw new Error('Kode tidak valid. Salin kode lengkap dari perangkat lama.');
-    let u8 = unb64(m[2]);
-    if (m[1] === '1') u8 = new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
-    const d = JSON.parse(new TextDecoder().decode(u8)), o = {};
-    KEYS.forEach(k => { if (d && d[k] !== undefined) o[k] = d[k]; });
-    return o;
+    if (m[1] === '1' && !window.DecompressionStream) throw new Error('Browser ini belum mendukung kode terkompresi. Coba kode ini di browser yang lebih baru.');
+    const bytes = unb64(m[2]);
+    let u8 = bytes;
+    if (m[1] === '1') {
+      try {
+        u8 = new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+      } catch (e) { throw new Error('Kode terkompresi rusak atau belum didukung browser ini. Periksa kode atau gunakan browser yang lebih baru.'); }
+    }
+    let data;
+    try { data = JSON.parse(new TextDecoder().decode(u8)); }
+    catch (e) { throw new Error('Kode tidak valid. Salin kode lengkap dari perangkat lama.'); }
+    if (!dict(data) || (Object.keys(data).length && !KEYS.some(k => Object.hasOwn(data, k)))) throw new Error('Kode ini tidak berisi data progres GOCPNS.');
+    return Object.fromEntries(KEYS.filter(k => Object.hasOwn(data, k)).map(k => [k, data[k]]));
   }
 
   /* ---------- UI ---------- */
@@ -164,8 +226,7 @@
           if (typeof window.route === 'function' && !document.documentElement.classList.contains('in-exam')) window.route();
         } else {
           const r = await call({ action: 'login', username: u, pin });
-          const m = merge(r.data, snapshot());
-          KEYS.forEach(k => wr(k, m[k]));
+          restore(r.data);
           wr(SK, { u, t: r.token }); del(GUEST); wr('cpns_dirty', 1);
           await push(false);
           location.reload();
@@ -182,8 +243,8 @@
   async function logout() {
     const ok = window.ask ? await window.ask({ title: 'Keluar dari akun?', text: 'Progres sudah tersimpan di akunmu. Data di perangkat ini akan dibersihkan; masuk lagi untuk memulihkannya.', ok: 'Keluar', danger: true }) : true;
     if (!ok) return;
-    clearTimeout(timer); await push(false);
-    if (sess() && rd('cpns_dirty')) { if (window.toast) window.toast('Gagal menyimpan ke server. Coba lagi saat online.'); return; }
+    clearTimeout(timer);
+    if (await push(false) !== true || rd('cpns_dirty')) { if (window.toast) window.toast('Gagal menyimpan ke server. Coba lagi saat online.'); return; }
     KEYS.forEach(del); del(SK); del(GUEST); del('cpns_dirty'); location.reload();
   }
   function menuHTML() {
@@ -214,8 +275,13 @@
     }).catch(() => msg('Gagal membuat kode cadangan. Reset dibatalkan.'));
     q('#rs-copy').onclick = async () => {
       const o = q('#rs-out'); o.select();
-      try { await navigator.clipboard.writeText(code); } catch (e) {}
-      copied = true; q('#rs-go').disabled = false; msg('Kode disalin. Simpan di catatan / chat pribadimu.', true);
+      try {
+        await navigator.clipboard.writeText(code);
+        msg('Kode disalin. Simpan di catatan pribadimu.', true);
+      } catch (e) {
+        msg('Clipboard tidak tersedia. Salin manual kode yang dipilih sebelum mereset.', true);
+      }
+      copied = true; q('#rs-go').disabled = false;
     };
     q('#rs-go').onclick = async () => {
       if (!copied || !code) return;
@@ -232,7 +298,7 @@
     d.innerHTML = `
       <div class="modal-box max-w-sm">
         <h3 class="text-center text-lg font-extrabold">Pindahkan progres</h3>
-        <p class="mt-1 text-center text-sm text-base-content/70">Progres tersimpan di perangkat ini. Untuk pindah HP atau browser, salin kode di sini lalu tempel di sana.</p>
+        <p class="mt-1 text-center text-sm text-base-content/70">Kode ini membawa progres materi, hasil latihan, daftar kelemahan, dan Planning. Salin di perangkat lama lalu tempel di perangkat baru.</p>
         <button id="bk-copy" class="btn btn-primary mt-4 w-full">Salin kode progres</button>
         <textarea id="bk-out" readonly rows="3" class="textarea textarea-bordered mt-2 hidden w-full text-xs" aria-label="Kode progres"></textarea>
         <div class="divider my-3 text-xs">atau pulihkan</div>
@@ -248,14 +314,25 @@
     q('#bk-close').onclick = () => d.close();
     q('#bk-reset').onclick = () => openReset(d, () => openBackup(d));
     q('#bk-copy').onclick = async () => {
-      const code = await toCode(), o = q('#bk-out'); o.value = code; o.classList.remove('hidden'); o.select();
-      try { await navigator.clipboard.writeText(code); msg('Kode disalin. Tempel di perangkat baru.', true); } catch (e) { msg('Tekan lama pada kotak lalu pilih Salin.', true); }
+      try {
+        const code = await toCode(), o = q('#bk-out');
+        o.value = code; o.classList.remove('hidden'); o.select();
+        if (navigator.clipboard) {
+          try { await navigator.clipboard.writeText(code); msg('Kode disalin. Tempel di perangkat baru.', true); return; } catch (e) {}
+        }
+        msg('Salin kode yang dipilih, lalu tempel di perangkat baru.', true);
+      } catch (e) { msg('Gagal membuat kode progres.'); }
     };
     q('#bk-load').onclick = async () => {
+      const load = q('#bk-load');
+      load.disabled = true;
       try {
-        const inc = await fromCode(q('#bk-in').value), m = merge(inc, snapshot());
-        KEYS.forEach(k => wr(k, m[k])); if (sess()) { wr('cpns_dirty', 1); await push(false); } msg('Berhasil. Memuat ulang…', true); setTimeout(() => location.reload(), 700);
-      } catch (e) { msg(e.message || 'Kode tidak valid.'); }
+        restore(await fromCode(q('#bk-in').value));
+        const account = sess();
+        if (account) touch('cpns_plan_v1');
+        msg('Progres berhasil dipulihkan di perangkat ini. Memuat ulang…', true);
+        setTimeout(() => location.reload(), 700);
+      } catch (e) { msg(e.message || 'Kode tidak valid.'); load.disabled = false; }
     };
     if (!d.open) d.showModal();
   }
