@@ -1,7 +1,7 @@
 /* Service worker GOCPNS — agar bisa dipasang & dibuka offline.
    Strategi: jaringan dulu (selalu dapat versi terbaru), cadangan dari cache saat offline.
    Naikkan VERSI jika menambah/mengganti file agar cache lama dibersihkan. */
-const VERSI = 'gocpns-v40:' + self.registration.scope;
+const VERSI = 'gocpns-v42:' + self.registration.scope;
 const INTI = [
   './', './index.html', './manifest.webmanifest',
   './css/app.css',

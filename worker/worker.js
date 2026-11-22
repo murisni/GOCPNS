@@ -1,6 +1,6 @@
 /* Backend akun untuk GitHub Pages — Cloudflare Worker + KV (gratis).
    1 akun = 1 entri KV "u:<nama>" berisi PIN ter-hash (PBKDF2) + progres. Tanpa database. */
-const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3'];
+const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3', 'cpns_review_v1', 'cpns_plan_v1', 'cpns_plan_q_v1', 'cpns_target_v1'];
 const MAX_BYTES = 400000, MAX_FAIL = 5, LOCK_MS = 15 * 60 * 1000;
 const enc = new TextEncoder();
 const hex = b => Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('');

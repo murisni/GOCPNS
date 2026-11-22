@@ -5,7 +5,7 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
 const DIR  = __DIR__ . '/../data/';
-const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3'];
+const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3', 'cpns_review_v1', 'cpns_plan_v1', 'cpns_plan_q_v1', 'cpns_target_v1'];
 const MAX_BYTES = 400000;   // batas ukuran data progres per akun
 const MAX_FAIL  = 5;        // salah PIN berturut-turut sebelum dikunci
 const LOCK_SEC  = 900;      // lama dikunci (15 menit)

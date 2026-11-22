@@ -68,6 +68,9 @@ const questions = window.CPNSQuestions;
 const seen = new Set(store.get('cpns_seen_qids_v2', []).map(questions.resolve));
 const seenKeys = new Set(), seenPatterns = new Set();
 let results = store.get('cpns_results_v3', {});
+const REVIEW_KEY = 'cpns_review_v1';
+let reviews = store.get(REVIEW_KEY, {});
+const SLOW_TIU_SECONDS = 90;
 const seenBefore = q => seen.has(questions.resolve(q.id)) || seenKeys.has(questions.key(q));
 function markSeen(q) {
   const id = questions.resolve(q.id);
@@ -154,7 +157,7 @@ const SKB_SIZE = 20;   // soal per paket SKB
 const FULL_MIX = { TWK: 30, TIU: 35, TKP: 45 };  // komposisi tryout SKD
 const PASSING = { TWK: 65, TIU: 80, TKP: 166 };
 const SKD_TARGET = 505;
-const PRAKOM_TARGET = 0.9;
+const SKB_TARGET = 0.9;
 
 const SKD_GROUPS = {
   SKD_FULL: { label: 'Tryout Lengkap', short: 'Tryout', desc: '30 TWK + 35 TIU + 45 TKP • 100 menit — acuan format CPNS 2024.' },
@@ -170,7 +173,44 @@ const SKB_META = {
   SKB_PENDIDIKAN: { name: 'Pendidikan, Guru & Dosen', short: 'Pendidikan', desc: 'Kompetensi pendidik, asesmen, taksonomi Bloom (HOTS), teori belajar konstruktivistik.' }
 };
 const skbKeys = () => Object.keys(BANK).filter(k => k.startsWith('SKB_') && BANK[k].length);
+const TARGET_KEY = 'cpns_target_v1';
 const skbMeta = k => SKB_META[k] || { name: k.replace('SKB_', '').replace(/_/g, ' '), short: k.replace('SKB_', ''), desc: 'Bank soal tambahan.' };
+
+const targetSkbKeys = () => skbKeys().filter(key => key !== 'SKB_SKD' && /^SKB_[A-Z0-9_]+$/.test(key));
+let studyTarget = store.get(TARGET_KEY, null);
+function targetPreference() {
+  if (studyTarget) return { role: String(studyTarget.role || ''), bucket: String(studyTarget.bucket || '') };
+  return { role: '', bucket: planCfg?.cat ? 'SKB_' + planCfg.cat : '' };
+}
+function saveStudyTarget(role, bucket) {
+  const previous = targetPreference();
+  const next = { role: String(role || '').trim().slice(0, 100),
+    bucket: targetSkbKeys().includes(bucket) ? bucket : '' };
+  if (previous.role !== next.role || previous.bucket !== next.bucket || !studyTarget) {
+    studyTarget = { ...next, at: Date.now() };
+    store.set(TARGET_KEY, studyTarget);
+  }
+  return next;
+}
+
+function targetEditorHTML() {
+  const current = targetPreference();
+  const selected = key => key === current.bucket ? ' selected' : '';
+  const choices = targetSkbKeys().map(key => `<option value="${esc(key)}"${selected(key)}>${esc(skbMeta(key).name)} · ${bankLen(key)} soal</option>`).join('');
+  const activePlan = planCfg?.cat ? ' Planning yang sudah dibuat bisa disesuaikan lewat Atur planning.' : '';
+  return `<form class="mt-4 rounded-2xl border border-base-300 p-3 text-left" onsubmit="return App.saveTarget(event)">
+    <h4 class="text-sm font-extrabold">Target jabatan dan SKB</h4>
+    <label class="mt-2 block text-xs font-bold" for="target-role">Nama jabatan (opsional)</label>
+    <input id="target-role" name="targetRole" class="input input-bordered input-sm mt-1 w-full"
+      maxlength="100" value="${esc(current.role)}" placeholder="Misalnya Auditor Ahli Pertama">
+    <label class="mt-2 block text-xs font-bold" for="target-bucket">Bidang latihan SKB</label>
+    <select id="target-bucket" name="targetBucket" class="select select-bordered select-sm mt-1 w-full">
+      <option value="">Belum dipilih</option>${choices}</select>
+    <p class="mt-2 text-xs text-base-content/70">Pilih bidang yang paling sesuai. Cakupan latihan mengikuti bank bidang yang dipilih.${activePlan}</p>
+    <button class="btn btn-primary btn-sm mt-2" type="submit">Simpan target</button>
+    <p class="mt-1 text-xs" role="status" data-target-status></p>
+  </form>`;
+}
 
 function chunk(arr, size) { const out = []; for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size)); return out; }
 
@@ -384,9 +424,10 @@ function renderHome() {
   const topicDone = rows.filter(x => x.p.total && x.p.pct === 100).length;
   const last = rows.filter(x => x.at).sort((a, b) => b.at - a.at)[0] || null;
   const open = x => x.p.pct < 100;
+  const preferred = targetPreference();
   /* v29: pilih topik "lanjutkan" untuk tiap jalur (TWK / TIU / TKP / SKB) secara terpisah */
   const pickFor = g => {
-    const gr = rows.filter(x => x.t.group === g);
+    const gr = rows.filter(x => x.t.group === g && (g !== 'SKB' || (preferred.bucket ? 'SKB_' + x.t.skbCategory === preferred.bucket : x.at > 0)));
     const lastG = gr.filter(x => x.at).sort((a, b) => b.at - a.at)[0] || null;
     let c = null, lb = 'Mulai belajar';
     if (lastG && open(lastG)) { c = lastG; lb = 'Lanjutkan belajar'; }
@@ -483,12 +524,14 @@ function renderHome() {
     <div class="home-wrap mx-auto w-full max-w-xl pb-2 pt-1 sm:pt-8">
       <header class="mb-4 px-0.5">
         <h1 class="text-2xl font-extrabold leading-tight tracking-tight text-neutral">${sapa}!</h1>
-        <p class="mt-0.5 text-sm text-slate-600"><a href="#/materi/rencana-7-hari" class="link link-primary font-bold">Panduan 7 hari</a> · Target SKD 500+ dan SKB Prakom 90%</p>
+        <p class="mt-0.5 text-sm text-slate-600"><a href="#/planning" class="link link-primary font-bold">Planning 7 hari</a> · Target SKD 500+${preferred.bucket ? ` dan SKB ${esc(skbMeta(preferred.bucket).short)} 90%` : ''}</p>
+        <p class="mt-1 text-xs"><a href="#/materi/rencana-7-hari" class="link link-primary">Panduan 7 hari dan rumus cepat TIU</a></p>
       </header>
       <div class="home-grid">
       <div class="home-col home-col-left">
       ${resume}
       ${cont}
+      ${reviewIssues('ALL').length ? `<button type="button" class="lx-btn lx-blue mb-4" onclick="App.openReview()">${icon('bolt')} Latihan dari hasil tryout</button>` : ''}
       ${stats}
       </div>
       <section class="home-col home-col-right" aria-label="Pilih jalur belajar">
@@ -595,7 +638,8 @@ function renderSkd() {
 function renderSkb(key) {
   if (!key || !BANK[key]) {
     const icons = { SKB_PRAKOM: 'db', SKB_KESEHATAN: 'check', SKB_HUKUM: 'clipboard', SKB_KEUANGAN: 'trophy', SKB_PENDIDIKAN: 'book' };
-    const cards = skbKeys().map(k => {
+    const preferred = targetPreference().bucket;
+    const cards = skbKeys().sort((a, b) => Number(b === preferred) - Number(a === preferred)).map(k => {
       const m = skbMeta(k), n = bankLen(k), ps = packsFor(k), np = ps.length;
       const done = ps.filter(p => results[p.key]).length;
       const all = np > 0 && done === np;
@@ -604,7 +648,7 @@ function renderSkb(key) {
       <a href="#/skb/${k}" class="flex min-w-0 items-center gap-3.5 rounded-3xl border-2 border-b-4 ${all ? 'border-green-300 bg-green-50/60' : 'border-slate-200 bg-white'} p-4 transition active:translate-y-[2px] active:border-b-2 sm:hover:border-indigo-300">
         <span class="relative grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-indigo-500 text-white">${icon(icons[k] || 'briefcase', 'h-8 w-8')}${all ? `<span class="absolute -right-1.5 -top-1.5 grid h-6 w-6 place-items-center rounded-full bg-green-500 ring-2 ring-white">${icon('tick', 'h-3.5 w-3.5')}</span>` : ''}</span>
         <span class="min-w-0 flex-1">
-          <span class="block text-base font-extrabold leading-snug text-slate-900">${esc(m.name)}</span>
+          <span class="block text-base font-extrabold leading-snug text-slate-900">${esc(m.name)}${k === preferred ? ' · Targetmu' : ''}</span>
           <span class="mt-0.5 line-clamp-2 block text-xs leading-snug text-slate-500">${esc(m.desc)}</span>
           <span class="mt-2 flex items-center gap-2.5"><span class="lx-track !h-2.5"><span class="lx-fill block" style="width:${pct}%"></span></span><span class="shrink-0 text-[0.7rem] font-bold text-slate-600">${done}/${np} paket</span></span>
           <span class="mt-1 block text-[0.7rem] font-semibold text-indigo-600">${fmtNum(n)} soal</span>
@@ -1218,6 +1262,7 @@ let planQ = store.get(PLANQ_KEY, null);
 let planDraft = null;
 
 function planSanitize(c) {
+  if (c?.test === 'GABUNG') return { test: 'GABUNG', cat: typeof c.cat === 'string' ? c.cat : 'PRAKOM', days: 7, at: c.at || Date.now(), updated: c.updated || c.at };
   if (!c || (c.test !== 'SKD' && c.test !== 'SKB')) return null;
   const days = Math.round(Number(c.days));
   if (!(days >= 1)) return null;
@@ -1231,6 +1276,7 @@ const planDlg = id => {
 const stepCount = t => (t.sections || []).length + ((t.tips || []).length ? 1 : 0);   // sama dengan lessonSteps(t).length
 const planSkbCats = () => MATERI.reduce((a, t) => { if (t.group === 'SKB' && t.skbCategory && !a.includes(t.skbCategory)) a.push(t.skbCategory); return a; }, []);
 const planCatName = c => skbMeta('SKB_' + c).name;
+const planFieldOptions = test => test === 'GABUNG' ? targetSkbKeys().map(key => key.slice(4)) : planSkbCats();
 function planLists(cfg) {
   const L = cfg.test === 'SKB'
     ? [{ g: 'SKB', topics: MATERI.filter(t => t.group === 'SKB' && t.skbCategory === cfg.cat) }]
@@ -1238,8 +1284,8 @@ function planLists(cfg) {
   return L.map(l => ({ g: l.g, topics: l.topics.filter(t => stepCount(t) > 0) })).filter(l => l.topics.length);
 }
 const planTotal = cfg => planLists(cfg).reduce((a, l) => a + l.topics.reduce((b, t) => b + stepCount(t), 0), 0);
-const planMinDays = cfg => 2 * Math.max(1, planLists(cfg).length);                 // minimal: 1 hari belajar + 1 Try Out per kelompok
-const planMaxDays = cfg => Math.max(planMinDays(cfg), Math.min(PLAN_MAX, planTotal(cfg) + planLists(cfg).length));
+const planMinDays = cfg => cfg.test === 'GABUNG' ? 7 : 2 * Math.max(1, planLists(cfg).length);                 // minimal: 1 hari belajar + 1 Try Out per kelompok
+const planMaxDays = cfg => cfg.test === 'GABUNG' ? 7 : Math.max(planMinDays(cfg), Math.min(PLAN_MAX, planTotal(cfg) + planLists(cfg).length));
 
 /* pecah n langkah berurutan menjadi d bagian hampir sama besar (sisa dibagi ke hari-hari awal) */
 function evenChunks(arr, d) {
@@ -1406,6 +1452,7 @@ function planQIndex() {
 function planPackByKey(key) {
   const cfg = planCfg;
   if (!cfg || key.indexOf('PLAN-' + cfg.at + '-') !== 0) return null;
+  if (cfg.test === 'GABUNG') return combinedPack(cfg, key);
   const d = planBuild(cfg).find(x => (x.kind === 'tryout' ? x.packKey : (x.drill && x.drill.key)) === key);
   if (!d) return null;
   const sets = planEnsureSets(), idx = planQIndex();
@@ -1426,16 +1473,80 @@ function planPackByKey(key) {
   if (!qs.length) return null;
   const isTo = d.kind === 'tryout', gname = d.g === 'SKB' ? 'SKB ' + planCatName(cfg.cat) : d.g;
   return {
-    key, group: 'PLAN', kind: 'CAT', mode: 'PLAN', plan: true, planSet: d.set, target: cfg.cat === 'PRAKOM' ? PRAKOM_TARGET : null,
+    key, group: 'PLAN', kind: 'CAT', mode: 'PLAN', plan: true, planSet: d.set, skbBucket: cfg.test === 'SKB' ? 'SKB_' + cfg.cat : null,
     title: isTo ? `Try Out ${gname}` : `Latihan Harian ${d.g} · Hari ${d.no}`,
     compose: isTo ? `${qs.length} soal campuran dari seluruh materi ${gname} (Hari ${d.fromNo}–${d.toNo})` : `${qs.length} soal latihan materi Hari ${d.no}`,
     questions: qs, minutes: isTo ? (d.g === 'TIU' ? 45 : 30) : Math.max(10, qs.length)
   };
 }
 
+/* ---------- Planning gabungan tujuh hari ---------- */
+const COMBINED_DAYS = ['Ukur kemampuan awal', 'Perbaiki konsep terlemah', 'Latih akurasi dan kecepatan',
+  'Uji kembali konsep sulit', 'Simulasi kedua', 'Perbaiki kesalahan yang masih muncul', 'Ukur kesiapan akhir'];
+const isSimulationDay = day => [1, 5, 7].includes(day);
+const combinedKey = (cfg, day, scope) => `PLAN-${cfg.at}-GABUNG-${day}-${scope === 'SKD' ? 'SKD' : cfg.cat}`;
+
+function combinedPack(cfg, key) {
+  const match = /-GABUNG-([1-7])-(SKD|[A-Z0-9_]+)$/.exec(key);
+  if (!match) return null;
+  const day = Number(match[1]), isSkb = match[2] !== 'SKD';
+  const field = 'SKB_' + cfg.cat;
+  if (isSkb && (match[2] !== cfg.cat || !targetSkbKeys().includes(field))) return null;
+  const scope = isSkb ? field : 'SKD';
+  const label = isSkb ? 'SKB ' + skbMeta(field).short : 'SKD';
+  const common = { key, plan: true, skbBucket: isSkb ? field : null };
+  if (isSimulationDay(day)) {
+    const group = isSkb ? field : 'SKD_FULL', packs = packsFor(group);
+    if (!packs.length) return null;
+    const fullSets = isSkb ? packs.filter(p => p.questions.length === Math.min(SKB_SIZE, bankLen(field))) : packs;
+    const base = fullSets[([1, 5, 7].indexOf(day)) % fullSets.length];
+    const pack = preparePack(base);
+    return { ...pack, ...common, title: `Simulasi ${label} · Hari ${day}`, forceTimed: true };
+  }
+  const fallback = isSkb ? BANK[field] : Object.keys(FULL_MIX).flatMap(c => BANK['SKD_' + c] || []);
+  const targeted = weaknessQuestions(scope);
+  const qs = targeted.length ? targeted : selectQuestions(shuffle(fallback || []), 12);
+  if (!qs.length) return null;
+  return { ...common, group: 'PLAN', kind: 'CAT', mode: 'PLAN', adaptive: true,
+    title: `Latihan ${label} · Hari ${day}`, compose: targeted.length ? `${qs.length} soal baru dari topik prioritas` : `${qs.length} soal campuran untuk pemetaan awal`,
+    questions: qs, minutes: Math.max(10, qs.length) };
+}
+
+function renderCombinedPlan(cfg) {
+  const field = 'SKB_' + cfg.cat;
+  const fieldName = skbMeta(field).short;
+  const count = Math.min(SKB_SIZE, bankLen(field));
+  const preferred = targetPreference();
+  const canPractice = targetSkbKeys().includes(field);
+  const rows = COMBINED_DAYS.map((title, i) => {
+    const day = i + 1, sim = isSimulationDay(day);
+    const skd = combinedKey(cfg, day, 'SKD'), skb = combinedKey(cfg, day, 'SKB');
+    return `<details class="mb-3 rounded-2xl border border-base-300 bg-base-100 p-3" ${!results[skd] || !results[skb] ? 'data-pending' : ''}>
+      <summary class="cursor-pointer text-sm font-extrabold">Hari ${day} · ${title} · ${Number(!!results[skd]) + Number(!!results[skb])}/2 tugas</summary>
+      <div class="mt-3 space-y-2">
+        ${planPackRow(skd, sim ? 'Tryout SKD lengkap' : 'Latihan terarah SKD', sim ? '110 soal · 100 menit' : 'Berdasarkan hasil terbaru jika tersedia', results[skd], 'SKD')}
+        ${canPractice ? planPackRow(skb, sim ? 'Simulasi SKB ' + fieldName : 'Latihan terarah ' + fieldName,
+          sim ? `${count} soal · target ${Math.ceil(count * SKB_TARGET)} benar` : 'Berdasarkan hasil terbaru jika tersedia', results[skb], 'SKB')
+          : '<p class="text-sm text-base-content/70">Bank soal bidang ini belum tersedia di perangkat ini. Pilih bidang lain lewat Atur planning.</p>'}
+      </div></details>`;
+  }).join('');
+  shell('planning', `<div class="mx-auto max-w-xl">
+    ${pageHead('Planning 7 Hari', `SKD 505/550 · SKB ${esc(fieldName)} 90%`)}
+    ${preferred.bucket === field && preferred.role ? `<p class="mb-3 text-sm text-slate-600">Target jabatan <b>${esc(preferred.role)}</b></p>` : ''}
+    ${rows}
+    <div class="pl-actions">
+      <button type="button" class="lx-btn lx-blue" onclick="App.planSetup()">Atur planning</button>
+      <button type="button" class="lx-btn lx-red" onclick="App.planReset()">Reset planning</button>
+    </div></div>`);
+  const current = $('#app details[data-pending]');
+  if (current) current.open = true;
+}
+
 /* ---------- halaman Planning ---------- */
 function renderPlanning() {
-  const cfg = planCfg, days = cfg ? planBuild(cfg) : [];
+  const cfg = planCfg;
+  if (cfg?.test === 'GABUNG') { renderCombinedPlan(cfg); return; }
+  const days = cfg ? planBuild(cfg) : [];
   const progs = days.map(planDayProg);
   const nowIdx = progs.findIndex(p => !p.full), allDone = days.length > 0 && nowIdx === -1;
   const mean = progs.length ? progs.reduce((a, p) => a + p.pct, 0) / progs.length : 0;
@@ -1509,12 +1620,13 @@ function renderPlanning() {
 
 /* ---------- lembar "Atur planning" ---------- */
 function planPaintSetup() {
-  const d = planDlg('dlg-plan'), dr = planDraft, cats = planSkbCats();
+  const d = planDlg('dlg-plan'), dr = planDraft, cats = planFieldOptions(dr.test);
   const box = d.querySelector('.modal-box'), keep = box ? box.scrollTop : 0;
-  const minD = planMinDays(dr), maxD = planMaxDays(dr);
+  const combined = dr.test === 'GABUNG';
+  const okSave = dr.test === 'SKD' || cats.includes(dr.cat);
+  const minD = planMinDays(dr), maxD = okSave || combined ? planMaxDays(dr) : PLAN_MAX;
   dr.days = Math.max(minD, Math.min(dr.days, maxD));
-  const okSave = dr.test === 'SKD' || !!dr.cat;
-  const days = okSave ? planBuild(dr) : [];
+  const days = okSave && !combined ? planBuild(dr) : [];
   const prev = planSummary(days).map(r => `<li class="flex items-baseline justify-between gap-3"><span class="font-extrabold text-slate-800">${esc(r.g)}</span><span class="text-right text-slate-600">${r.learn} hari belajar + Try Out<span class="block text-[0.7rem] text-slate-500">±${planRange(r.min, r.max)} langkah/hari${r.drill ? ` + latihan harian ${PLAN_DRILL_N} soal` : ''}</span></span></li>`).join('');
   const opt = (on, act, txt, sub) => `<button type="button" class="pl-opt ${on ? 'on' : ''}" aria-pressed="${on}" onclick="${act}">${txt}${sub ? `<span class="block text-[0.68rem] font-semibold opacity-75">${sub}</span>` : ''}</button>`;
   const nG = planLists(dr).length;
@@ -1522,19 +1634,21 @@ function planPaintSetup() {
   <div class="modal-box max-w-md">
     <div class="flex items-start justify-between gap-3">
       <div><h3 class="text-xl font-extrabold text-neutral">Atur planning</h3>
-      <p class="mt-0.5 text-sm text-base-content/70">Fokus ke satu tes. Materi dibagi otomatis, tiap bagian ditutup Try Out.</p></div>
+      <p class="mt-0.5 text-sm text-base-content/70">Pilih jadwal gabungan 7 hari atau fokus ke satu tes.</p></div>
       <button class="btn btn-ghost btn-sm btn-circle" onclick="$('#dlg-plan').close()" aria-label="Tutup">${icon('x', 'h-4 w-4')}</button>
     </div>
 
     <div class="pl-label mt-4">Tes yang dipelajari</div>
     <div class="pl-seg">${opt(dr.test === 'SKD', "App.planSetTest('SKD')", 'SKD', 'TWK · TIU · TKP')}${opt(dr.test === 'SKB', "App.planSetTest('SKB')", 'SKB', 'Satu bidang formasi')}</div>
+    <div class="mt-2">${opt(combined, "App.planSetTest('GABUNG')", 'SKD + SKB', '7 hari · simulasi dan latihan kelemahan')}</div>
 
-    ${dr.test === 'SKB' ? `
+    ${dr.test !== 'SKD' ? `
     <div class="pl-label mt-4">Bidang SKB</div>
     <div class="pl-chips">${cats.length
       ? cats.map(c => `<button type="button" class="pl-chip ${dr.cat === c ? 'on' : ''}" aria-pressed="${dr.cat === c}" onclick="App.planSetCat('${esc(c)}')">${esc(planCatName(c))}</button>`).join('')
       : '<span class="text-sm text-slate-500">Belum ada materi SKB.</span>'}</div>` : ''}
 
+    ${combined ? '<p class="mt-3 text-sm text-slate-600">Hari 1, 5, dan 7 untuk simulasi. Hari lainnya untuk memperbaiki hasil sebelumnya.</p>' : `
     <div class="pl-label mt-4">Total hari (termasuk hari Try Out)</div>
     <div class="pl-step">
       <button type="button" onclick="App.planStep(-1)" aria-label="Kurangi hari" ${dr.days <= minD ? 'disabled' : ''}>−</button>
@@ -1542,7 +1656,7 @@ function planPaintSetup() {
       <button type="button" onclick="App.planStep(1)" aria-label="Tambah hari" ${dr.days >= maxD ? 'disabled' : ''}>+</button>
     </div>
     <div class="pl-chips mt-3 justify-center">${[7, 14, 21, 30].filter(n => n >= minD && n <= maxD).map(n => `<button type="button" class="pl-chip ${dr.days === n ? 'on' : ''}" onclick="App.planSetDays(${n})">${n} hari</button>`).join('')}</div>
-    <p class="mt-2 text-center text-xs text-slate-500">Minimal ${minD} hari (${nG} hari Try Out + hari belajar)${maxD < PLAN_MAX ? `; materi ini baru ${planTotal(dr)} langkah, jadi maksimal ${maxD} hari.` : `, maksimal ${PLAN_MAX} hari.`}</p>
+    <p class="mt-2 text-center text-xs text-slate-500">Minimal ${minD} hari (${nG} hari Try Out + hari belajar)${maxD < PLAN_MAX ? `; materi ini baru ${planTotal(dr)} langkah, jadi maksimal ${maxD} hari.` : `, maksimal ${PLAN_MAX} hari.`}</p>`}
 
     ${prev ? `<div class="pl-prev"><div class="pl-label" style="margin-bottom:.4rem">Pembagian otomatis</div><ul class="space-y-2">${prev}</ul>
       <p class="mt-2 text-[0.7rem] leading-snug text-slate-500">Try Out: ${PLAN_TO_N} soal campuran dari seluruh materi kelompok itu, diambil dari soal yang belum pernah muncul di langkah materi.</p></div>` : ''}
@@ -1624,27 +1738,39 @@ function planDayOpen(no) {
 
 const planApi = {
   planSetup() {
-    const c = planCfg, cats = planSkbCats();
-    planDraft = c ? { test: c.test, cat: c.cat, days: c.days } : { test: 'SKD', cat: '', days: 7 };
-    if (planDraft.test === 'SKB' && !cats.includes(planDraft.cat)) planDraft.cat = cats[0] || '';
+    const c = planCfg, preferred = targetPreference().bucket.slice(4);
+    planDraft = c ? { test: c.test, cat: c.cat, days: c.days } : { test: 'GABUNG', cat: '', days: 7 };
+    if (preferred && planFieldOptions(planDraft.test).includes(preferred)) planDraft.cat = preferred;
     planPaintSetup();
   },
   planSetTest(t) {
     if (!planDraft) return;
     planDraft.test = t;
-    if (t === 'SKB' && !planDraft.cat) planDraft.cat = planSkbCats()[0] || '';
+    const cats = planFieldOptions(t);
+    if (t !== 'SKD' && !cats.includes(planDraft.cat)) {
+      const preferred = targetPreference().bucket.slice(4);
+      planDraft.cat = cats.includes(preferred) ? preferred : '';
+    }
     planPaintSetup();
   },
-  planSetCat(c) { if (!planDraft) return; planDraft.cat = c; planPaintSetup(); },
+  planSetCat(c) { if (!planDraft || !planFieldOptions(planDraft.test).includes(c)) return; planDraft.cat = c; planPaintSetup(); },
   planSetDays(v) { if (!planDraft) return; const n = Math.round(Number(v)); planDraft.days = n >= 1 ? n : planDraft.days; planPaintSetup(); },
   planStep(k) { if (!planDraft) return; planDraft.days += k; planPaintSetup(); },
   planSave() {
     if (!planDraft) return;
     const c = planSanitize(Object.assign({}, planDraft, { at: Date.now() }));
-    if (!c || (c.test === 'SKB' && !c.cat)) return;
+    if (!c || (c.test !== 'SKD' && !planFieldOptions(c.test).includes(c.cat))) return;
     c.days = Math.max(planMinDays(c), Math.min(c.days, planMaxDays(c)));
-    planCfg = c; planQ = null; store.set(PLAN_KEY, c);
-    try { planGen(c); } catch (e) { console.error('planGen', e); }
+    const unchanged = planCfg?.test === c.test && planCfg.cat === c.cat && planCfg.days === c.days;
+    if (unchanged || (c.test === 'GABUNG' && planCfg?.test === 'GABUNG')) c.at = planCfg.at;
+    c.updated = Date.now();
+    planCfg = c;
+    store.set(PLAN_KEY, c);
+    if (c.cat) saveStudyTarget(targetPreference().role, 'SKB_' + c.cat);
+    if (!unchanged) {
+      planQ = null; store.del(PLANQ_KEY);
+      if (c.test !== 'GABUNG') planGen(c);
+    }
     const d = $('#dlg-plan'); if (d && d.open) d.close();
     toast(`Planning ${c.days} hari dibuat.`);
     if (location.hash === '#/planning') renderPlanning(); else go('#/planning');
@@ -1652,7 +1778,7 @@ const planApi = {
   async planReset() {
     if (!planCfg) { toast('Belum ada planning.'); return; }
     if (!await ask({ title: 'Reset planning?', text: 'Pengaturan planning (tes, jumlah hari, dan soal Try Out) dihapus. Progres materi dan soal yang sudah kamu kerjakan tidak ikut terhapus.', ok: 'Reset planning', danger: true })) return;
-    planCfg = null; planQ = null; store.del(PLAN_KEY); store.del(PLANQ_KEY);
+    planCfg = null; planQ = null; store.set(PLAN_KEY, { at: Date.now(), reset: true }); store.del(PLANQ_KEY);
     toast('Planning direset.');
     if (location.hash === '#/planning') renderPlanning();
   },
@@ -1686,7 +1812,7 @@ function startExam(pack, opts = {}) {
     doubts: new Array(qs.length).fill(false),
     idx: 0, filter: 'ALL',
     remaining: pack.minutes ? pack.minutes * 60 : null,
-    elapsed: 0, paused: false, finished: false,
+    elapsed: 0, spent: new Array(qs.length).fill(0), visible: new Set(), paused: false, finished: false,
     instant: opts.instant !== false
   };
   if (!timerHandle) timerHandle = setInterval(tick, 1000);
@@ -1695,6 +1821,7 @@ function startExam(pack, opts = {}) {
 function tick() {
   if (!exam || exam.finished || exam.paused || location.hash !== '#/ujian') return;
   exam.elapsed++;
+  if (!document.hidden) exam.spent[exam.idx]++;
   if (exam.remaining != null) {
     exam.remaining--;
     paintTimer();
@@ -1804,7 +1931,7 @@ const xb = (cls, ic, short, long, onclick, dis) =>
 function paintQuestion() {
   const box = $('#x-q'); if (!box || !exam) return;
   const q = exam.qs[exam.idx], chosen = exam.answers[exam.idx];
-  if (!exam.finished) markSeen(q);
+  if (!exam.finished) { exam.visible.add(exam.idx); markSeen(q); }
   const key = showKey();
   const cs = catStyle(q.category);
   const catLabel = ['TWK', 'TIU', 'TKP'].includes(q.category) ? q.category : 'SKB';
@@ -1839,7 +1966,7 @@ function paintQuestion() {
         <span class="badge badge-primary badge-lg font-bold">Soal ${q.no} / ${exam.qs.length}</span>
         <span class="badge badge-lg border-0 font-semibold ${cs.badge}">${catLabel}</span>
         <span class="badge badge-ghost h-auto min-h-[1.25rem] max-w-full whitespace-normal break-words py-1 text-left">${esc(q.sub)}</span>
-        <span class="w-full text-xs text-base-content/60 sm:ml-auto sm:w-auto sm:text-base-content/50">${rule}</span>
+        <span class="w-full text-xs text-base-content/60 sm:ml-auto sm:w-auto sm:text-base-content/50">${rule}${exam.finished && q.category === 'TIU' && exam.spent[exam.idx] ? ` · Waktu ${fmtClock(exam.spent[exam.idx])}` : ''}</span>
       </div>
       <div class="whitespace-pre-line break-words text-[1.08rem] font-medium leading-relaxed text-neutral sm:text-[1.05rem]">${escQ(q)}</div>
       ${q.svg ? `<div class="q-svg overflow-auto rounded-xl bg-base-200/60 p-3">${q.svg}</div>` : ''}
@@ -1912,6 +2039,122 @@ function paintSide() {
 }
 const numsDialogInner = () => `<div class="mb-1 flex items-center justify-between gap-2 px-1"><span class="text-xs font-semibold text-base-content/60">Ketuk nomor untuk pindah soal</span><button class="btn btn-ghost btn-sm btn-circle shrink-0" onclick="$('#dlg-nums').close()" aria-label="Tutup">${icon('x', 'h-5 w-5')}</button></div><div class="card">${sideHtml()}</div>`;
 
+/* ---------- Riwayat kesalahan & latihan bertopik ---------- */
+function reviewBucket(q, pack) {
+  if (['TWK', 'TIU', 'TKP'].includes(q.category)) return 'SKD_' + q.category;
+  const bucket = bucketOfId[q.id] || pack.skbBucket || pack.group;
+  return bucket?.startsWith('SKB_') ? bucket : null;
+}
+
+function examIssues() {
+  return exam.qs.flatMap((q, i) => {
+    const bucket = reviewBucket(q, exam.pack);
+    if (!bucket) return [];
+    const answer = exam.answers[i], time = exam.spent[i];
+    const score = answer === null ? 0 : q.scores[answer];
+    const slow = q.category === 'TIU' && time > SLOW_TIU_SECONDS;
+    if (score === 5 && !exam.doubts[i] && !slow) return [];
+    return [{ id: q.id, bucket, no: i + 1, sub: q.sub, fam: q.fam || '', score, empty: answer === null, doubt: exam.doubts[i], slow, time }];
+  });
+}
+
+function issueWeight(i) { return 5 - i.score + Number(i.doubt) + 2 * Number(i.slow); }
+
+function saveReview() {
+  const buckets = new Set(exam.qs.filter((_, i) => exam.visible.has(i) || exam.answers[i] !== null)
+    .map(q => reviewBucket(q, exam.pack)).filter(Boolean));
+  if (!buckets.size || exam.answers.every(a => a === null)) return;
+  const issues = examIssues(), at = Date.now();
+  buckets.forEach(bucket => {
+    const entries = issues.filter(i => i.bucket === bucket).sort((a, b) => issueWeight(b) - issueWeight(a) || b.time - a.time);
+    reviews[bucket] = { at, issues: entries };
+  });
+  store.set(REVIEW_KEY, reviews);
+}
+
+function reviewIssues(scope) {
+  if (scope === 'sesi') return examIssues();
+  const selected = targetPreference().bucket;
+  return Object.entries(reviews).flatMap(([bucket, rec]) => {
+    const include = scope === 'ALL'
+      ? bucket.startsWith('SKD_') || !selected || bucket === selected
+      : scope === bucket || (scope === 'SKD' && bucket.startsWith('SKD_'));
+    return include ? rec.issues : [];
+  });
+}
+
+function weaknessQuestions(scope, number) {
+  const topics = new Map(), bankIndex = planQIndex();
+  for (const issue of reviewIssues(scope)) {
+    if (number && issue.no !== number) continue;
+    const key = JSON.stringify([issue.bucket, issue.sub, issue.fam]);
+    const topic = topics.get(key) || { ...issue, weight: 0, sources: new Set() };
+    topic.weight += issueWeight(issue);
+    const source = bankIndex.get(questions.resolve(issue.id));
+    if (source) topic.sources.add(questions.key(source));
+    topics.set(key, topic);
+  }
+  const orderedTopics = [...topics.values()].sort((a, b) => b.weight - a.weight);
+  const used = new Set(), selected = [];
+  let active = 0;
+  for (const topic of orderedTopics) {
+    const fresh = shuffle(BANK[topic.bucket] || []).filter(q => !seenBefore(q) && !topic.sources.has(questions.key(q)));
+    const preferred = fresh.filter(q => topic.fam && q.fam === topic.fam);
+    const sameSub = fresh.filter(q => q.sub === topic.sub);
+    const set = selectQuestions(preferred.concat(sameSub), number ? 1 : 4, used);
+    if (!set.length) continue;
+    selected.push(...set);
+    set.forEach(q => used.add(questions.key(q)));
+    if (++active === 3) break;
+  }
+  return selected;
+}
+
+function issueLabel(i) {
+  return [i.empty ? 'Kosong' : i.score < 5 ? (i.bucket === 'SKD_TKP' ? `TKP ${i.score}/5` : 'Salah') : '',
+    i.doubt ? 'Ragu' : '', i.slow ? `Lambat (${fmtClock(i.time)})` : ''].filter(Boolean).join(' · ');
+}
+
+function reviewSummary(scope) {
+  const list = reviewIssues(scope);
+  if (!list.length) return '';
+  const slow = list.filter(i => i.slow).sort((a, b) => b.time - a.time);
+  const slowRows = slow.map(i => {
+    const q = planQIndex().get(questions.resolve(i.id));
+    return `<li class="mt-2 text-sm"><b>Soal ${i.no} · ${esc(i.sub)} · ${fmtClock(i.time)}</b>
+      ${scope === 'sesi' ? `<button type="button" class="link link-primary" onclick="$('#dlg-result').close(); App.goto(${i.no - 1})">Buka soal</button>
+        <button type="button" class="link link-primary" onclick="App.startWeakness('sesi', ${i.no})">Coba soal sejenis</button>` : ''}
+      ${q?.trick ? `<p>${esc(q.trick)}</p>` : ''}</li>`;
+  }).join('');
+  return `<div class="rounded-xl border border-base-300 p-3">
+    <h4 class="font-extrabold">Latihan berikutnya</h4>
+    <p class="text-sm text-base-content/70">${list.length} soal perlu ditinjau · ${slow.length} soal TIU di atas ${SLOW_TIU_SECONDS} detik</p>
+    ${slowRows ? `<details class="mb-2"><summary class="cursor-pointer text-sm font-bold">Lihat soal lambat dan cara cepat</summary><ul>${slowRows}</ul></details>` : ''}
+    ${scope !== 'sesi' ? `<details class="mb-2"><summary class="cursor-pointer text-sm font-bold">Lihat catatan hasil terakhir</summary><ul>${list.slice().sort((a, b) => issueWeight(b) - issueWeight(a)).map(i =>
+      `<li class="mt-1 text-sm"><b>${esc(i.sub)}</b> · ${issueLabel(i)}</li>`).join('')}</ul></details>` : ''}
+    <button type="button" class="btn btn-primary btn-sm mt-2" onclick="App.startWeakness('${scope}')">Latih 3 kelemahan saya</button>
+  </div>`;
+}
+
+function openReview() {
+  const d = planDlg('dlg-review');
+  d.innerHTML = `<div class="modal-box max-w-xl"><h3 class="mb-3 text-lg font-extrabold">Latihan dari hasil terakhir</h3>
+    ${reviewSummary('ALL') || '<p>Belum ada kelemahan yang tercatat. Mulai dari satu tryout.</p>'}
+    <form method="dialog" class="modal-action"><button class="btn">Tutup</button></form></div>`;
+  if (!d.open) d.showModal();
+}
+
+function startWeakness(scope, number) {
+  const qs = weaknessQuestions(scope, number);
+  if (!qs.length) { toast('Soal baru untuk topik ini sudah habis. Gunakan pembahasan atau coba topik lain.'); return; }
+  ['#dlg-review', '#dlg-result'].forEach(id => { const d = $(id); if (d?.open) d.close(); });
+  const bucket = reviewBucket(qs[0], {});
+  const reviewScope = scope === 'sesi' ? (bucket?.startsWith('SKB_') ? bucket : 'SKD') : scope;
+  startExam({ key: 'KELEMAHAN', group: 'REVIEW', kind: 'LATIHAN', mode: 'REVIEW',
+    adaptive: true, reviewScope, noSave: true, minutes: 0, title: 'Latihan kelemahan',
+    compose: `${qs.length} soal baru dari topik prioritas`, questions: qs }, { instant: true });
+}
+
 /* hasil */
 function computeResult() {
   const sum = scoreSummary();
@@ -1957,10 +2200,11 @@ function openResult() {
     verdict = `<div role="alert" class="alert border-primary/30 bg-primary/10 text-sm"><span>${msg}</span></div>`;
   }
 
-  const target = full ? SKD_TARGET : (exam.pack.group === 'SKB_PRAKOM' || exam.pack.target ? Math.ceil(r.max * PRAKOM_TARGET) : null);
+  const field = exam.pack.skbBucket || exam.pack.group;
+  const target = full ? SKD_TARGET : (field.startsWith('SKB_') ? Math.ceil(r.max * SKB_TARGET) : null);
   if (target) {
     const msg = r.total >= target ? 'Target latihan tercapai.' : `Perlu tambahan ${target - r.total} poin untuk mencapai target latihan.`;
-    verdict += `<p class="text-sm text-base-content/80"><b>Target ${full ? 'SKD ' + SKD_TARGET + '/550' : 'SKB Prakom 90%'}.</b> ${msg}</p>`;
+    verdict += `<p class="text-sm text-base-content/80"><b>Target ${full ? 'SKD ' + SKD_TARGET + '/550' : 'SKB ' + esc(skbMeta(field).short) + ' 90%'}.</b> ${msg}</p>`;
   }
 
   const weak = Object.values(r.bySub).filter(o => o.score / o.max < 0.8)
@@ -1993,6 +2237,7 @@ function openResult() {
         <div class="px-1.5 py-3"><div class="text-xs leading-tight text-base-content/70">Kosong</div><div class="text-2xl font-extrabold text-neutral">${r.empty}</div></div>
       </div>
       ${weakHtml}
+      ${reviewSummary('sesi')}
       <div class="modal-action act-stack mt-2">
         <button class="btn btn-ghost max-sm:h-12" onclick="App.exitToList()">Daftar paket</button>
         <button class="btn btn-outline max-sm:h-12" onclick="App.restartExam(true)">${icon('refresh', 'h-4 w-4')} Ulangi</button>
@@ -2006,6 +2251,7 @@ function openResult() {
 function finishExam() {
   if (!exam || exam.finished) return;
   exam.finished = true; exam.paused = false;
+  if (!exam.pack.adaptive) saveReview();
   if (!exam.pack.noSave) {
     const r = computeResult();
     const rec = results[exam.pack.key] || { attempts: 0, best: { score: -1, max: r.max } };
@@ -2066,10 +2312,10 @@ function openStart(key) {
       <li class="flex gap-2">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Waktu bisa dijeda dari menu titik tiga (⋮) di pojok kanan atas.</span></li>
       <li class="hidden gap-2 md:flex">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Pintasan keyboard: A–E untuk memilih, ← → untuk pindah soal.</span></li>
     </ul>
-    <label class="mt-4 flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-base-200 px-4 py-3">
+    ${p.forceTimed ? '<p class="mt-4 text-xs text-base-content/70">Pembahasan tersedia setelah simulasi selesai.</p>' : `<label class="mt-4 flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-base-200 px-4 py-3">
       <span><span class="block text-sm font-semibold text-neutral">Bahas instan</span><span class="text-xs text-base-content/60">Kunci &amp; pembahasan langsung tampil setelah menjawab. Matikan untuk suasana ujian sebenarnya.</span></span>
       <input type="checkbox" id="st-instant" class="toggle toggle-primary shrink-0" ${store.get('cpns_instant', true) ? 'checked' : ''}>
-    </label>
+    </label>`}
     <div class="modal-action act-stack">
       <button class="btn btn-ghost" onclick="$('#dlg-start').close()">Batal</button>
       <button class="btn btn-primary" onclick="App.confirmStart('${p.key}')">Mulai ujian ${icon('arrowR', 'h-4 w-4')}</button>
@@ -2139,7 +2385,7 @@ const App = {
       </div>
       <div class="divide-y divide-base-200">
         ${timed ? row(exam.paused ? 'play' : 'pause', exam.paused ? 'Lanjutkan waktu' : 'Jeda waktu', "$('#dlg-menu').close();App.togglePause()") : ''}
-        ${exam.finished ? '' : `<label class="flex cursor-pointer items-center justify-between gap-3 px-3 py-3.5"><span class="flex items-center gap-3 text-[0.95rem] font-semibold">${icon('bulb', 'h-5 w-5 shrink-0 text-neutral')}Bahas instan</span><input type="checkbox" class="toggle toggle-primary shrink-0" ${exam.instant ? 'checked' : ''} onchange="App.toggleInstant(this.checked)"></label>`}
+        ${exam.finished || exam.pack.forceTimed ? '' : `<label class="flex cursor-pointer items-center justify-between gap-3 px-3 py-3.5"><span class="flex items-center gap-3 text-[0.95rem] font-semibold">${icon('bulb', 'h-5 w-5 shrink-0 text-neutral')}Bahas instan</span><input type="checkbox" class="toggle toggle-primary shrink-0" ${exam.instant ? 'checked' : ''} onchange="App.toggleInstant(this.checked)"></label>`}
         ${row('refresh', 'Mulai ulang paket', "$('#dlg-menu').close();App.restartExam()")}
       </div>
       <button class="btn btn-primary mt-4 w-full" onclick="$('#dlg-menu').close();${exam.finished ? 'App.openResult()' : 'App.finish()'}">${exam.finished ? 'Lihat hasil' : 'Akhiri ujian'}</button>
@@ -2175,8 +2421,8 @@ const App = {
     const p = pendingPack;
     if (!p || p.key !== key) return;
     pendingPack = null;
-    const inst = $('#st-instant').checked;
-    store.set('cpns_instant', inst);
+    const inst = !p.forceTimed && $('#st-instant').checked;
+    if (!p.forceTimed) store.set('cpns_instant', inst);
     $('#dlg-start').close();
     startExam(p, { instant: inst });
   },
@@ -2208,7 +2454,7 @@ const App = {
 
   /* kontrol ujian */
   togglePause() { if (!exam || exam.finished) return; exam.paused = !exam.paused; if (document.activeElement) document.activeElement.blur(); paintQuestion(); const l = $('#x-pause-lbl'); if (l) l.textContent = exam.paused ? 'Lanjutkan waktu' : 'Jeda waktu'; },
-  toggleInstant(v) { exam.instant = v; store.set('cpns_instant', v); paintQuestion(); paintSide(); },
+  toggleInstant(v) { if (exam.pack.forceTimed) return; exam.instant = v; store.set('cpns_instant', v); paintQuestion(); paintSide(); },
   async finish() {
     if (!exam || exam.finished) return;
     const empty = exam.answers.filter(a => a === null).length;
@@ -2220,6 +2466,17 @@ const App = {
     if (ok) finishExam();
   },
   openResult,
+  targetEditorHTML,
+  saveTarget(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    saveStudyTarget(form.elements.targetRole.value, form.elements.targetBucket.value);
+    form.querySelector('[data-target-status]').textContent = 'Target tersimpan.';
+    if (!exam || exam.finished) route();
+    return false;
+  },
+  openReview,
+  startWeakness,
   async restartExam(skipAsk) {
     if (!exam) return;
     if (!skipAsk && !exam.finished) {
@@ -2228,6 +2485,7 @@ const App = {
     const d = $('#dlg-result'); if (d.open) d.close();
     const p = exam.pack, inst = exam.instant;
     if (p.group === 'MATERI') App.startMateriPractice(p.key.replace('MATERI-', ''));
+    else if (exam.finished && p.adaptive && !p.plan) startWeakness(p.reviewScope);
     else startExam(exam.finished ? preparePack(findPack(p.key) || p) : p, { instant: inst });
     if (document.activeElement) document.activeElement.blur();
   },
@@ -2308,6 +2566,7 @@ window.registerCPNSQuestions({
   async resetProgress() {
     if (!await ask({ title: 'Reset progres?', text: 'Riwayat soal yang pernah dikerjakan dan skor terbaik semua paket akan dihapus.', ok: 'Reset', danger: true })) return;
     seen.clear(); seenKeys.clear(); seenPatterns.clear(); results = {};
+    reviews = {}; store.set(REVIEW_KEY, reviews);
     store.del('cpns_seen_qids_v2'); store.del('cpns_results_v3');
     toast('Progres direset.'); route();
   }
