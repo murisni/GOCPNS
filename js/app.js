@@ -70,6 +70,8 @@ const seenKeys = new Set(), seenPatterns = new Set();
 let results = store.get('cpns_results_v3', {});
 const REVIEW_KEY = 'cpns_review_v1';
 let reviews = store.get(REVIEW_KEY, {});
+const HISTORY_KEY = 'cpns_exam_history_v1';
+let examHistory = store.get(HISTORY_KEY, []);
 const SLOW_TIU_SECONDS = 90;
 const seenBefore = q => seen.has(questions.resolve(q.id)) || seenKeys.has(questions.key(q));
 function markSeen(q) {
@@ -82,9 +84,9 @@ function markSeen(q) {
 }
 
 // Pilih soal baru dulu. Sebarkan variasi satu templat agar tiap sesi beragam.
-function selectQuestions(pool, count, blocked = new Set()) {
+function selectQuestions(pool, count, blocked = new Set(), allowReserved = false) {
   if (count <= 0) return [];
-  const unique = new Set(blocked), patterns = new Set(), picked = [], deferred = [];
+  const unique = new Set(allowReserved ? blocked : [...blocked, ...reservedFinalKeys()]), patterns = new Set(), picked = [], deferred = [];
   for (const q of pool) {
     const key = questions.key(q);
     if (unique.has(key)) continue;
@@ -154,7 +156,9 @@ function indexBuckets() { Object.entries(BANK).forEach(([b, arr]) => arr.forEach
 
 const CAT_SIZE = 30;   // soal per paket latihan TWK / TIU / TKP
 const SKB_SIZE = 20;   // soal per paket SKB
-const FULL_MIX = { TWK: 30, TIU: 35, TKP: 45 };  // komposisi tryout SKD
+const FULL_MIX = { TWK: 30, TIU: 35, TKP: 45 };
+const TIU_MIX = { Verbal: 10, Numerik: 17, Figural: 8 }; // Komposisi latihan GOCPNS.
+const tiuType = q => q.category === 'TIU' && /^(Verbal|Numerik|Figural)\b/.exec(q.sub || '')?.[1];
 const PASSING = { TWK: 65, TIU: 80, TKP: 166 };
 const SKD_TARGET = 505;
 const SKB_TARGET = 0.9;
@@ -179,14 +183,14 @@ const skbMeta = k => SKB_META[k] || { name: k.replace('SKB_', '').replace(/_/g, 
 const targetSkbKeys = () => skbKeys().filter(key => key !== 'SKB_SKD' && /^SKB_[A-Z0-9_]+$/.test(key));
 let studyTarget = store.get(TARGET_KEY, null);
 function targetPreference() {
-  if (studyTarget) return { role: String(studyTarget.role || ''), bucket: String(studyTarget.bucket || '') };
-  return { role: '', bucket: planCfg?.cat ? 'SKB_' + planCfg.cat : '' };
+  if (studyTarget) return { name: String(studyTarget.name || ''), role: String(studyTarget.role || ''), bucket: String(studyTarget.bucket || '') };
+  return { name: '', role: '', bucket: planCfg?.cat ? 'SKB_' + planCfg.cat : '' };
 }
-function saveStudyTarget(role, bucket) {
+function saveStudyTarget(role, bucket, name = targetPreference().name) {
   const previous = targetPreference();
-  const next = { role: String(role || '').trim().slice(0, 100),
+  const next = { name: String(name || '').trim().slice(0, 80), role: String(role || '').trim().slice(0, 100),
     bucket: targetSkbKeys().includes(bucket) ? bucket : '' };
-  if (previous.role !== next.role || previous.bucket !== next.bucket || !studyTarget) {
+  if (previous.name !== next.name || previous.role !== next.role || previous.bucket !== next.bucket || !studyTarget) {
     studyTarget = { ...next, at: Date.now() };
     store.set(TARGET_KEY, studyTarget);
   }
@@ -199,7 +203,10 @@ function targetEditorHTML() {
   const choices = targetSkbKeys().map(key => `<option value="${esc(key)}"${selected(key)}>${esc(skbMeta(key).name)} · ${bankLen(key)} soal</option>`).join('');
   const activePlan = planCfg?.cat ? ' Planning yang sudah dibuat bisa disesuaikan lewat Atur planning.' : '';
   return `<form class="mt-4 rounded-2xl border border-base-300 p-3 text-left" onsubmit="return App.saveTarget(event)">
-    <h4 class="text-sm font-extrabold">Target jabatan dan SKB</h4>
+    <h4 class="text-sm font-extrabold">Edit identitas dan target</h4>
+    <label class="mt-2 block text-xs font-bold" for="target-name">Nama tampilan</label>
+    <input id="target-name" name="targetName" class="input input-bordered input-sm mt-1 w-full"
+      maxlength="80" value="${esc(current.name)}" placeholder="Nama yang ingin ditampilkan">
     <label class="mt-2 block text-xs font-bold" for="target-role">Nama jabatan (opsional)</label>
     <input id="target-role" name="targetRole" class="input input-bordered input-sm mt-1 w-full"
       maxlength="100" value="${esc(current.role)}" placeholder="Misalnya Auditor Ahli Pertama">
@@ -253,9 +260,14 @@ function preparePack(pack) {
   const groups = pack.kind === 'FULL' ? Object.keys(FULL_MIX).map(c => 'SKD_' + c) : [pack.group];
   const selected = groups.flatMap(bucket => {
     const base = pack.kind === 'FULL' ? pack.questions.filter(q => q.category === bucket.slice(4)) : pack.questions;
-    return selectQuestions(base.concat(ordered(bucket)), base.length);
+    const pool = base.concat(ordered(bucket));
+    if (pack.kind !== 'FULL' || bucket !== 'SKD_TIU') return selectQuestions(pool, base.length);
+    const balanced = Object.entries(TIU_MIX).flatMap(([type, n]) => selectQuestions(pool.filter(q => tiuType(q) === type), n));
+    const used = new Set(balanced.map(questions.key));
+    return shuffle(balanced.concat(selectQuestions(pool, base.length - balanced.length, used)), pack.key + ':tiu');
   });
-  return { ...pack, questions: selected };
+  const mix = Object.keys(TIU_MIX).map(type => `${selected.filter(q => tiuType(q) === type).length} ${type.toLowerCase()}`).join(', ');
+  return { ...pack, questions: selected, compose: pack.kind === 'FULL' ? pack.compose + ' · TIU: ' + mix : pack.compose };
 }
 
 function findPack(key) {
@@ -297,7 +309,8 @@ function materiPool(t) {
       if (!t.subs || t.subs.some(s => (q.sub || '').toLowerCase().includes(s.toLowerCase()))) out.push(q);
     });
   });
-  return customQuestions(t).concat(out);
+  const reserved = new Set(reservedFinalKeys());
+  return customQuestions(t).concat(out).filter(q => !reserved.has(questions.key(q)));
 }
 function materiForQuestion(q) {
   const b = bucketOfId[q.id];
@@ -305,6 +318,18 @@ function materiForQuestion(q) {
   let t = MATERI.find(m => m.subs && m.subs.some(s => sub.includes(s.toLowerCase())) && (!m.buckets || !b || m.buckets.includes(b)));
   if (!t) t = MATERI.find(m => !m.subs && m.buckets && b && m.buckets.length === 1 && m.buckets[0] === b);
   return t || null;
+}
+function materiLink(t, q) {
+  const fallback = '#/materi/' + encodeURIComponent(t.id);
+  if (!t.subs && t.group === 'SKB') {
+    const tokens = lxTokens(q.sub);
+    const best = (t.sections || []).reduce((match, section, i) => {
+      const rank = [...lxTokens(section.title)].filter(word => tokens.has(word)).length;
+      return rank > match.rank ? { i, rank } : match;
+    }, { i: -1, rank: 0 });
+    if (best.i >= 0) return fallback + '/subbab-' + best.i;
+  }
+  return fallback;
 }
 function materiExamples(t, n = 3) {
   const pool = materiPool(t).filter(q => (q.trick || q.explanation) && (q.q || '').length < 700);
@@ -338,6 +363,8 @@ function route() {
       renderMateri(null);
     } else {
       renderMateri(sub);
+      const chapter = /^subbab-(\d+)$/.exec(parts[2] || '');
+      if (chapter && sub) rkOpen(sub, Number(chapter[1]));
     }
     window.scrollTo(0, 0);
     return;
@@ -357,7 +384,7 @@ function navbar(active) {
   const au = window.Auth, srv = !!(au && au.hasServer), usr = au ? au.user() : null;
   return `
   <!-- HP: tombol garis tiga di pojok kanan (ikut tergulung), header penuh disembunyikan.
-       v33: diklik -> tampil 2 tombol (Input DB & Profil); masing-masing membuka lembar dari bawah -->
+       Menu Pengingat dan Profil -->
   <div class="mrow sm:hidden">
     <a href="#/" class="flex items-center gap-2 text-lg font-extrabold tracking-tight text-neutral" style="margin-inline-end:auto">
       <img src="icons/icon-192.png?v=40" width="36" height="36" class="rounded-xl" alt="">
@@ -366,7 +393,6 @@ function navbar(active) {
     <button type="button" class="mburger" onclick="App.toggleHMenu(event)" aria-label="Menu" aria-haspopup="true" aria-expanded="false" aria-controls="hmenu">${icon('menu', 'h-6 w-6')}</button>
     <div id="hmenu" class="hmenu" role="menu" hidden>
       <button type="button" role="menuitem" onclick="App.hmenu('notif')">${icon('bell', 'h-5 w-5')}<span>Pengingat belajar</span></button>
-      <button type="button" role="menuitem" onclick="App.hmenu('db')">${icon('db', 'h-5 w-5')}<span>Input DB</span></button>
       ${au ? `<button type="button" role="menuitem" onclick="App.hmenu('profile')">${icon('user', 'h-5 w-5')}<span>${srv && !usr ? 'Profil / Masuk' : 'Profil'}</span>${srv ? `<i class="hmenu-dot ${usr ? 'on' : ''}" aria-hidden="true"></i>` : ''}</button>` : ''}
     </div>
   </div>
@@ -382,7 +408,6 @@ function navbar(active) {
       <div class="navbar-end gap-1">
         ${window.Auth ? `<button class="btn btn-ghost btn-sm gap-2 rounded-xl text-slate-700 hover:bg-slate-100" onclick="Auth.openProfile()" aria-label="Profil dan akun">${icon('user', 'h-4 w-4')}<span class="font-semibold">${window.Auth.user() ? esc(window.Auth.user()) : (window.Auth.hasServer ? 'Masuk' : 'Profil')}</span></button>` : ''}
         <button class="btn btn-ghost btn-sm gap-2 text-slate-700 hover:bg-slate-100 rounded-xl" onclick="CPNSNotif.open()" aria-label="Pengingat belajar">${icon('bell', 'h-5 w-5')}<span class="hidden lg:inline">Pengingat</span></button>
-        <button class="btn btn-ghost btn-sm gap-2 text-slate-700 hover:bg-slate-100 rounded-xl" onclick="App.openDb()" aria-label="Kelola database soal">${icon('db', 'h-4 w-4')}<span class="font-semibold">Database</span></button>
       </div>
     </div>
   </header>`;
@@ -630,7 +655,7 @@ function renderSkd() {
     </div>
     ${packs.length
       ? `<div class="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">${packs.map(packCard).join('')}</div>`
-      : `<div class="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-600">Belum ada soal di bagian ini. Tambahkan lewat tombol menu di pojok kanan atas (Kelola Database).</div>`}
+      : `<div class="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-600">Bank soal untuk bagian ini belum tersedia.</div>`}
   `);
 }
 
@@ -660,7 +685,7 @@ function renderSkb(key) {
       ${breadcrumb([['#/', 'Beranda'], [null, 'SKB']])}
       ${pageHead('Seleksi Kompetensi Bidang (SKB)', 'Pilih bidang formasimu, lalu pilih paket latihan di dalamnya.')}
       ${cards ? `<div class="grid grid-cols-[minmax(0,1fr)] gap-3.5 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>`
-        : `<div class="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-600">Belum ada soal SKB. Tambahkan lewat tombol menu di pojok kanan atas (Kelola Database).</div>`}`);
+        : `<div class="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-600">Bank soal SKB belum tersedia.</div>`}`);
     return;
   }
   const m = skbMeta(key), packs = packsFor(key);
@@ -906,7 +931,8 @@ function lessonReplacement(L, q) {
   const qt = lxQuestionTokens(q);
   const idx = planQIndex();
   const alreadyUsed = new Set([...L.used].map(id => idx.get(id)).filter(Boolean).map(questions.key));
-  const candidates = choices.filter(x => !seenBefore(x) && !L.used.has(x.id) && !alreadyUsed.has(questions.key(x)))
+  const reserved = new Set(reservedFinalKeys());
+  const candidates = choices.filter(x => !reserved.has(questions.key(x)) && !seenBefore(x) && !L.used.has(x.id) && !alreadyUsed.has(questions.key(x)))
     .map(x => {
       let common = 0;
       lxQuestionTokens(x).forEach(w => { if (qt.has(w)) common++; });
@@ -1196,17 +1222,18 @@ function rkQuestion(q, n) {
 }
 function rkBody(t) {
   const steps = lessonSteps(t), plan = lessonPlan(t), d = lessonDone(t);
+  const reserved = new Set(reservedFinalKeys());
   const items = steps.map((st, i) => {
     const content = st.kind === 'tips'
       ? `<ol class="rk-tips">${st.tips.map((x, n) => `<li><span class="rk-n">${n + 1}</span><span class="min-w-0 flex-1">${x}</span></li>`).join('')}</ol>`
       : `<div class="materi-body">${wrapTables(st.html)}</div>`;
-    const qs = (plan[i] || []).filter(q => q && q.options && q.options.length);
+    const qs = (plan[i] || []).filter(q => q && q.options && q.options.length && !reserved.has(questions.key(q)));
     const ex = qs.length ? `<div class="rk-ex"><div class="rk-ex-h">Contoh soal & cara mengerjakannya</div>${qs.map((q, n) => rkQuestion(q, n + 1)).join('')}</div>` : '';
     return `<details class="rk-item"${steps.length === 1 ? ' open' : ''}><summary><span class="rk-num${d[i] ? ' done' : ''}">${d[i] ? '✓' : i + 1}</span><span class="rk-sum-t">${esc(st.title)}</span><span class="rk-chev" aria-hidden="true">▾</span></summary><div class="rk-in">${content}${ex}</div></details>`;
   }).join('');
   return items;
 }
-function rkOpen(id) {
+function rkOpen(id, chapter) {
   const t = MATERI.find(x => x.id === id); if (!t) return;
   if (rk) return;
   rk = { t };
@@ -1225,6 +1252,10 @@ function rkOpen(id) {
     </div></div>`;
   try { history.pushState({ rk: 1 }, ''); } catch (e) { /* abaikan */ }
   const b = $('#rk-scroll'); if (b) b.scrollTop = 0;
+  if (Number.isInteger(chapter)) {
+    const section = document.querySelectorAll('#rangkuman .rk-item')[chapter];
+    if (section) { section.open = true; section.scrollIntoView({ block: 'start' }); }
+  }
 }
 function rkClose(fromPop) {
   if (!rk) return;
@@ -1486,6 +1517,32 @@ const COMBINED_DAYS = ['Ukur kemampuan awal', 'Perbaiki konsep terlemah', 'Latih
 const isSimulationDay = day => [1, 5, 7].includes(day);
 const combinedKey = (cfg, day, scope) => `PLAN-${cfg.at}-GABUNG-${day}-${scope === 'SKD' ? 'SKD' : cfg.cat}`;
 
+function finalSetName(field) { return 'FINAL-' + field; }
+
+function reservedFinalKeys() {
+  if (planCfg?.test !== 'GABUNG' || planQ?.at !== planCfg.at) return [];
+  const field = 'SKB_' + planCfg.cat;
+  if (results[combinedKey(planCfg, 7, 'SKB')]) return [];
+  const saved = planQ.sets?.[finalSetName(field)] || [];
+  const idx = planQIndex();
+  return saved.map(id => idx.get(questions.resolve(id))).filter(Boolean).map(questions.key);
+}
+
+function reserveFinalSkb(cfg) {
+  const field = 'SKB_' + cfg.cat;
+  const pool = BANK[field] || [];
+  const slot = finalSetName(field);
+  if (planQ?.at !== cfg.at || !planQ.sets) planQ = { at: cfg.at, sets: {} };
+  if (!planQ.sets[slot]) {
+    const count = Math.min(SKB_SIZE, pool.length);
+    const fresh = selectQuestions(shuffle(pool, slot + cfg.at).filter(q => !seenBefore(q)), count, new Set(), true);
+    planQ.sets[slot] = fresh.map(q => q.id);
+    store.set(PLANQ_KEY, planQ);
+  }
+  const idx = planQIndex();
+  return planQ.sets[slot].map(id => idx.get(questions.resolve(id))).filter(q => q && bucketOfId[q.id] === field);
+}
+
 function combinedPack(cfg, key) {
   const match = /-GABUNG-([1-7])-(SKD|[A-Z0-9_]+)$/.exec(key);
   if (!match) return null;
@@ -1493,6 +1550,7 @@ function combinedPack(cfg, key) {
   const field = 'SKB_' + cfg.cat;
   if (isSkb && (match[2] !== cfg.cat || !targetSkbKeys().includes(field))) return null;
   const scope = isSkb ? field : 'SKD';
+  const reserved = isSkb ? reserveFinalSkb(cfg) : [];
   const label = isSkb ? 'SKB ' + skbMeta(field).short : 'SKD';
   const common = { key, plan: true, skbBucket: isSkb ? field : null };
   if (isSimulationDay(day)) {
@@ -1501,7 +1559,14 @@ function combinedPack(cfg, key) {
     const fullSets = isSkb ? packs.filter(p => p.questions.length === Math.min(SKB_SIZE, bankLen(field))) : packs;
     const base = fullSets[([1, 5, 7].indexOf(day)) % fullSets.length];
     const pack = preparePack(base);
-    return { ...pack, ...common, title: `Simulasi ${label} · Hari ${day}`, forceTimed: true };
+    if (isSkb && day === 7) {
+      const fresh = reserved.filter(q => !seenBefore(q));
+      const used = new Set(fresh.map(questions.key));
+      pack.questions = fresh.concat(selectQuestions(BANK[field], base.questions.length - fresh.length, used, true));
+    }
+    if (!pack.questions.length) return null;
+    return { ...pack, ...common, compose: isSkb ? `${pack.questions.length} soal ${skbMeta(field).short}` : pack.compose,
+      title: `Simulasi ${label} · Hari ${day}`, forceTimed: true };
   }
   const fallback = isSkb ? BANK[field] : Object.keys(FULL_MIX).flatMap(c => BANK['SKD_' + c] || []);
   const targeted = weaknessQuestions(scope);
@@ -1767,9 +1832,10 @@ const planApi = {
     planCfg = c;
     store.set(PLAN_KEY, c);
     if (c.cat) saveStudyTarget(targetPreference().role, 'SKB_' + c.cat);
-    if (!unchanged) {
+    if (c.test === 'GABUNG') reserveFinalSkb(c);
+    else if (!unchanged) {
       planQ = null; store.del(PLANQ_KEY);
-      if (c.test !== 'GABUNG') planGen(c);
+      planGen(c);
     }
     const d = $('#dlg-plan'); if (d && d.open) d.close();
     toast(`Planning ${c.days} hari dibuat.`);
@@ -1807,23 +1873,28 @@ function startExam(pack, opts = {}) {
   }
   const qs = pack.questions.map((q, i) => Object.assign({}, q, { no: i + 1 }));
   exam = {
-    pack, qs,
+    pack, qs, fresh: qs.map(q => !seenBefore(q)),
     answers: new Array(qs.length).fill(null),
     doubts: new Array(qs.length).fill(false),
     idx: 0, filter: 'ALL',
-    remaining: pack.minutes ? pack.minutes * 60 : null,
+    remaining: pack.minutes ? pack.minutes * 60 : null, tickAt: performance.now(),
     elapsed: 0, spent: new Array(qs.length).fill(0), visible: new Set(), paused: false, finished: false,
-    instant: opts.instant !== false
+    instant: opts.instant !== false, assisted: opts.instant !== false
   };
   if (!timerHandle) timerHandle = setInterval(tick, 1000);
   go('#/ujian');
 }
 function tick() {
-  if (!exam || exam.finished || exam.paused || location.hash !== '#/ujian') return;
-  exam.elapsed++;
-  if (!document.hidden) exam.spent[exam.idx]++;
+  if (!exam || exam.finished) return;
+  const now = performance.now();
+  if (exam.paused || location.hash !== '#/ujian') { exam.tickAt = now; return; }
+  const seconds = Math.floor((now - exam.tickAt) / 1000);
+  if (seconds < 1) return;
+  exam.tickAt += seconds * 1000;
+  exam.elapsed += seconds;
+  if (!document.hidden && seconds <= 2) exam.spent[exam.idx] += seconds;
   if (exam.remaining != null) {
-    exam.remaining--;
+    exam.remaining = Math.max(0, exam.remaining - seconds);
     paintTimer();
     if (exam.remaining <= 0) { finishExam(true); return; }
   } else paintTimer();
@@ -1915,6 +1986,7 @@ function feedbackHtml(q, chosen) {
     }
   }
   const mt = materiForQuestion(q);
+  const source = typeof q.source === 'string' && q.source.startsWith('https://jdih.lkpp.go.id/') ? q.source : '';
   return `
   <div class="overflow-hidden rounded-2xl border border-base-300 fade-in">
     <div class="break-words px-4 py-3 text-[0.95rem] font-bold leading-snug ${cls}" role="status">${head}</div>
@@ -1922,7 +1994,8 @@ function feedbackHtml(q, chosen) {
       <div class="min-w-0 rounded-xl bg-amber-50 p-3.5 ring-1 ring-amber-200"><div class="mb-1.5 flex items-center gap-1.5 text-sm font-bold text-amber-900">${icon('bolt', 'h-4 w-4')} Cara cepat</div><div class="break-words leading-relaxed">${esc(q.trick) || '—'}</div></div>
       <div class="min-w-0 rounded-xl bg-base-100 p-3.5 ring-1 ring-base-300"><div class="mb-1.5 flex items-center gap-1.5 text-sm font-bold text-primary">${icon('bulb', 'h-4 w-4')} Pembahasan</div><div class="break-words leading-relaxed">${esc(q.explanation) || '—'}</div></div>
     </div>
-    ${mt ? `<div class="border-t border-base-300 bg-base-100 px-4 py-1.5"><a class="link link-primary inline-flex min-h-[2.75rem] items-center break-words text-sm font-semibold" href="#/materi/${mt.id}" onclick="App.leaveToMateri()">Pelajari materi: ${esc(mt.title)} →</a></div>` : ''}
+    ${source ? `<p class="px-3 text-xs"><a class="link link-primary" href="${esc(source)}" target="_blank" rel="noopener">Rujukan JDIH LKPP</a></p>` : ''}
+    ${mt ? `<div class="border-t border-base-300 bg-base-100 px-4 py-1.5"><a class="link link-primary inline-flex min-h-[2.75rem] items-center break-words text-sm font-semibold" href="${materiLink(mt, q)}" onclick="App.leaveToMateri()">Pelajari materi: ${esc(mt.title)} →</a></div>` : ''}
   </div>`;
 }
 /* tombol bilah aksi: ikon + label pendek di mobile, label lengkap di desktop */
@@ -2058,16 +2131,31 @@ function examIssues() {
   });
 }
 
+function reviewConcept(i) { return JSON.stringify([i.sub, i.fam || '']); }
+
 function issueWeight(i) { return 5 - i.score + Number(i.doubt) + 2 * Number(i.slow); }
 
 function saveReview() {
   const buckets = new Set(exam.qs.filter((_, i) => exam.visible.has(i) || exam.answers[i] !== null)
     .map(q => reviewBucket(q, exam.pack)).filter(Boolean));
   if (!buckets.size || exam.answers.every(a => a === null)) return;
-  const issues = examIssues(), at = Date.now();
+  const issues = examIssues();
   buckets.forEach(bucket => {
-    const entries = issues.filter(i => i.bucket === bucket).sort((a, b) => issueWeight(b) - issueWeight(a) || b.time - a.time);
-    reviews[bucket] = { at, issues: entries };
+    const previous = reviews[bucket] || {};
+    const at = Math.max(Date.now(), (previous.at || 0) + 1);
+    const cleared = { ...previous.cleared };
+    const weak = issues.filter(i => i.bucket === bucket && (!exam.pack.adaptive || !i.empty));
+    const weakConcepts = new Set(weak.map(reviewConcept));
+    exam.qs.forEach((q, i) => {
+      if (reviewBucket(q, exam.pack) !== bucket || exam.answers[i] === null) return;
+      const key = reviewConcept(q);
+      const hasHistory = previous.issues?.some(item => reviewConcept(item) === key);
+      if (hasHistory && q.scores[exam.answers[i]] === 5 && !weakConcepts.has(key)) cleared[key] = at;
+    });
+    const saved = ((previous.issues || []).filter(i => !weakConcepts.has(reviewConcept(i)) && (cleared[reviewConcept(i)] || 0) < (i.at || previous.at || 1)))
+      .concat(weak.map(i => ({ ...i, at })))
+      .sort((a, b) => b.at - a.at || issueWeight(b) - issueWeight(a)).slice(0, 120);
+    reviews[bucket] = { at, issues: saved, cleared };
   });
   store.set(REVIEW_KEY, reviews);
 }
@@ -2130,16 +2218,73 @@ function reviewSummary(scope) {
     <h4 class="font-extrabold">Latihan berikutnya</h4>
     <p class="text-sm text-base-content/70">${list.length} soal perlu ditinjau · ${slow.length} soal TIU di atas ${SLOW_TIU_SECONDS} detik</p>
     ${slowRows ? `<details class="mb-2"><summary class="cursor-pointer text-sm font-bold">Lihat soal lambat dan cara cepat</summary><ul>${slowRows}</ul></details>` : ''}
-    ${scope !== 'sesi' ? `<details class="mb-2"><summary class="cursor-pointer text-sm font-bold">Lihat catatan hasil terakhir</summary><ul>${list.slice().sort((a, b) => issueWeight(b) - issueWeight(a)).map(i =>
+    ${scope !== 'sesi' ? `<details class="mb-2"><summary class="cursor-pointer text-sm font-bold">Lihat kelemahan yang belum dikuasai</summary><ul>${list.slice().sort((a, b) => issueWeight(b) - issueWeight(a)).map(i =>
       `<li class="mt-1 text-sm"><b>${esc(i.sub)}</b> · ${issueLabel(i)}</li>`).join('')}</ul></details>` : ''}
     <button type="button" class="btn btn-primary btn-sm mt-2" onclick="App.startWeakness('${scope}')">Latih 3 kelemahan saya</button>
   </div>`;
 }
 
-function openReview() {
+function profileProgressHTML(scope = examHistory.at(-1)?.group || 'SKD_FULL') {
+  const options = ['SKD_FULL', ...targetSkbKeys()];
+  if (!options.includes(scope)) scope = 'SKD_FULL';
+  const caption = scope === 'SKD_FULL' ? 'Tryout SKD lengkap' : 'SKB ' + skbMeta(scope).short;
+  const max = scope === 'SKD_FULL' ? 550 : Math.min(SKB_SIZE, bankLen(scope)) * 5;
+  const target = scope === 'SKD_FULL' ? SKD_TARGET : Math.ceil(max * SKB_TARGET);
+  const comparable = examHistory.filter(r => r.group === scope && r.max === max);
+  const past = comparable.filter(r => !r.assisted).slice(-7);
+  const date = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const controls = `<label for="profile-score-test" class="block text-xs font-bold">Grafik nilai</label>
+    <select id="profile-score-test" class="select select-bordered select-sm mt-1 w-full" onchange="App.showProfileProgress(this.value)">
+      ${options.map(key => `<option value="${esc(key)}"${key === scope ? ' selected' : ''}>${key === 'SKD_FULL' ? 'SKD lengkap' : esc(skbMeta(key).name)}</option>`).join('')}
+    </select>`;
+  const counts = new Map();
+  reviewIssues(scope === 'SKD_FULL' ? 'SKD' : scope).forEach(issue => {
+    const key = issue.bucket + ' · ' + issue.sub;
+    const label = issue.bucket.startsWith('SKD_') ? `${issue.bucket.slice(4)} · ${issue.sub}` : issue.sub;
+    const row = counts.get(key) || { label, weight: 0, count: 0 };
+    row.weight += issueWeight(issue); row.count++; counts.set(key, row);
+  });
+  const weak = [...counts.values()].sort((a, b) => b.weight - a.weight).slice(0, 4);
+  const weakHTML = `<div class="mt-4"><h4 class="font-extrabold">Perlu diperkuat · ${esc(caption)}</h4>
+    ${weak.length ? `<ul class="mt-1 space-y-1 text-sm">${weak.map(r => `<li>${esc(r.label)} · ${r.count} catatan</li>`).join('')}</ul>
+    <button class="btn btn-outline btn-sm mt-2" onclick="$('#dlg-profile').close(); App.openReview('${scope === 'SKD_FULL' ? 'SKD' : esc(scope)}')">Lihat kelemahan dan latih lagi</button>`
+    : '<p class="mt-1 text-sm text-base-content/70">Belum ada kelemahan yang tercatat untuk bagian ini.</p>'}</div>`;
+  const assisted = comparable.filter(r => r.assisted).slice(-3);
+  const assistedHTML = assisted.length ? `<details class="mt-2 text-sm"><summary class="cursor-pointer">Sesi dengan jeda atau bahas instan</summary>
+    <ul>${assisted.map(r => `<li>${esc(date.format(r.date))} · ${r.score}/${r.max} · ${r.fresh}/${max / 5} soal baru</li>`).join('')}</ul></details>` : '';
+  if (!past.length) return controls + '<p class="mt-3 text-sm">Grafik mulai diisi setelah pembaruan ini. Selesaikan paket dengan waktu berjalan, tanpa jeda, dan Bahas instan dimatikan.</p>' + assistedHTML + weakHTML;
+  const x = i => Math.round(past.length === 1 ? 198 : 44 + 308 * i / (past.length - 1));
+  const y = score => Math.round(158 - 132 * score / max);
+  const line = past.map((r, i) => `${x(i)},${y(r.score)}`).join(' ');
+  const points = past.map((r, i) => `<circle cx="${x(i)}" cy="${y(r.score)}" r="4.5"
+    fill="${r.fresh * 5 === max ? '#155e75' : '#9a3412'}"><title>${esc(date.format(r.date))} · ${r.score}/${max}</title></circle>
+    <text x="${x(i)}" y="177" text-anchor="middle" font-size="11" fill="currentColor">${i + 1}</text>`).join('');
+  const newest = past.at(-1);
+  const delta = past.length > 1 ? newest.score - past.at(-2).score : null;
+  const skills = Object.entries(newest.parts || {}).filter(([key]) => key !== 'ALL');
+  const historyRows = past.map((r, i) => `<li class="py-1"><b>${i + 1}. ${esc(date.format(r.date))} · ${r.score}/${r.max}</b>
+    <span class="block text-xs text-base-content/70">${r.fresh}/${max / 5} soal baru · ${r.lessons} langkah materi selesai saat itu</span></li>`).join('');
+  return controls + `<div class="mt-3 rounded-2xl border border-base-300 p-3">
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <h4 class="font-extrabold">Nilai terbaru ${newest.score}/${max}</h4>
+      ${delta === null ? '' : `<span class="text-sm">${delta > 0 ? '+' : ''}${delta} poin dari sesi sebelumnya</span>`}
+    </div>
+    <svg viewBox="0 0 396 188" class="w-full" role="img" aria-label="Grafik ${esc(caption)}, ${past.length} sesi, target ${target}">
+      <path d="M30 26V158H366" fill="none" stroke="currentColor" opacity=".35"/>
+      <text x="3" y="31" font-size="11" fill="currentColor">${max}</text><text x="15" y="162" font-size="11" fill="currentColor">0</text>
+      <path d="M30 ${y(target)}H366" stroke="#15803d" stroke-dasharray="4 4"/>
+      <polyline points="${line}" fill="none" stroke="#155e75" stroke-width="2.4"/>${points}
+    </svg>
+    <p class="text-xs text-base-content/70">Garis putus-putus: target ${target}/${max} · Titik cokelat: ada soal pengulangan</p>
+    ${skills.length ? `<p class="mt-2 text-xs">${skills.map(([part, n]) => `${esc(part)} ${n.score}/${n.max}`).join(' · ')}</p>` : ''}
+    <ol class="mt-2 text-sm">${historyRows}</ol>
+  </div>` + assistedHTML + weakHTML;
+}
+
+function openReview(scope = 'ALL') {
   const d = planDlg('dlg-review');
-  d.innerHTML = `<div class="modal-box max-w-xl"><h3 class="mb-3 text-lg font-extrabold">Latihan dari hasil terakhir</h3>
-    ${reviewSummary('ALL') || '<p>Belum ada kelemahan yang tercatat. Mulai dari satu tryout.</p>'}
+  d.innerHTML = `<div class="modal-box max-w-xl"><h3 class="mb-3 text-lg font-extrabold">Latihan dari hasil tryout</h3>
+    ${reviewSummary(scope) || '<p>Belum ada kelemahan yang tercatat. Mulai dari satu tryout.</p>'}
     <form method="dialog" class="modal-action"><button class="btn">Tutup</button></form></div>`;
   if (!d.open) d.showModal();
 }
@@ -2170,9 +2315,48 @@ function computeResult() {
   });
   return { sum, total, max, answered, correct, wrong: answered - correct, empty: exam.qs.length - answered, bySub };
 }
+function scoreByExposure() {
+  const splits = [{ label: 'Soal baru', score: 0, max: 0 }, { label: 'Soal pengulangan', score: 0, max: 0 }];
+  exam.qs.forEach((q, i) => {
+    const out = splits[exam.fresh[i] ? 0 : 1];
+    out.max += 5;
+    if (exam.answers[i] !== null) out.score += q.scores[exam.answers[i]];
+  });
+  return splits;
+}
+
+function tiuScores() {
+  const out = {};
+  exam.qs.forEach((q, i) => {
+    const type = tiuType(q);
+    if (!type) return;
+    const part = out[type] ||= { score: 0, max: 0 };
+    part.max += 5;
+    if (exam.answers[i] !== null) part.score += q.scores[exam.answers[i]];
+  });
+  return out;
+}
+
+function saveExamHistory(r) {
+  const group = exam.pack.kind === 'FULL' ? 'SKD_FULL'
+    : exam.pack.skbBucket || (exam.pack.group.startsWith('SKB_') ? exam.pack.group : '');
+  if (!group || r.answered < 1 || exam.pack.adaptive) return;
+  const date = Date.now(), parts = { ...r.sum, ...tiuScores() };
+  examHistory = [...examHistory, {
+    id: date + ':' + Math.random().toString(36).slice(2), date, group,
+    score: r.total, max: r.max, parts,
+    fresh: scoreByExposure()[0].max / 5, assisted: exam.assisted || exam.pauseUsed || false,
+    lessons: MATERI.filter(t => group === 'SKD_FULL' ? t.group !== 'SKB' : 'SKB_' + t.skbCategory === group)
+      .reduce((n, t) => n + Object.values(lessonStore[t.id]?.done || {}).filter(Boolean).length, 0)
+  }].slice(-160);
+  store.set(HISTORY_KEY, examHistory);
+}
+
 function openResult() {
   if (!exam) return;
   const r = computeResult();
+  const split = scoreByExposure();
+  const tiu = Object.entries(tiuScores());
   const pct = Math.round((r.total / r.max) * 100);
   const full = exam.pack.kind === 'FULL';
   const bars = Object.entries(r.sum).map(([c, o]) => {
@@ -2214,7 +2398,7 @@ function openResult() {
     <ul class="space-y-1.5">${weak.map(o => {
       const m = materiForQuestion(o.q);
       return `<li class="flex items-center justify-between gap-3 rounded-xl bg-base-200/70 px-3 py-2 text-sm"><span class="min-w-0 break-words leading-snug">${esc(o.q.sub)} <span class="whitespace-nowrap text-xs text-base-content/60">(${Math.round(o.score / o.max * 100)}%)</span></span>
-        ${m ? `<a class="btn btn-accent btn-sm shrink-0" href="#/materi/${m.id}" onclick="App.leaveToMateri()">Pelajari</a>` : ''}</li>`;
+        ${m ? `<a class="btn btn-accent btn-sm shrink-0" href="${materiLink(m, o.q)}" onclick="App.leaveToMateri()">Pelajari</a>` : ''}</li>`;
     }).join('')}</ul></div>` : '';
 
   const d = $('#dlg-result');
@@ -2236,6 +2420,8 @@ function openResult() {
         <div class="px-1.5 py-3"><div class="text-xs leading-tight text-base-content/70">Kurang tepat</div><div class="text-2xl font-extrabold text-error">${r.wrong}</div></div>
         <div class="px-1.5 py-3"><div class="text-xs leading-tight text-base-content/70">Kosong</div><div class="text-2xl font-extrabold text-neutral">${r.empty}</div></div>
       </div>
+      <p class="text-sm text-base-content/70">${split.filter(item => item.max).map(item => `${item.label} ${item.score}/${item.max} (${item.max / 5} soal)`).join(' · ')}</p>
+      ${tiu.length ? `<p class="text-sm text-base-content/70">TIU · ${tiu.map(([name, item]) => `${name} ${item.score}/${item.max}`).join(' · ')}</p>` : ''}
       ${weakHtml}
       ${reviewSummary('sesi')}
       <div class="modal-action act-stack mt-2">
@@ -2251,9 +2437,10 @@ function openResult() {
 function finishExam() {
   if (!exam || exam.finished) return;
   exam.finished = true; exam.paused = false;
-  if (!exam.pack.adaptive) saveReview();
+  saveReview();
   if (!exam.pack.noSave) {
     const r = computeResult();
+    saveExamHistory(r);
     const rec = results[exam.pack.key] || { attempts: 0, best: { score: -1, max: r.max } };
     rec.attempts++;
     const cur = { score: r.total, max: r.max, date: Date.now() };
@@ -2314,7 +2501,7 @@ function openStart(key) {
     </ul>
     ${p.forceTimed ? '<p class="mt-4 text-xs text-base-content/70">Pembahasan tersedia setelah simulasi selesai.</p>' : `<label class="mt-4 flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-base-200 px-4 py-3">
       <span><span class="block text-sm font-semibold text-neutral">Bahas instan</span><span class="text-xs text-base-content/60">Kunci &amp; pembahasan langsung tampil setelah menjawab. Matikan untuk suasana ujian sebenarnya.</span></span>
-      <input type="checkbox" id="st-instant" class="toggle toggle-primary shrink-0" ${store.get('cpns_instant', true) ? 'checked' : ''}>
+      <input type="checkbox" id="st-instant" class="toggle toggle-primary shrink-0" ${store.get('cpns_instant', p.kind !== 'FULL') ? 'checked' : ''}>
     </label>`}
     <div class="modal-action act-stack">
       <button class="btn btn-ghost" onclick="$('#dlg-start').close()">Batal</button>
@@ -2413,7 +2600,6 @@ const App = {
     const m = $('#hmenu'); if (m) m.hidden = true;
     const b = $('.mburger'); if (b) b.setAttribute('aria-expanded', 'false');
     if (which === 'notif' && window.CPNSNotif) window.CPNSNotif.open();
-    else if (which === 'db') openDb();
     else if (which === 'profile' && window.Auth) window.Auth.openProfile();
   },
 
@@ -2453,8 +2639,8 @@ const App = {
   openNums() { const d = $('#dlg-nums'); d.innerHTML = `<div class="modal-box mx-auto w-full p-3 sm:max-w-2xl sm:p-6">${numsDialogInner()}</div><form method="dialog" class="modal-backdrop"><button>tutup</button></form>`; d.showModal(); },
 
   /* kontrol ujian */
-  togglePause() { if (!exam || exam.finished) return; exam.paused = !exam.paused; if (document.activeElement) document.activeElement.blur(); paintQuestion(); const l = $('#x-pause-lbl'); if (l) l.textContent = exam.paused ? 'Lanjutkan waktu' : 'Jeda waktu'; },
-  toggleInstant(v) { if (exam.pack.forceTimed) return; exam.instant = v; store.set('cpns_instant', v); paintQuestion(); paintSide(); },
+  togglePause() { if (!exam || exam.finished) return; exam.paused = !exam.paused; if (exam.paused) exam.pauseUsed = true; exam.tickAt = performance.now(); if (document.activeElement) document.activeElement.blur(); paintQuestion(); const l = $('#x-pause-lbl'); if (l) l.textContent = exam.paused ? 'Lanjutkan waktu' : 'Jeda waktu'; },
+  toggleInstant(v) { if (exam.pack.forceTimed) return; exam.instant = v; if (v) exam.assisted = true; store.set('cpns_instant', v); paintQuestion(); paintSide(); },
   async finish() {
     if (!exam || exam.finished) return;
     const empty = exam.answers.filter(a => a === null).length;
@@ -2467,10 +2653,20 @@ const App = {
   },
   openResult,
   targetEditorHTML,
+  targetPreference,
+  profileProgressHTML,
+  showProfileProgress(scope) {
+    const view = $('#profile-progress');
+    if (!view) return;
+    view.innerHTML = profileProgressHTML(scope);
+    $('#profile-score-test')?.focus();
+  },
   saveTarget(event) {
     event.preventDefault();
     const form = event.currentTarget;
-    saveStudyTarget(form.elements.targetRole.value, form.elements.targetBucket.value);
+    saveStudyTarget(form.elements.targetRole.value, form.elements.targetBucket.value, form.elements.targetName?.value);
+    const name = $('#profile-display-name');
+    if (name) name.textContent = targetPreference().name || window.Auth?.user() || 'Profil belajar';
     form.querySelector('[data-target-status]').textContent = 'Target tersimpan.';
     if (!exam || exam.finished) route();
     return false;
@@ -2566,7 +2762,7 @@ window.registerCPNSQuestions({
   async resetProgress() {
     if (!await ask({ title: 'Reset progres?', text: 'Riwayat soal yang pernah dikerjakan dan skor terbaik semua paket akan dihapus.', ok: 'Reset', danger: true })) return;
     seen.clear(); seenKeys.clear(); seenPatterns.clear(); results = {};
-    reviews = {}; store.set(REVIEW_KEY, reviews);
+    reviews = {}; store.set(REVIEW_KEY, reviews); examHistory = []; store.set(HISTORY_KEY, examHistory);
     store.del('cpns_seen_qids_v2'); store.del('cpns_results_v3');
     toast('Progres direset.'); route();
   }
@@ -2621,6 +2817,7 @@ function init() {
     });
   }
   updateBankIndex();
+  if (planCfg?.test === 'GABUNG' && targetSkbKeys().includes('SKB_' + planCfg.cat)) reserveFinalSkb(planCfg);
   window.__onDbChange = () => {
     lxChoices.clear(); lxPlans.clear();
     updateBankIndex();
