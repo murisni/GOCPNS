@@ -4,7 +4,7 @@
 (function () {
   const API = window.CPNS_API || '', HAS_SERVER = !!API && !/GANTI/.test(API), SK = 'cpns_session_v1', GUEST = 'cpns_guest_v1';
   const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3',
-    'cpns_review_v1', 'cpns_plan_v1', 'cpns_plan_q_v1', 'cpns_target_v1'];
+    'cpns_review_v1', 'cpns_plan_v1', 'cpns_plan_q_v1', 'cpns_target_v1', 'cpns_exam_history_v1'];
   const dict = value => value && typeof value === 'object' && !Array.isArray(value);
   const records = value => Object.entries(value || {}).filter(([key]) => !['__proto__', 'constructor', 'prototype'].includes(key));
   const rd = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
@@ -56,11 +56,41 @@
         R[key] = { attempts: Math.max(next.attempts || 0, prev.attempts || 0), best, last: newer ? last : prev.last };
       }
       for (const [bucket, next] of records(source.cpns_review_v1)) {
-        if ((/^(?:SKD_(TWK|TIU|TKP)|SKB_[A-Z0-9_]+)$/.test(bucket)) &&
-            dict(next) && Array.isArray(next.issues) && (!review[bucket] || next.at >= review[bucket].at)) {
-          review[bucket] = { at: next.at, issues: next.issues.filter(entry => dict(entry) && entry.bucket === bucket &&
-            typeof entry.id === 'string' && typeof entry.sub === 'string' && Number.isFinite(entry.score) && Number.isFinite(entry.time)) };
+        if (!/^(?:SKD_(TWK|TIU|TKP)|SKB_[A-Z0-9_]+)$/.test(bucket) || !dict(next) || !Array.isArray(next.issues)) continue;
+        const prev = review[bucket] || { at: 0, issues: [], cleared: {} };
+        const cleared = Object.create(null);
+        for (const values of [prev.cleared, next.cleared]) {
+          for (const [key, time] of records(values)) if (Number.isFinite(time)) cleared[key] = Math.max(cleared[key] || 0, time);
         }
+        const issues = new Map();
+        for (const record of [prev, next]) {
+          for (const item of record.issues) {
+            if (!dict(item) || item.bucket !== bucket || typeof item.id !== 'string' || typeof item.sub !== 'string'
+              || !Number.isFinite(item.score) || !Number.isFinite(item.time)) continue;
+            const at = item.at || record.at || 1;
+            const key = JSON.stringify([item.sub, item.fam || '']);
+            if ((cleared[key] || 0) >= at) continue;
+            if (!issues.has(item.id) || issues.get(item.id).at <= at) issues.set(item.id, { ...item, at });
+          }
+        }
+        review[bucket] = { at: Math.max(prev.at, next.at || 0), cleared,
+          issues: [...issues.values()].sort((x, y) => y.at - x.at).slice(0, 120) };
+      }
+    }
+
+    const sessions = new Map();
+    for (const source of [a, b]) {
+      if (!Array.isArray(source.cpns_exam_history_v1)) continue;
+      for (const item of source.cpns_exam_history_v1) {
+        if (!dict(item) || typeof item.id !== 'string' || !/^(?:SKD_FULL|SKB_[A-Z0-9_]+)$/.test(item.group)
+          || !Number.isFinite(item.date) || item.date <= 0 || item.date > 8.64e15 || !Number.isFinite(item.max) || item.max <= 0
+          || !Number.isFinite(item.score) || item.score < 0 || item.score > item.max) continue;
+        const parts = Object.fromEntries(records(item.parts).filter(([name, value]) =>
+          ['TWK', 'TIU', 'TKP', 'Verbal', 'Numerik', 'Figural'].includes(name) && dict(value)
+          && Number.isFinite(value.score) && Number.isFinite(value.max)));
+        sessions.set(item.id, { id: item.id, date: item.date, group: item.group, score: item.score,
+          max: item.max, parts, fresh: Number.isFinite(item.fresh) ? item.fresh : 0,
+          lessons: Number.isFinite(item.lessons) ? item.lessons : 0, assisted: !!item.assisted });
       }
     }
 
@@ -73,6 +103,7 @@
       cpns_lesson_v1: L, cpns_results_v3: R, cpns_review_v1: review,
       cpns_seen_qids_v2: Array.from(new Set([a.cpns_seen_qids_v2, b.cpns_seen_qids_v2]
         .flatMap(ids => Array.isArray(ids) ? ids.filter(id => typeof id === 'string') : []))),
+      cpns_exam_history_v1: [...sessions.values()].sort((x, y) => x.date - y.date || x.id.localeCompare(y.id)).slice(-160),
       cpns_target_v1: target, cpns_plan_v1: plan, cpns_plan_q_v1: sets.length ? { at: plan.at, sets: Object.assign({}, ...sets.map(p => p.sets)) } : null
     };
   }
@@ -300,8 +331,7 @@
     d.innerHTML = `
       <div class="modal-box max-w-sm">
         <h3 class="text-center text-lg font-extrabold">Pindahkan progres</h3>
-        <p class="mt-1 text-center text-sm text-base-content/70">Kode ini membawa progres materi, hasil latihan, daftar kelemahan, target jabatan, dan Planning. Salin di perangkat lama lalu tempel di perangkat baru.</p>
-        ${!HAS_SERVER && window.App ? window.App.targetEditorHTML() : ''}
+        <p class="mt-1 text-center text-sm text-base-content/70">Kode ini membawa progres materi, hasil latihan, daftar kelemahan, riwayat grafik, profil, dan Planning. Salin di perangkat lama lalu tempel di perangkat baru.</p>
         <button id="bk-copy" class="btn btn-primary mt-4 w-full">Salin kode progres</button>
         <textarea id="bk-out" readonly rows="3" class="textarea textarea-bordered mt-2 hidden w-full text-xs" aria-label="Kode progres"></textarea>
         <div class="divider my-3 text-xs">atau pulihkan</div>
@@ -310,11 +340,11 @@
         <button id="bk-load" class="btn btn-outline w-full">Pulihkan progres</button>
         <div class="divider my-3 text-xs">atau mulai dari awal</div>
         <button id="bk-reset" class="btn btn-outline btn-error w-full">Reset progres</button>
-        <button id="bk-close" class="btn btn-ghost mt-1 w-full">Tutup</button>
+        <button id="bk-close" class="btn btn-ghost mt-1 w-full">Kembali ke Profil</button>
       </div>
       <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
     const q = s => d.querySelector(s), msg = (t, ok) => { const m = q('#bk-msg'); m.textContent = t || ''; m.className = 'mt-2 min-h-5 text-center text-sm font-semibold ' + (ok ? 'text-success' : 'text-error'); };
-    q('#bk-close').onclick = () => d.close();
+    q('#bk-close').onclick = () => openProfile();
     q('#bk-reset').onclick = () => openReset(d, () => openBackup(d));
     q('#bk-copy').onclick = async () => {
       try {
@@ -345,29 +375,27 @@
     const u = (sess() || {}).u, dirty = !!rd('cpns_dirty');
     let d = document.getElementById('dlg-profile');
     if (!d) { d = document.createElement('dialog'); d.id = 'dlg-profile'; d.className = 'modal modal-bottom sm:modal-middle'; document.body.appendChild(d); }
-    if (!HAS_SERVER) return openBackup(d);
+    const preferred = window.App?.targetPreference() || {};
+    const name = preferred.name || u || 'Profil belajar';
     d.innerHTML = `
-      <div class="modal-box max-w-sm text-center">
-        <div class="mx-auto grid h-16 w-16 place-items-center rounded-full ${u ? 'bg-primary text-white' : 'bg-base-200 text-base-content/50'} text-2xl font-black">${u ? esc(u[0].toUpperCase()) : '?'}</div>
-        <h3 class="mt-3 text-lg font-extrabold">${u ? esc(u) : 'Belum masuk akun'}</h3>
-        <p class="mt-1 text-sm text-base-content/70">${u
-          ? (dirty ? 'Ada progres yang menunggu tersinkron. Akan terkirim otomatis saat online.' : 'Progres belajarmu tersimpan otomatis di akun ini.')
-          : 'Progres hanya tersimpan di perangkat ini. Masuk agar bisa dibuka di HP atau browser lain.'}</p>
+      <div class="modal-box max-w-2xl">
+        <h3 id="profile-display-name" class="break-words text-xl font-extrabold">${esc(name)}</h3>
+        ${u && preferred.name ? `<p class="mt-1 text-xs text-base-content/70">Akun ${esc(u)}</p>` : ''}
+        <section id="profile-progress" class="mt-3" aria-label="Grafik dan kelemahan">${window.App?.profileProgressHTML() || ''}</section>
         ${window.App ? window.App.targetEditorHTML() : ''}
-        <div class="mt-5 flex flex-col gap-2">
-          ${u
-            ? '<button id="pf-out" class="btn btn-outline btn-error w-full">Keluar dari akun</button>'
-            : '<button id="pf-in" class="btn btn-primary w-full">Masuk</button><button id="pf-reg" class="btn btn-outline w-full">Daftar akun baru</button>'}
-          <button id="pf-backup" class="btn btn-outline w-full">Kode cadangan &amp; pulihkan</button>
-          <button id="pf-reset" class="btn btn-outline btn-error w-full">Reset progres</button>
-          <button id="pf-close" class="btn btn-ghost w-full">Tutup</button>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <button id="pf-backup" class="btn btn-outline btn-sm">Pindahkan progres</button>
+          ${HAS_SERVER ? (u
+            ? '<button id="pf-out" class="btn btn-ghost btn-sm">Keluar dari akun</button>'
+            : '<button id="pf-in" class="btn btn-ghost btn-sm">Masuk</button><button id="pf-reg" class="btn btn-ghost btn-sm">Daftar</button>') : ''}
+          <button id="pf-close" class="btn btn-ghost btn-sm">Tutup</button>
         </div>
+        ${HAS_SERVER ? `<p class="mt-2 text-xs text-base-content/70">${u ? (dirty ? 'Progres menunggu sinkronisasi.' : 'Progres tersimpan di akun ini.') : 'Masuk untuk sinkronisasi akun.'}</p>` : ''}
       </div>
       <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
     const q = s => d.querySelector(s);
     q('#pf-close').onclick = () => d.close();
     q('#pf-backup').onclick = () => openBackup(d);
-    q('#pf-reset').onclick = () => openReset(d, () => openProfile());
     if (q('#pf-out')) q('#pf-out').onclick = () => { d.close(); logout(); };
     if (q('#pf-in')) q('#pf-in').onclick = () => { d.close(); open('masuk'); };
     if (q('#pf-reg')) q('#pf-reg').onclick = () => { d.close(); open('daftar'); };

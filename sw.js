@@ -1,10 +1,10 @@
 /* Service worker GOCPNS — agar bisa dipasang & dibuka offline.
    Strategi: jaringan dulu (selalu dapat versi terbaru), cadangan dari cache saat offline.
    Naikkan VERSI jika menambah/mengganti file agar cache lama dibersihkan. */
-const VERSI = 'gocpns-v42:' + self.registration.scope;
+const VERSI = 'gocpns-v43:' + self.registration.scope;
 const INTI = [
   './', './index.html', './manifest.webmanifest',
-  './css/app.css',
+  './css/app.css', './js/study-content-v43.js',
   './db/skd/db_skd_gocpns.js', './db/skb/db_skb_prakom_gocpns.js', './js/materi_gocpns.js',
   './js/db-core.js', './js/materi.js', './js/materi_extra.js', './js/materi_extra2.js', './js/materi_extra3.js', './js/materi_fix_v23.js', './js/materi_uud_pasal_v23.js', './db/skd/db_skd_tkp_v4.js', './db/skd/db_skd_tkp_v5.js', './db/skd/db_skd_tkp_v6.js', './db/skd/db_skd_twk_v4.js', './db/skb/db_skb_prakom_v4.js', './js/patches_v21.js', './js/patches_v24.js', './js/materi_tiu_v25.js', './js/materi_tiu_studi_v27.js', './js/patches_v25.js', './js/patches_v28.js', './db/skd/db_skd_fix_v30.js', './js/patches_v30.js', './db/skd/db_skd_tiu_v4.js', './db/skd/db_skd_tiu_figural.js', './db/skb/db_skb_prakom_v3.js', './js/materi_v31_core.js', './js/materi_twk_v31.js', './js/materi_twk_v31b.js', './js/materi_tiu_v31.js', './js/materi_tiu_sulit_v31.js', './db/skd/db_skd_twk_v31.js', './db/skd/db_skd_tiu_v31a.js', './db/skd/db_skd_tiu_v31b.js', './db/skd/db_skd_tkp_v7.js', './js/materi_tiu_v32.js', './db/skd/db_skd_tiu_v32.js', './db/skd/db_skd_twk_v32.js', './js/patches_v35.js', './js/materi_skb_hukum_v35.js', './js/materi_skb_keuangan_v35.js', './js/materi_skb_pendidikan_v35.js', './js/materi_skb_kesehatan_v35.js', './db/skb/db_skb_hukum_v35.js', './db/skb/db_skb_keuangan_v35.js', './db/skb/db_skb_pendidikan_v35.js', './db/skb/db_skb_kesehatan_v35.js', './db/skd/db_skd_tiu_v36.js', './db/skd/db_skd_twk_v36.js', './db/skd/db_skd_tkp_v36.js', './js/materi_tiu_v36.js', './js/materi_twk_v36.js', './js/materi_tkp_v36.js', './js/dedupe_v35.js', './js/config.js', './js/auth.js', './js/app.js', './js/notif_v37.js',
   './db/skd/db_skd_twk.js', './db/skd/db_skd_tiu.js', './db/skd/db_skd_tkp.js',
