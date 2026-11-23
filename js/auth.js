@@ -289,9 +289,10 @@
   }
 
   function openReset(d, back) {
+    d.setAttribute('aria-labelledby', 'profile-reset-title');
     d.innerHTML = `
       <div class="modal-box max-w-sm">
-        <h3 class="text-center text-lg font-extrabold text-error">Reset progres belajar</h3>
+        <h3 id="profile-reset-title" class="text-center text-lg font-extrabold text-error">Reset progres belajar</h3>
         <p class="mt-1 text-center text-sm text-base-content/70">Seluruh progres materi, soal yang sudah dikerjakan, dan hasil latihan akan dikosongkan${sess() ? ' (termasuk di akunmu)' : ''}. Sebelum itu, kode cadangan progres lamamu dibuat di bawah. Simpan kode ini agar progres bisa dikembalikan kapan saja lewat "Pulihkan progres".</p>
         <textarea id="rs-out" readonly rows="4" class="textarea textarea-bordered mt-3 w-full text-xs" aria-label="Kode cadangan progres lama">Membuat kode…</textarea>
         <button id="rs-copy" class="btn btn-primary mt-2 w-full" disabled>Salin kode cadangan</button>
@@ -328,9 +329,10 @@
   }
 
   function openBackup(d) {
+    d.setAttribute('aria-labelledby', 'profile-backup-title');
     d.innerHTML = `
       <div class="modal-box max-w-sm">
-        <h3 class="text-center text-lg font-extrabold">Pindahkan progres</h3>
+        <h3 id="profile-backup-title" class="text-center text-lg font-extrabold">Pindahkan progres</h3>
         <p class="mt-1 text-center text-sm text-base-content/70">Kode ini membawa progres materi, hasil latihan, daftar kelemahan, riwayat grafik, profil, dan Planning. Salin di perangkat lama lalu tempel di perangkat baru.</p>
         <button id="bk-copy" class="btn btn-primary mt-4 w-full">Salin kode progres</button>
         <textarea id="bk-out" readonly rows="3" class="textarea textarea-bordered mt-2 hidden w-full text-xs" aria-label="Kode progres"></textarea>
@@ -344,7 +346,7 @@
       </div>
       <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
     const q = s => d.querySelector(s), msg = (t, ok) => { const m = q('#bk-msg'); m.textContent = t || ''; m.className = 'mt-2 min-h-5 text-center text-sm font-semibold ' + (ok ? 'text-success' : 'text-error'); };
-    q('#bk-close').onclick = () => openProfile();
+    q('#bk-close').onclick = () => openProfile(d.dataset.scope);
     q('#bk-reset').onclick = () => openReset(d, () => openBackup(d));
     q('#bk-copy').onclick = async () => {
       try {
@@ -371,30 +373,50 @@
   }
 
   /* lembar profil: dibuka dari tab Profil (paling kanan) */
-  function openProfile() {
+  function openProfile(scope = 'SKD_FULL', notice = '') {
     const u = (sess() || {}).u, dirty = !!rd('cpns_dirty');
     let d = document.getElementById('dlg-profile');
     if (!d) { d = document.createElement('dialog'); d.id = 'dlg-profile'; d.className = 'modal modal-bottom sm:modal-middle'; document.body.appendChild(d); }
+    d.dataset.scope = scope;
+    d.setAttribute('aria-labelledby', 'profile-display-name');
     const preferred = window.App?.targetPreference() || {};
     const name = preferred.name || u || 'Profil belajar';
+    const initials = Array.from(name.trim().split(/\s+/).slice(0, 2), part => Array.from(part)[0] || '').join('').toLocaleUpperCase('id');
+    const field = window.App?.profileFieldName(preferred.bucket);
     d.innerHTML = `
-      <div class="modal-box max-w-2xl">
-        <h3 id="profile-display-name" class="break-words text-xl font-extrabold">${esc(name)}</h3>
-        ${u && preferred.name ? `<p class="mt-1 text-xs text-base-content/70">Akun ${esc(u)}</p>` : ''}
-        <section id="profile-progress" class="mt-3" aria-label="Grafik dan kelemahan">${window.App?.profileProgressHTML() || ''}</section>
-        ${window.App ? window.App.targetEditorHTML() : ''}
-        <div class="mt-4 flex flex-wrap gap-2">
-          <button id="pf-backup" class="btn btn-outline btn-sm">Pindahkan progres</button>
+      <div class="modal-box pf-modal">
+        <header class="pf-hero">
+          <div class="pf-avatar" aria-hidden="true">${esc(initials)}</div>
+          <div class="pf-identity">
+            <h2 id="profile-display-name">${esc(name)}</h2>
+            <dl class="pf-target-card">
+              <div><dt>Jabatan yang diincar</dt><dd>${esc(preferred.role || 'Belum ditentukan')}</dd></div>
+              <div><dt>Bidang latihan SKB</dt><dd>${esc(field || 'Belum dipilih')}</dd></div>
+            </dl>
+          </div>
+          <button type="button" id="pf-close" class="pf-close" aria-label="Tutup profil">×</button>
+          <button type="button" id="pf-edit" class="btn btn-sm pf-edit">Edit profil</button>
+        </header>
+        ${notice ? `<p class="pf-notice" role="status">${esc(notice)}</p>` : ''}
+        <section id="profile-progress" class="pf-content" aria-label="Grafik dan kelemahan">${window.App?.profileProgressHTML(scope) || ''}</section>
+        <footer class="pf-footer">
+          <button type="button" id="pf-backup" class="btn btn-outline btn-sm">Pindahkan progres</button>
           ${HAS_SERVER ? (u
             ? '<button id="pf-out" class="btn btn-ghost btn-sm">Keluar dari akun</button>'
             : '<button id="pf-in" class="btn btn-ghost btn-sm">Masuk</button><button id="pf-reg" class="btn btn-ghost btn-sm">Daftar</button>') : ''}
-          <button id="pf-close" class="btn btn-ghost btn-sm">Tutup</button>
-        </div>
-        ${HAS_SERVER ? `<p class="mt-2 text-xs text-base-content/70">${u ? (dirty ? 'Progres menunggu sinkronisasi.' : 'Progres tersimpan di akun ini.') : 'Masuk untuk sinkronisasi akun.'}</p>` : ''}
+          ${HAS_SERVER && u ? `<p>${dirty ? 'Progres menunggu sinkronisasi.' : 'Progres tersimpan di akun ini.'}</p>` : ''}
+        </footer>
       </div>
       <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
     const q = s => d.querySelector(s);
     q('#pf-close').onclick = () => d.close();
+    q('#pf-edit').onclick = () => {
+      d.setAttribute('aria-labelledby', 'profile-edit-title');
+      d.innerHTML = `<div class="modal-box pf-edit-modal"><h2 id="profile-edit-title">Edit profil</h2>
+        ${window.App?.targetEditorHTML() || ''}</div>
+        <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
+      d.querySelector('#target-name')?.focus();
+    };
     q('#pf-backup').onclick = () => openBackup(d);
     if (q('#pf-out')) q('#pf-out').onclick = () => { d.close(); logout(); };
     if (q('#pf-in')) q('#pf-in').onclick = () => { d.close(); open('masuk'); };

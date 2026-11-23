@@ -202,8 +202,7 @@ function targetEditorHTML() {
   const selected = key => key === current.bucket ? ' selected' : '';
   const choices = targetSkbKeys().map(key => `<option value="${esc(key)}"${selected(key)}>${esc(skbMeta(key).name)} · ${bankLen(key)} soal</option>`).join('');
   const activePlan = planCfg?.cat ? ' Planning yang sudah dibuat bisa disesuaikan lewat Atur planning.' : '';
-  return `<form class="mt-4 rounded-2xl border border-base-300 p-3 text-left" onsubmit="return App.saveTarget(event)">
-    <h4 class="text-sm font-extrabold">Edit identitas dan target</h4>
+  return `<form class="pf-editor" onsubmit="return App.saveTarget(event)">
     <label class="mt-2 block text-xs font-bold" for="target-name">Nama tampilan</label>
     <input id="target-name" name="targetName" class="input input-bordered input-sm mt-1 w-full"
       maxlength="80" value="${esc(current.name)}" placeholder="Nama yang ingin ditampilkan">
@@ -214,7 +213,10 @@ function targetEditorHTML() {
     <select id="target-bucket" name="targetBucket" class="select select-bordered select-sm mt-1 w-full">
       <option value="">Belum dipilih</option>${choices}</select>
     <p class="mt-2 text-xs text-base-content/70">Pilih bidang yang paling sesuai. Cakupan latihan mengikuti bank bidang yang dipilih.${activePlan}</p>
-    <button class="btn btn-primary btn-sm mt-2" type="submit">Simpan target</button>
+    <div class="pf-editor-actions">
+      <button class="btn btn-ghost" type="button" onclick="Auth.openProfile($('#dlg-profile').dataset.scope)">Batal</button>
+      <button class="btn btn-primary" type="submit">Simpan profil</button>
+    </div>
     <p class="mt-1 text-xs" role="status" data-target-status></p>
   </form>`;
 }
@@ -2224,61 +2226,142 @@ function reviewSummary(scope) {
   </div>`;
 }
 
-function profileProgressHTML(scope = examHistory.at(-1)?.group || 'SKD_FULL') {
+/* ---------- Dasbor profil ---------- */
+const PROFILE_SECTIONS = {
+  TWK: { label: 'Wawasan Kebangsaan', target: 140, accent: 'twk' },
+  TIU: { label: 'Intelegensia Umum', target: 160, accent: 'tiu' },
+  TKP: { label: 'Karakteristik Pribadi', target: 205, accent: 'tkp' }
+};
+const profileStamp = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+function profileChart(points, max, target, label, compact = false) {
+  const width = compact ? 232 : 584, height = compact ? 82 : 175;
+  const left = compact ? 12 : 42, right = width - 18, top = 9, bottom = height - (compact ? 8 : 24);
+  const x = i => points.length === 1 ? (left + right) / 2 : left + (right - left) * i / (points.length - 1);
+  const y = value => bottom - (bottom - top) * Math.max(0, Math.min(max, value)) / max;
+  const xy = points.map((p, i) => `${x(i)},${y(p.score)}`).join(' ');
+  const grid = [0, 0.5, 1].map(r => {
+    const value = Math.round(r * max), at = y(value);
+    return `<path class="pf-gridline" d="M${left} ${at}H${right}"/>${compact ? '' : `<text x="2" y="${at + 4}">${value}</text>`}`;
+  }).join('');
+  const marks = points.map((p, i) => `<circle cx="${x(i)}" cy="${y(p.score)}" r="${compact ? 3.2 : 4.5}" class="${p.repeated ? 'pf-mark pf-mark-repeat' : 'pf-mark'}">
+    <title>Percobaan ${p.no} · ${p.score}/${max}</title></circle>
+    ${compact ? '' : `<text x="${x(i)}" y="${height - 6}" text-anchor="middle">${p.no}</text>`}`).join('');
+  return `<svg class="pf-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(label)}: ${points.map(p => p.score).join(', ')} dari ${max}">
+    ${grid}<path class="pf-goal" d="M${left} ${y(target)}H${right}"/>
+    <polyline class="pf-line" points="${xy}"/>${marks}</svg>`;
+}
+
+function profileTopics(scope) {
+  const counts = new Map();
+  for (const issue of reviewIssues(scope)) {
+    const row = counts.get(issue.sub) || { label: issue.sub, weight: 0, count: 0 };
+    row.count++;
+    row.weight += issueWeight(issue);
+    counts.set(issue.sub, row);
+  }
+  return [...counts.values()].sort((a, b) => b.weight - a.weight || b.count - a.count);
+}
+
+function profileSectionCard(key, attempts, priority) {
+  const section = PROFILE_SECTIONS[key], max = FULL_MIX[key] * 5, scope = 'SKD_' + key;
+  const series = attempts.flatMap(({ record, no }) => {
+    const item = record.parts?.[key];
+    return item?.max === max ? [{ score: item.score, no }] : [];
+  });
+  const latest = series.at(-1);
+  const topics = profileTopics(scope).slice(0, 2);
+  return `<article class="pf-skill pf-tone-${section.accent}">
+    <div class="pf-card-top">
+      <div><h4>${key}</h4><p>${section.label}</p></div>
+      ${priority ? '<span class="pf-priority">Prioritas latihan</span>' : ''}
+    </div>
+    <div class="pf-skill-score">${latest ? fmtNum(latest.score) : '—'} <span>/ ${max}</span></div>
+    <p class="pf-caption">Target latihan ${section.target}/${max}${latest && series.length > 1
+      ? ' · ' + signedScore(latest.score - series.at(-2).score) + ' poin' : ''}</p>
+    ${series.length ? profileChart(series, max, section.target, 'Tren ' + key, true)
+      : '<div class="pf-skill-empty">Tercatat setelah tryout SKD lengkap</div>'}
+    ${topics.length ? `<div class="pf-topic">
+      <p>Topik yang perlu diperkuat</p>
+      <ul>${topics.map(topic => `<li>${esc(topic.label)}</li>`).join('')}</ul>
+      <button type="button" class="pf-text-btn" onclick="$('#dlg-profile').close(); App.openReview('${scope}')">Latih ${key} ${icon('arrowR', 'h-4 w-4')}</button>
+    </div>` : ''}
+  </article>`;
+}
+
+function signedScore(n) { return (n > 0 ? '+' : n < 0 ? '−' : '') + fmtNum(Math.abs(n)); }
+
+function profileProgressHTML(scope = 'SKD_FULL') {
   const options = ['SKD_FULL', ...targetSkbKeys()];
   if (!options.includes(scope)) scope = 'SKD_FULL';
-  const caption = scope === 'SKD_FULL' ? 'Tryout SKD lengkap' : 'SKB ' + skbMeta(scope).short;
-  const max = scope === 'SKD_FULL' ? 550 : Math.min(SKB_SIZE, bankLen(scope)) * 5;
-  const target = scope === 'SKD_FULL' ? SKD_TARGET : Math.ceil(max * SKB_TARGET);
-  const comparable = examHistory.filter(r => r.group === scope && r.max === max);
-  const past = comparable.filter(r => !r.assisted).slice(-7);
-  const date = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-  const controls = `<label for="profile-score-test" class="block text-xs font-bold">Grafik nilai</label>
-    <select id="profile-score-test" class="select select-bordered select-sm mt-1 w-full" onchange="App.showProfileProgress(this.value)">
-      ${options.map(key => `<option value="${esc(key)}"${key === scope ? ' selected' : ''}>${key === 'SKD_FULL' ? 'SKD lengkap' : esc(skbMeta(key).name)}</option>`).join('')}
-    </select>`;
-  const counts = new Map();
-  reviewIssues(scope === 'SKD_FULL' ? 'SKD' : scope).forEach(issue => {
-    const key = issue.bucket + ' · ' + issue.sub;
-    const label = issue.bucket.startsWith('SKD_') ? `${issue.bucket.slice(4)} · ${issue.sub}` : issue.sub;
-    const row = counts.get(key) || { label, weight: 0, count: 0 };
-    row.weight += issueWeight(issue); row.count++; counts.set(key, row);
-  });
-  const weak = [...counts.values()].sort((a, b) => b.weight - a.weight).slice(0, 4);
-  const weakHTML = `<div class="mt-4"><h4 class="font-extrabold">Perlu diperkuat · ${esc(caption)}</h4>
-    ${weak.length ? `<ul class="mt-1 space-y-1 text-sm">${weak.map(r => `<li>${esc(r.label)} · ${r.count} catatan</li>`).join('')}</ul>
-    <button class="btn btn-outline btn-sm mt-2" onclick="$('#dlg-profile').close(); App.openReview('${scope === 'SKD_FULL' ? 'SKD' : esc(scope)}')">Lihat kelemahan dan latih lagi</button>`
-    : '<p class="mt-1 text-sm text-base-content/70">Belum ada kelemahan yang tercatat untuk bagian ini.</p>'}</div>`;
+  const isSkd = scope === 'SKD_FULL';
+  const max = isSkd ? 550 : Math.min(SKB_SIZE, bankLen(scope)) * 5;
+  const target = isSkd ? SKD_TARGET : Math.ceil(max * SKB_TARGET);
+  const comparable = examHistory.filter(r => r.group === scope && r.max === max).sort((a, b) => a.date - b.date);
+  const scored = comparable.filter(r => !r.assisted);
+  const shown = scored.slice(-7).map((record, i) => ({ record, no: scored.length - Math.min(7, scored.length) + i + 1 }));
+  const latest = scored.at(-1);
+  const delta = scored.length > 1 ? latest.score - scored.at(-2).score : null;
+  const older = Object.entries(results).filter(([key, rec]) => key.startsWith(scope + '-') && rec.last?.date && rec.last.max === max)
+    .map(([, rec]) => rec.last).sort((a, b) => b.date - a.date)[0];
+  const fallback = !latest && !comparable.length && older;
   const assisted = comparable.filter(r => r.assisted).slice(-3);
-  const assistedHTML = assisted.length ? `<details class="mt-2 text-sm"><summary class="cursor-pointer">Sesi dengan jeda atau bahas instan</summary>
-    <ul>${assisted.map(r => `<li>${esc(date.format(r.date))} · ${r.score}/${r.max} · ${r.fresh}/${max / 5} soal baru</li>`).join('')}</ul></details>` : '';
-  if (!past.length) return controls + '<p class="mt-3 text-sm">Grafik mulai diisi setelah pembaruan ini. Selesaikan paket dengan waktu berjalan, tanpa jeda, dan Bahas instan dimatikan.</p>' + assistedHTML + weakHTML;
-  const x = i => Math.round(past.length === 1 ? 198 : 44 + 308 * i / (past.length - 1));
-  const y = score => Math.round(158 - 132 * score / max);
-  const line = past.map((r, i) => `${x(i)},${y(r.score)}`).join(' ');
-  const points = past.map((r, i) => `<circle cx="${x(i)}" cy="${y(r.score)}" r="4.5"
-    fill="${r.fresh * 5 === max ? '#155e75' : '#9a3412'}"><title>${esc(date.format(r.date))} · ${r.score}/${max}</title></circle>
-    <text x="${x(i)}" y="177" text-anchor="middle" font-size="11" fill="currentColor">${i + 1}</text>`).join('');
-  const newest = past.at(-1);
-  const delta = past.length > 1 ? newest.score - past.at(-2).score : null;
-  const skills = Object.entries(newest.parts || {}).filter(([key]) => key !== 'ALL');
-  const historyRows = past.map((r, i) => `<li class="py-1"><b>${i + 1}. ${esc(date.format(r.date))} · ${r.score}/${r.max}</b>
-    <span class="block text-xs text-base-content/70">${r.fresh}/${max / 5} soal baru · ${r.lessons} langkah materi selesai saat itu</span></li>`).join('');
-  return controls + `<div class="mt-3 rounded-2xl border border-base-300 p-3">
-    <div class="flex flex-wrap items-baseline justify-between gap-2">
-      <h4 class="font-extrabold">Nilai terbaru ${newest.score}/${max}</h4>
-      ${delta === null ? '' : `<span class="text-sm">${delta > 0 ? '+' : ''}${delta} poin dari sesi sebelumnya</span>`}
+  const focus = Object.keys(PROFILE_SECTIONS).reduce((weakest, key) => {
+    const part = latest?.parts?.[key], maxPart = FULL_MIX[key] * 5;
+    if (!part || part.max !== maxPart) return weakest;
+    const gap = (PROFILE_SECTIONS[key].target - part.score) / part.max;
+    return gap > weakest.gap ? { key, gap } : weakest;
+  }, { key: null, gap: 0 }).key;
+  const scopeName = isSkd ? 'SKD lengkap' : 'SKB ' + skbMeta(scope).short;
+
+  const summary = `<div class="pf-section-head">
+    <div><h3 id="profile-tryout-title">Perkembangan tryout</h3><p>${isSkd ? 'SKD · TWK, TIU, dan TKP' : esc(scopeName)}</p></div>
+    <div class="pf-picker"><label for="profile-score-test">Jenis tes</label>
+      <select id="profile-score-test" class="select select-bordered" onchange="App.showProfileProgress(this.value)">
+        ${options.map(key => `<option value="${esc(key)}"${key === scope ? ' selected' : ''}>${key === 'SKD_FULL' ? 'SKD lengkap' : 'SKB · ' + esc(skbMeta(key).short)}</option>`).join('')}
+      </select>
     </div>
-    <svg viewBox="0 0 396 188" class="w-full" role="img" aria-label="Grafik ${esc(caption)}, ${past.length} sesi, target ${target}">
-      <path d="M30 26V158H366" fill="none" stroke="currentColor" opacity=".35"/>
-      <text x="3" y="31" font-size="11" fill="currentColor">${max}</text><text x="15" y="162" font-size="11" fill="currentColor">0</text>
-      <path d="M30 ${y(target)}H366" stroke="#15803d" stroke-dasharray="4 4"/>
-      <polyline points="${line}" fill="none" stroke="#155e75" stroke-width="2.4"/>${points}
-    </svg>
-    <p class="text-xs text-base-content/70">Garis putus-putus: target ${target}/${max} · Titik cokelat: ada soal pengulangan</p>
-    ${skills.length ? `<p class="mt-2 text-xs">${skills.map(([part, n]) => `${esc(part)} ${n.score}/${n.max}`).join(' · ')}</p>` : ''}
-    <ol class="mt-2 text-sm">${historyRows}</ol>
-  </div>` + assistedHTML + weakHTML;
+  </div>`;
+
+  const primary = latest ? `<div class="pf-overview">
+    <div class="pf-kpis">
+      <div><span>Nilai terbaru</span><strong>${fmtNum(latest.score)}<small>/${max}</small></strong></div>
+      <div><span>Dari percobaan sebelumnya</span><strong class="${delta > 0 ? 'pf-trend-up' : delta < 0 ? 'pf-trend-down' : ''}">${delta === null ? '—' : signedScore(delta) + ' poin'}</strong></div>
+      <div><span>Target latihan</span><strong>${target}<small>/${max}</small></strong></div>
+    </div>
+    ${profileChart(shown.map(({ record, no }) => ({ score: record.score, repeated: record.fresh * 5 < max, no })), max, target, 'Tren ' + scopeName)}
+    <div class="pf-legend"><span class="pf-legend-goal">Target latihan</span><span class="pf-legend-repeat">Memuat soal pengulangan</span></div>
+  </div>` : `<div class="pf-empty">
+    <span class="pf-empty-icon">${icon('trophy', 'h-6 w-6')}</span>
+    <div><strong>${fallback ? `Skor tersimpan ${older.score}/${max}` : 'Grafik menunggu tryout pertama'}</strong>
+      <p>${fallback ? 'Riwayat lama belum memuat rincian per bagian. Mulai tryout baru untuk membentuk tren.' : 'Grafik membandingkan tryout tanpa jeda dan tanpa Bahas instan.'}</p></div>
+    <a class="btn btn-primary btn-sm" href="${isSkd ? '#/skd' : '#/skb/' + esc(scope)}" onclick="$('#dlg-profile').close()">Buka tryout</a>
+  </div>`;
+
+  const skills = isSkd ? `<section class="pf-breakdown" aria-labelledby="profile-sections-title">
+    <div class="pf-section-head"><div><h3 id="profile-sections-title">Rincian SKD</h3><p>Tren tiap bagian memakai percobaan SKD lengkap yang sama.</p></div></div>
+    <div class="pf-skills">${Object.keys(PROFILE_SECTIONS).map(key => profileSectionCard(key, shown, focus === key)).join('')}</div>
+  </section>` : '';
+  const topics = isSkd ? [] : profileTopics(scope).slice(0, 4);
+  const weaknesses = !isSkd && topics.length ? `<section class="pf-skill">
+    <h4>Topik yang perlu diperkuat</h4>
+    <ul class="pf-skb-topics">${topics.map(t => `<li>${esc(t.label)} <span>${t.count} catatan</span></li>`).join('')}</ul>
+    <button class="pf-text-btn" type="button" onclick="$('#dlg-profile').close(); App.openReview('${esc(scope)}')">Latih kelemahan SKB ${icon('arrowR', 'h-4 w-4')}</button>
+  </section>` : '';
+
+  const history = shown.length ? `<details class="pf-history">
+    <summary>Riwayat percobaan <span>${shown.length} terbaru</span></summary>
+    <ol>${shown.slice().reverse().map(({ record, no }) => `<li>
+      <div><b>Percobaan ${no}</b><span>${esc(profileStamp.format(record.date))} · ${record.lessons} langkah materi selesai</span></div>
+      <div><b>${record.score}/${record.max}</b><span>${record.fresh}/${max / 5} soal baru</span></div>
+    </li>`).join('')}</ol>
+  </details>` : '';
+  const assistedList = assisted.length ? `<details class="pf-history">
+    <summary>Latihan dengan jeda atau pembahasan instan</summary>
+    <ol>${assisted.slice().reverse().map(record => `<li><div>${esc(profileStamp.format(record.date))}</div><b>${record.score}/${record.max}</b></li>`).join('')}</ol>
+  </details>` : '';
+  return `<section class="pf-tryout" aria-labelledby="profile-tryout-title">${summary}${primary}</section>
+    ${skills}${weaknesses}${history}${assistedList}`;
 }
 
 function openReview(scope = 'ALL') {
@@ -2654,21 +2737,24 @@ const App = {
   openResult,
   targetEditorHTML,
   targetPreference,
+  profileFieldName: bucket => bucket ? skbMeta(bucket).name : '',
   profileProgressHTML,
   showProfileProgress(scope) {
     const view = $('#profile-progress');
     if (!view) return;
     view.innerHTML = profileProgressHTML(scope);
-    $('#profile-score-test')?.focus();
+    const selected = $('#profile-score-test');
+    const dialog = $('#dlg-profile');
+    if (dialog && selected) dialog.dataset.scope = selected.value;
+    selected?.focus({ preventScroll: true });
   },
   saveTarget(event) {
     event.preventDefault();
     const form = event.currentTarget;
     saveStudyTarget(form.elements.targetRole.value, form.elements.targetBucket.value, form.elements.targetName?.value);
-    const name = $('#profile-display-name');
-    if (name) name.textContent = targetPreference().name || window.Auth?.user() || 'Profil belajar';
-    form.querySelector('[data-target-status]').textContent = 'Target tersimpan.';
+    const dialog = form.closest?.('#dlg-profile');
     if (!exam || exam.finished) route();
+    if (dialog?.open) window.Auth?.openProfile(dialog.dataset.scope, 'Profil tersimpan.');
     return false;
   },
   openReview,
