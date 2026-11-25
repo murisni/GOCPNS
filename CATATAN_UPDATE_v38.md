@@ -14,6 +14,18 @@
 - Panjang opsi sudah diseimbangkan, namun opsi bernilai 5 masih terpanjang pada sekitar 45% soal.
 
 ## Teknis
-- index.html: 3 skrip baru setelah db_skd_tkp_v36.js.
-- sw.js: 3 berkas ditambahkan ke cache, VERSI naik ke cat-cpns-v40.
+- index.html: skrip js/materi_v38.js ditambahkan setelah materi_gocpns.js (sebelum dedupe_v35.js).
+- ID soal v38 diganti ke pola X38xx/X39xx (isi soal tidak berubah).
+- sw.js: berkas v38 + materi_v38.js masuk daftar cache, VERSI naik ke cat-cpns-v41.
 - Soal lama tidak diubah.
+
+## Penempatan soal
+- ID soal baru memakai pola -X38xx/-X39xx, sehingga ditaruh di belakang bank dan isi Paket/Tryout lama tidak bergeser.
+- Muncul di: latihan per paket (TWK/TIU/TKP), latihan per topik, dan planning belajar. Tryout Lengkap bertambah dari 15 menjadi 17 paket; soal baru TWK dan TKP masuk di paket-paket terakhir.
+
+## Materi baru (js/materi_v38.js) — 5 topik, 20 bagian
+Ditulis orisinal; ebook hanya dipakai untuk memahami alur/jenis soal, tidak ada soal atau penjelasan yang disalin.
+- TIU: Penalaran Analitis (penjadwalan & kecukupan data), Numerik Terapan (geometri, bangun ruang, statistika, barisan-deret, soal cerita, berhitung cepat; 19 studi kasus), Logika Bersyarat.
+- TWK: Kasus HOTS (netralitas, benturan kepentingan, hilirisasi/Pasal 33, checks and balances, sejarah kunci).
+- TKP: Teknik Skor (tangga skor 1–5, kata kunci 6 indikator, kasus baru).
+- Setiap bagian terhubung ke keluarga soal v38 (fam), sehingga tombol latihan topik memunculkan soal yang sesuai lebih dulu.
