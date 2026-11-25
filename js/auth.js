@@ -5,13 +5,14 @@
   const API = window.CPNS_API || '', HAS_SERVER = !!API && !/GANTI/.test(API), SK = 'cpns_session_v1', GUEST = 'cpns_guest_v1';
   const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3',
     'cpns_review_v1', 'cpns_plan_v1', 'cpns_plan_q_v1', 'cpns_target_v1', 'cpns_exam_history_v1'];
+  const EXTRA_KEYS = ['cpns_rk_read_v1', 'cpns_weak_materi_v1', 'cpns_plan_ended_v1', 'cpns_bookmarks_v1', 'cpns_wrong_qids_v1'];
   const dict = value => value && typeof value === 'object' && !Array.isArray(value);
   const records = value => Object.entries(value || {}).filter(([key]) => !['__proto__', 'constructor', 'prototype'].includes(key));
   const rd = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
   const wr = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
   const del = k => { try { localStorage.removeItem(k); } catch (e) { /* abaikan */ } };
   const sess = () => rd(SK);
-  const snapshot = () => KEYS.reduce((o, k) => { const v = rd(k); if (v != null) o[k] = v; return o; }, {});
+  const snapshot = () => KEYS.concat(EXTRA_KEYS).reduce((o, k) => { const v = rd(k); if (v != null) o[k] = v; return o; }, {});
 
   async function call(body) {
     let r;
@@ -99,18 +100,23 @@
     const aTarget = a.cpns_target_v1, bTarget = b.cpns_target_v1;
     const target = (aTarget?.at || 0) > (bTarget?.at || 0) ? aTarget : bTarget || aTarget || null;
     const sets = plan && !plan.reset ? [a.cpns_plan_q_v1, b.cpns_plan_q_v1].filter(p => p && p.at === plan.at) : [];
-    return {
+    const out = {
       cpns_lesson_v1: L, cpns_results_v3: R, cpns_review_v1: review,
       cpns_seen_qids_v2: Array.from(new Set([a.cpns_seen_qids_v2, b.cpns_seen_qids_v2]
         .flatMap(ids => Array.isArray(ids) ? ids.filter(id => typeof id === 'string') : []))),
       cpns_exam_history_v1: [...sessions.values()].sort((x, y) => x.date - y.date || x.id.localeCompare(y.id)).slice(-160),
       cpns_target_v1: target, cpns_plan_v1: plan, cpns_plan_q_v1: sets.length ? { at: plan.at, sets: Object.assign({}, ...sets.map(p => p.sets)) } : null
     };
+    EXTRA_KEYS.forEach(k => {
+      if (dict(a[k]) || dict(b[k])) out[k] = Object.assign({}, dict(b[k]) ? b[k] : {}, dict(a[k]) ? a[k] : {});
+    });
+    return out;
   }
 
   function restore(data) {
     const before = snapshot(), merged = merge(data, before), written = [];
-    for (const key of KEYS) {
+    for (const key of KEYS.concat(EXTRA_KEYS)) {
+      if (merged[key] == null) continue;
       if (!wr(key, merged[key])) {
         for (const restored of written) del(restored);
         for (const restored of written) if (Object.hasOwn(before, restored)) wr(restored, before[restored]);
@@ -118,6 +124,7 @@
       }
       written.push(key);
     }
+    del('cpns_onboard_skip_v1');
   }
 
   /* ---------- kirim ke server (ditunda agar hemat) ---------- */
@@ -178,8 +185,8 @@
     let data;
     try { data = JSON.parse(new TextDecoder().decode(u8)); }
     catch (e) { throw new Error('Kode tidak valid. Salin kode lengkap dari perangkat lama.'); }
-    if (!dict(data) || (Object.keys(data).length && !KEYS.some(k => Object.hasOwn(data, k)))) throw new Error('Kode ini tidak berisi data progres GOCPNS.');
-    return Object.fromEntries(KEYS.filter(k => Object.hasOwn(data, k)).map(k => [k, data[k]]));
+    if (!dict(data) || (Object.keys(data).length && !KEYS.concat(EXTRA_KEYS).some(k => Object.hasOwn(data, k)))) throw new Error('Kode ini tidak berisi data progres GOCPNS.');
+    return Object.fromEntries(KEYS.concat(EXTRA_KEYS).filter(k => Object.hasOwn(data, k)).map(k => [k, data[k]]));
   }
 
   /* ---------- UI ---------- */
@@ -321,34 +328,39 @@
       if (!copied || !code) return;
       q('#rs-go').disabled = true; q('#rs-go').classList.add('loading');
       clearTimeout(timer);
-      KEYS.filter(key => key !== 'cpns_target_v1').forEach(del); del('cpns_dirty');
+      KEYS.concat(EXTRA_KEYS).filter(key => key !== 'cpns_target_v1').forEach(del); del('cpns_dirty');
       if (sess()) { wr('cpns_dirty', 1); await push(false); }
       location.reload();
     };
     if (!d.open) d.showModal();
   }
 
-  function openBackup(d) {
+  function ensureProfileDlg() {
+    let d = document.getElementById('dlg-profile');
+    if (!d) { d = document.createElement('dialog'); d.id = 'dlg-profile'; d.className = 'modal modal-bottom sm:modal-middle'; document.body.appendChild(d); }
+    return d;
+  }
+
+  function openBackup(d = ensureProfileDlg(), opts = {}) {
+    const fromOnboard = !!opts.returnToOnboarding;
     d.setAttribute('aria-labelledby', 'profile-backup-title');
     d.innerHTML = `
       <div class="modal-box max-w-sm">
-        <h3 id="profile-backup-title" class="text-center text-lg font-extrabold">Pindahkan progres</h3>
-        <p class="mt-1 text-center text-sm text-base-content/70">Kode ini membawa progres materi, hasil latihan, daftar kelemahan, riwayat grafik, profil, dan Planning. Salin di perangkat lama lalu tempel di perangkat baru.</p>
-        <button id="bk-copy" class="btn btn-primary mt-4 w-full">Salin kode progres</button>
-        <textarea id="bk-out" readonly rows="3" class="textarea textarea-bordered mt-2 hidden w-full text-xs" aria-label="Kode progres"></textarea>
-        <div class="divider my-3 text-xs">atau pulihkan</div>
-        <textarea id="bk-in" rows="3" placeholder="Tempel kode progres dari perangkat lama…" class="textarea textarea-bordered w-full text-xs"></textarea>
+        <h3 id="profile-backup-title" class="text-center text-lg font-extrabold">${fromOnboard ? 'Pulihkan progres belajar' : 'Pindahkan progres'}</h3>
+        <p class="mt-1 text-center text-sm text-base-content/70">Kode ini membawa progres materi, hasil latihan, daftar kelemahan, hafalan, grafik, profil, dan Planning. Tempel kode progres lama untuk memulihkan datamu di sini.</p>
+        ${fromOnboard ? '' : '<button id="bk-copy" class="btn btn-primary mt-4 w-full">Salin kode progres</button><textarea id="bk-out" readonly rows="3" class="textarea textarea-bordered mt-2 hidden w-full text-xs" aria-label="Kode progres"></textarea><div class="divider my-3 text-xs">atau pulihkan</div>'}
+        <textarea id="bk-in" rows="4" placeholder="Tempel kode progres dari perangkat / browser lama di sini…" class="textarea textarea-bordered ${fromOnboard ? 'mt-4 ' : ''}w-full text-xs"></textarea>
         <p id="bk-msg" class="mt-2 min-h-5 text-center text-sm font-semibold text-error" role="alert"></p>
-        <button id="bk-load" class="btn btn-outline w-full">Pulihkan progres</button>
-        <div class="divider my-3 text-xs">atau mulai dari awal</div>
-        <button id="bk-reset" class="btn btn-outline btn-error w-full">Reset progres</button>
-        <button id="bk-close" class="btn btn-ghost mt-1 w-full">Kembali ke Profil</button>
+        <button id="bk-load" class="btn btn-primary w-full">Pulihkan progres</button>
+        ${fromOnboard ? '' : '<div class="divider my-3 text-xs">atau mulai dari awal</div><button id="bk-reset" class="btn btn-outline btn-error w-full">Reset progres</button>'}
+        <button id="bk-close" class="btn btn-ghost mt-2 w-full">${fromOnboard ? 'Kembali ke isi profil' : 'Kembali ke Profil'}</button>
       </div>
       <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
-    const q = s => d.querySelector(s), msg = (t, ok) => { const m = q('#bk-msg'); m.textContent = t || ''; m.className = 'mt-2 min-h-5 text-center text-sm font-semibold ' + (ok ? 'text-success' : 'text-error'); };
-    q('#bk-close').onclick = () => openProfile(d.dataset.scope);
-    q('#bk-reset').onclick = () => openReset(d, () => openBackup(d));
-    q('#bk-copy').onclick = async () => {
+    const q = s => d.querySelector(s), msg = (t, ok) => { const m = q('#bk-msg'); if (!m) return; m.textContent = t || ''; m.className = 'mt-2 min-h-5 text-center text-sm font-semibold ' + (ok ? 'text-success' : 'text-error'); };
+    const closeBtn = q('#bk-close'); if (closeBtn) closeBtn.onclick = () => fromOnboard ? openOnboarding() : openProfile(d.dataset.scope);
+    const resetBtn = q('#bk-reset'); if (resetBtn) resetBtn.onclick = () => openReset(d, () => openBackup(d, opts));
+    const copyBtn = q('#bk-copy');
+    if (copyBtn) copyBtn.onclick = async () => {
       try {
         const code = await toCode(), o = q('#bk-out');
         o.value = code; o.classList.remove('hidden'); o.select();
@@ -358,18 +370,74 @@
         msg('Salin kode yang dipilih, lalu tempel di perangkat baru.', true);
       } catch (e) { msg('Gagal membuat kode progres.'); }
     };
-    q('#bk-load').onclick = async () => {
-      const load = q('#bk-load');
-      load.disabled = true;
+    const loadBtn = q('#bk-load');
+    if (loadBtn) loadBtn.onclick = async () => {
+      loadBtn.disabled = true;
       try {
         restore(await fromCode(q('#bk-in').value));
         const account = sess();
         if (account) touch('cpns_plan_v1');
         msg('Progres berhasil dipulihkan di perangkat ini. Memuat ulang…', true);
         setTimeout(() => location.reload(), 700);
-      } catch (e) { msg(e.message || 'Kode tidak valid.'); load.disabled = false; }
+      } catch (e) { msg(e.message || 'Kode tidak valid.'); loadBtn.disabled = false; }
     };
     if (!d.open) d.showModal();
+  }
+
+  /* Modal awal ketika belum ada profil / akun / progres tersimpan */
+  function openOnboarding() {
+    const d = ensureProfileDlg();
+    const preferred = window.App?.targetPreference?.() || {};
+    const choices = window.App?.skbTargetChoicesHTML?.(preferred.bucket || '') || '';
+    d.setAttribute('aria-labelledby', 'profile-onboard-title');
+    d.innerHTML = `
+      <div class="modal-box pf-modal">
+        <header class="pf-hero">
+          <div class="pf-avatar" aria-hidden="true">GO</div>
+          <div class="pf-identity">
+            <h2 id="profile-onboard-title">Selamat datang di GOCPNS</h2>
+            <dl class="pf-target-card">
+              <div><dt>Profil belajar</dt><dd>Atur nama &amp; bidang SKB pilihan</dd></div>
+              <div><dt>Penyimpanan</dt><dd>Otomatis tersimpan di perangkat ini</dd></div>
+            </dl>
+          </div>
+          <button type="button" id="ob-close" class="pf-close" aria-label="Tutup">×</button>
+        </header>
+        <section class="pf-content" aria-label="Pengaturan profil awal">
+          <form class="pf-editor" data-onboard="1" onsubmit="return App.saveTarget(event)">
+            <label class="block text-xs font-bold" for="ob-name">Nama tampilan</label>
+            <input id="ob-name" name="targetName" class="input input-bordered input-sm mt-1 w-full"
+              maxlength="80" value="${esc(preferred.name || '')}" placeholder="Masukkan nama panggilan atau nama lengkap">
+            <label class="mt-3 block text-xs font-bold" for="ob-role">Target jabatan CPNS (opsional)</label>
+            <input id="ob-role" name="targetRole" class="input input-bordered input-sm mt-1 w-full"
+              maxlength="100" value="${esc(preferred.role || '')}" placeholder="Misalnya Pranata Komputer Ahli Pertama">
+            <label class="mt-3 block text-xs font-bold" for="ob-bucket">Bidang latihan SKB</label>
+            <select id="ob-bucket" name="targetBucket" class="select select-bordered select-sm mt-1 w-full">
+              <option value="">Belum dipilih</option>${choices}</select>
+            <p class="mt-2 text-xs opacity-75">Nama &amp; bidang SKB menentukan tampilan Beranda, rekomendasi SKB, dan target Planning Anda.</p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <button class="btn btn-primary flex-1" type="submit">✓ Simpan Profil &amp; Mulai</button>
+              <button class="btn btn-ghost" type="button" id="ob-skip">Nanti saja</button>
+            </div>
+          </form>
+        </section>
+        <footer class="pf-footer">
+          <span class="text-xs font-semibold opacity-75">Sudah punya progres di perangkat / browser sebelumnya?</span>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" id="ob-restore" class="btn btn-outline btn-sm">♻ Pulihkan progres</button>
+            ${HAS_SERVER ? '<button type="button" id="ob-login" class="btn btn-primary btn-sm">Masuk ke akun</button>' : ''}
+          </div>
+        </footer>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
+    const q = s => d.querySelector(s);
+    const skipFn = () => { wr('cpns_onboard_skip_v1', 1); d.close(); };
+    if (q('#ob-close')) q('#ob-close').onclick = skipFn;
+    if (q('#ob-skip')) q('#ob-skip').onclick = skipFn;
+    if (q('#ob-restore')) q('#ob-restore').onclick = () => openBackup(d, { returnToOnboarding: true });
+    if (q('#ob-login')) q('#ob-login').onclick = () => { d.close(); open('masuk'); };
+    if (!d.open) d.showModal();
+    if (q('#ob-name')) q('#ob-name').focus();
   }
 
   /* lembar profil: dibuka dari tab Profil (paling kanan) */
@@ -424,7 +492,7 @@
     if (!d.open) d.showModal();
   }
 
-  window.Auth = { hasServer: HAS_SERVER, _toCode: toCode, _fromCode: fromCode, touch, open, openProfile, logout, menuHTML, user: () => (sess() || {}).u || null };
+  window.Auth = { hasServer: HAS_SERVER, _toCode: toCode, _fromCode: fromCode, touch, open, openProfile, openOnboarding, openRestore: () => openBackup(ensureProfileDlg(), { returnToOnboarding: false }), logout, menuHTML, user: () => (sess() || {}).u || null };
 
   /* gerbang awal: tampil bila belum login dan belum memilih "tanpa akun" */
   if (HAS_SERVER && !sess() && !rd(GUEST)) {

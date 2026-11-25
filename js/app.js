@@ -54,7 +54,11 @@ const ICON = {
   trophy: 'M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0',
   calendar: 'M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5',
   sliders: 'M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75',
-  search: 'M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z'
+  search: 'M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z',
+  bookmark: 'M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z',
+  moon: 'M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z',
+  sun: 'M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z',
+  printer: 'M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z'
 };
 const icon = (n, cls = 'h-5 w-5') =>
   `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor" class="${cls}" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="${ICON[n] || ''}"/></svg>`;
@@ -73,6 +77,87 @@ const REVIEW_KEY = 'cpns_review_v1';
 let reviews = store.get(REVIEW_KEY, {});
 const HISTORY_KEY = 'cpns_exam_history_v1';
 let examHistory = store.get(HISTORY_KEY, []);
+const BOOKMARK_KEY = 'cpns_bookmarks_v1';
+let bookmarks = store.get(BOOKMARK_KEY, {});
+const WRONG_KEY = 'cpns_wrong_qids_v1';
+let wrongMap = store.get(WRONG_KEY, {});
+const WEAK_MATERI_KEY = 'cpns_weak_materi_v1';
+let weakMateri = store.get(WEAK_MATERI_KEY, {});
+const PLAN_ENDED_KEY = 'cpns_plan_ended_v1';
+let planEnded = store.get(PLAN_ENDED_KEY, null);
+const RK_READ_KEY = 'cpns_rk_read_v1';
+let rkRead = store.get(RK_READ_KEY, {});
+const THEME_KEY = 'cpns_theme_v1';
+let themeMode = localStorage.getItem(THEME_KEY) === 'dark' ? 'dark' : 'light';
+function applyTheme(mode) {
+  themeMode = mode === 'dark' ? 'dark' : 'light';
+  document.documentElement.classList.toggle('dark', themeMode === 'dark');
+  document.documentElement.setAttribute('data-theme', themeMode === 'dark' ? 'dark' : 'cpns');
+  try { localStorage.setItem(THEME_KEY, themeMode); } catch (e) { /* abaikan */ }
+}
+applyTheme(themeMode);
+const isBookmarked = q => !!(q && bookmarks[questions.resolve(q.id)]);
+function toggleBookmarkById(id, note = null) {
+  const q = planQIndex().get(questions.resolve(id));
+  const rid = questions.resolve(id);
+  if (bookmarks[rid] && note === null) { delete bookmarks[rid]; }
+  else {
+    bookmarks[rid] = {
+      id: rid,
+      sub: q?.sub || bookmarks[rid]?.sub || '',
+      bucket: bucketOfId[rid] || bookmarks[rid]?.bucket || '',
+      note: note !== null ? String(note).slice(0, 200) : (bookmarks[rid]?.note || ''),
+      at: Date.now()
+    };
+  }
+  store.set(BOOKMARK_KEY, bookmarks);
+  return !!bookmarks[rid];
+}
+const rkReadKey = (tId, title) => `${tId}::${String(title || '').slice(0, 80)}`;
+const isRkRead = (tId, title) => !!rkRead[rkReadKey(tId, title)];
+function toggleRkReadState(tId, title) {
+  const k = rkReadKey(tId, title);
+  if (rkRead[k]) delete rkRead[k]; else rkRead[k] = Date.now();
+  store.set(RK_READ_KEY, rkRead);
+  return !!rkRead[k];
+}
+function setRkReadState(tId, title, val) {
+  const k = rkReadKey(tId, title);
+  if (val) rkRead[k] = rkRead[k] || Date.now();
+  else delete rkRead[k];
+  store.set(RK_READ_KEY, rkRead);
+  return !!rkRead[k];
+}
+function rkFormatAgo(ts) {
+  if (!ts) return 'belum ditandai';
+  const now = new Date(), d = new Date(ts);
+  const startNow = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const startD = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const diffDays = Math.round((startNow - startD) / 86400000);
+  if (diffDays <= 0) {
+    const hm = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    return `hari ini (${hm})`;
+  }
+  if (diffDays === 1) return 'kemarin';
+  if (diffDays < 7) return `${diffDays} hari lalu`;
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function rkSavedSummary() {
+  const items = [];
+  const byGroup = { TWK: { read: 0, total: 0 }, TIU: { read: 0, total: 0 }, TKP: { read: 0, total: 0 }, SKB: { read: 0, total: 0 } };
+  MATERI.forEach(t => {
+    const grp = byGroup[t.group] ? t.group : 'SKB';
+    lessonSteps(t).forEach((st, idx) => {
+      const at = rkRead[rkReadKey(t.id, st.title)] || 0;
+      const read = !!at;
+      byGroup[grp].total++;
+      if (read) byGroup[grp].read++;
+      items.push({ tId: t.id, topic: t.title, group: grp, skbCategory: t.skbCategory || '', stepIdx: idx, stepTitle: st.title, at, read });
+    });
+  });
+  const saved = items.filter(x => x.read).sort((a, b) => b.at - a.at);
+  return { items, saved, totalAll: items.length, byGroup, last: saved[0] || null };
+}
 const SLOW_TIU_SECONDS = 90;
 const seenBefore = q => seen.has(questions.resolve(q.id)) || seenKeys.has(questions.key(q));
 function markSeen(q) {
@@ -171,7 +256,8 @@ const SKD_GROUPS = {
   SKD_TKP: { label: 'TKP', short: 'TKP', desc: 'Tes Karakteristik Pribadi: skor 1–5 pada tiap opsi.' }
 };
 const SKB_META = {
-  SKB_PRAKOM: { name: 'Pranata Komputer', short: 'Prakom', desc: 'Tata kelola TI & SPBE, jaringan, basis data (SQL), RPL/UML, keamanan, dan cloud.' },
+  SKB_PRAKOM: { name: 'Pranata Komputer', short: 'Prakom', desc: 'Tata kelola TI & SPBE/GovTech, UU PDP, OWASP, jaringan, SQL/Data Lakehouse, DevSecOps & cloud.' },
+  SKB_INGGRIS: { name: 'Bahasa Inggris Kementerian & TI', short: 'Inggris Kemen', desc: 'Grammar/Structure, Written Expression, Reading kebijakan digital & kosakata TI untuk SKB tambahan Kementerian.' },
   SKB_KESEHATAN: { name: 'Kesehatan', short: 'Kesehatan', desc: 'UU Kesehatan 17/2023, transformasi kesehatan, PPI, triase, KIA/imunisasi, keselamatan pasien.' },
   SKB_HUKUM: { name: 'Hukum, Pemerintahan & Kebijakan', short: 'Hukum', desc: 'UU ASN, kebijakan publik, pengadaan barang/jasa, hierarki peraturan, hukum administrasi.' },
   SKB_KEUANGAN: { name: 'Keuangan, Akuntansi & Pajak', short: 'Keuangan', desc: 'SAP akrual, keuangan & perbendaharaan negara, opini audit BPK, perpajakan.' },
@@ -198,10 +284,13 @@ function saveStudyTarget(role, bucket, name = targetPreference().name) {
   return next;
 }
 
+function skbTargetChoicesHTML(selectedBucket = targetPreference().bucket) {
+  return targetSkbKeys().map(key => `<option value="${esc(key)}"${key === selectedBucket ? ' selected' : ''}>${esc(skbMeta(key).name)} · ${bankLen(key)} soal</option>`).join('');
+}
+
 function targetEditorHTML() {
   const current = targetPreference();
-  const selected = key => key === current.bucket ? ' selected' : '';
-  const choices = targetSkbKeys().map(key => `<option value="${esc(key)}"${selected(key)}>${esc(skbMeta(key).name)} · ${bankLen(key)} soal</option>`).join('');
+  const choices = skbTargetChoicesHTML(current.bucket);
   const activePlan = planCfg?.cat ? ' Planning yang sudah dibuat bisa disesuaikan lewat Atur planning.' : '';
   return `<form class="pf-editor" onsubmit="return App.saveTarget(event)">
     <label class="mt-2 block text-xs font-bold" for="target-name">Nama tampilan</label>
@@ -312,34 +401,24 @@ function rkGlobalStats(grp) {
   return { topics, count: topics.length, parts };
 }
 function rkGlobalPanel(activeGroup) {
-  const keys = ['TWK', 'TIU', 'TKP'];
-  const focused = RK_GLOBAL_META[activeGroup] ? rkGlobalStats(activeGroup) : null;
-  const cta = focused
-    ? `<button type="button" class="lx-sum" onclick="App.rangkumanGlobal('${activeGroup}')" aria-label="Buka rangkuman global ${activeGroup}">${icon('book', 'h-4 w-4')} RANGKUMAN GLOBAL ${activeGroup}</button>`
-    : '';
-  const btns = keys.map(k => {
+  if (RK_GLOBAL_META[activeGroup]) {
+    const m = RK_GLOBAL_META[activeGroup], st = rkGlobalStats(activeGroup);
+    return `
+      <button type="button" class="rkg-bar-btn ${m.tone}" onclick="App.rangkumanGlobal('${activeGroup}')" aria-label="Buka rangkuman global ${activeGroup}">
+        <span class="rkg-bar-ic">${icon(m.icon, 'h-4 w-4')}</span>
+        <span class="rkg-bar-txt"><b>Rangkuman Global ${activeGroup}</b> · ${st.count} materi (${st.parts} bagian)</span>
+        <span class="rkg-bar-cta">Buka ${activeGroup} →</span>
+      </button>`;
+  }
+  const btns = ['TWK', 'TIU', 'TKP'].map(k => {
     const m = RK_GLOBAL_META[k], st = rkGlobalStats(k);
     return `
-      <button type="button" class="rkg-btn ${m.tone}${activeGroup === k ? ' on' : ''}" onclick="App.rangkumanGlobal('${k}')" aria-label="Buka rangkuman global ${k}">
-        <span class="rkg-ic">${icon(m.icon, 'h-5 w-5')}</span>
-        <span class="rkg-meta">
-          <span class="rkg-btn-t">Rangkuman Global ${k}</span>
-          <span class="rkg-btn-s">${st.count} materi · ${st.parts} bagian</span>
-        </span>
-        ${icon('arrowR', 'h-4 w-4 shrink-0 text-slate-400')}
+      <button type="button" class="rkg-mini-btn ${m.tone}" onclick="App.rangkumanGlobal('${k}')" aria-label="Buka rangkuman global ${k}">
+        ${icon(m.icon, 'h-3.5 w-3.5 shrink-0')}
+        <span><b>Global ${k}</b> (${st.count})</span>
       </button>`;
   }).join('');
-  return `
-    <section class="rkg-panel" aria-label="Rangkuman Global SKD">
-      <div class="rkg-panel-head">
-        <div>
-          <div class="rkg-panel-title">${icon('book', 'h-4 w-4 text-primary')} <span>Rangkuman Global (Semua Pecahan Jadi 1)</span></div>
-          <p class="rkg-panel-sub">Baca gabungan seluruh materi TWK, TIU, atau TKP lengkap dalam satu halaman.</p>
-        </div>
-        ${cta}
-      </div>
-      <div class="rkg-grid">${btns}</div>
-    </section>`;
+  return `<div class="rkg-compact-row" aria-label="Rangkuman Global SKD">${btns}</div>`;
 }
 
 function customQuestions(t) {
@@ -372,6 +451,176 @@ function materiForQuestion(q) {
   let t = MATERI.find(m => m.subs && m.subs.some(s => sub.includes(s.toLowerCase())) && (!m.buckets || !b || m.buckets.includes(b)));
   if (!t) t = MATERI.find(m => !m.subs && m.buckets && b && m.buckets.length === 1 && m.buckets[0] === b);
   return t || null;
+}
+function materiForQuestionBest(q, bucketHint = '') {
+  if (!q) return null;
+  const exact = materiForQuestion(q);
+  if (exact) return exact;
+  const b = bucketOfId[q.id] || bucketHint || '';
+  const cat = ['TWK', 'TIU', 'TKP'].includes(q.category) ? q.category : '';
+  const cands = MATERI.filter(m => {
+    if (cat) return m.group === cat;
+    if (b && b.startsWith('SKB_')) return m.group === 'SKB' && m.skbCategory === b.slice(4);
+    if (m.buckets && b) return m.buckets.includes(b);
+    return false;
+  });
+  if (!cands.length) return null;
+  const qToks = lxTokens((q.sub || '') + ' ' + (q.q || '').slice(0, 140));
+  let best = cands[0], bestScore = -1;
+  cands.forEach(m => {
+    const mToks = lxTokens(m.title + ' ' + (m.summary || '') + ' ' + (m.sections || []).map(s => s.title).join(' '));
+    let sc = 0;
+    qToks.forEach(w => { if (mToks.has(w)) sc++; });
+    if (m.buckets && b && m.buckets.includes(b)) sc += 0.5;
+    if (sc > bestScore) { bestScore = sc; best = m; }
+  });
+  return best;
+}
+function syncWeakMateriFromExam(r, curExam = exam) {
+  if (!curExam || !curExam.qs || !curExam.qs.length) return [];
+  const byMat = new Map();
+  curExam.qs.forEach((q, i) => {
+    const t = materiForQuestionBest(q, curExam.pack?.skbBucket || curExam.pack?.group || '');
+    if (!t) return;
+    const entry = byMat.get(t.id) || { t, n: 0, scoreSum: 0, maxSum: 0, wrongCount: 0, slowCount: 0, missSubs: new Set() };
+    const a = curExam.answers[i];
+    const sc = a === null ? 0 : (q.scores[a] || 0);
+    const slow = q.category === 'TIU' && (curExam.spent[i] || 0) > SLOW_TIU_SECONDS;
+    const miss = q.category === 'TKP' ? sc < 4 : sc < 5;
+    entry.n++;
+    entry.scoreSum += sc;
+    entry.maxSum += 5;
+    if (miss) { entry.wrongCount++; if (q.sub) entry.missSubs.add(q.sub); }
+    if (slow) { entry.slowCount++; if (q.sub) entry.missSubs.add(q.sub); }
+    byMat.set(t.id, entry);
+  });
+  const now = Date.now(), foundWeak = [];
+  let changed = false;
+  byMat.forEach(e => {
+    const pct = e.maxSum ? Math.round((e.scoreSum / e.maxSum) * 100) : 0;
+    if (pct < 80 || (e.slowCount > 0 && pct < 90)) {
+      const prev = weakMateri[e.t.id];
+      const subs = [...new Set([...e.missSubs, ...((prev && prev.subs) || [])])].slice(0, 6);
+      weakMateri[e.t.id] = {
+        id: e.t.id, title: e.t.title, group: e.t.group, skbCategory: e.t.skbCategory || '',
+        pct, wrongCount: e.wrongCount + e.slowCount, subs, at: now, source: curExam.pack?.title || 'Latihan / Try Out'
+      };
+      foundWeak.push({ t: e.t, pct, wrongCount: e.wrongCount, slowCount: e.slowCount, subs });
+      changed = true;
+    } else if (e.n >= 2 && pct >= 85 && e.wrongCount === 0 && e.slowCount === 0 && weakMateri[e.t.id]) {
+      delete weakMateri[e.t.id];
+      changed = true;
+    }
+  });
+  if (changed) store.set(WEAK_MATERI_KEY, weakMateri);
+  return foundWeak.sort((a, b) => a.pct - b.pct || b.wrongCount - a.wrongCount);
+}
+function weakMateriList(scope = 'ALL') {
+  const byId = new Map();
+  Object.values(weakMateri || {}).forEach(w => {
+    const t = MATERI.find(m => m.id === w.id);
+    if (!t) return;
+    byId.set(t.id, { t, id: t.id, title: t.title, group: t.group, skbCategory: t.skbCategory || '', pct: w.pct, wrongCount: w.wrongCount || 1, subs: w.subs || [], at: w.at || 0, source: w.source || 'Evaluasi sebelumnya' });
+  });
+  const idx = planQIndex();
+  reviewIssues('ALL').forEach(iss => {
+    const q = idx.get(questions.resolve(iss.id)) || { id: iss.id, sub: iss.sub, category: iss.bucket?.startsWith('SKD_') ? iss.bucket.slice(4) : '' };
+    const t = materiForQuestionBest(q, iss.bucket || '');
+    if (!t) return;
+    const prev = byId.get(t.id);
+    if (!prev) {
+      byId.set(t.id, {
+        t, id: t.id, title: t.title, group: t.group, skbCategory: t.skbCategory || '',
+        pct: iss.score ? Math.round((iss.score / 5) * 100) : 0, wrongCount: 1,
+        subs: iss.sub ? [iss.sub] : [], at: iss.at || 0, source: 'Riwayat tryout'
+      });
+    } else {
+      prev.wrongCount = Math.max(prev.wrongCount || 1, 1);
+      if (iss.sub && !prev.subs.includes(iss.sub) && prev.subs.length < 6) prev.subs.push(iss.sub);
+    }
+  });
+  let list = [...byId.values()];
+  if (scope === 'SKD') list = list.filter(x => x.group !== 'SKB');
+  else if (['TWK', 'TIU', 'TKP'].includes(scope)) list = list.filter(x => x.group === scope);
+  else if (scope && scope.startsWith('SKB_')) list = list.filter(x => x.group === 'SKB' && x.skbCategory === scope.slice(4));
+  return list.sort((a, b) => ((a.pct ?? 60) - (b.pct ?? 60)) || (b.wrongCount - a.wrongCount) || (b.at - a.at));
+}
+function weakMateriMap() {
+  const m = new Map();
+  weakMateriList('ALL').forEach(x => m.set(x.id, x));
+  return m;
+}
+function resolveWeakMateri(tId) {
+  if (weakMateri[tId]) {
+    delete weakMateri[tId];
+    store.set(WEAK_MATERI_KEY, weakMateri);
+  }
+  const idx = planQIndex();
+  let revChanged = false;
+  Object.entries(reviews).forEach(([bucket, rec]) => {
+    if (!rec || !Array.isArray(rec.issues)) return;
+    const keep = [];
+    const now = Date.now();
+    rec.issues.forEach(iss => {
+      const q = idx.get(questions.resolve(iss.id)) || { id: iss.id, sub: iss.sub, category: bucket.startsWith('SKD_') ? bucket.slice(4) : '' };
+      const t = materiForQuestionBest(q, bucket);
+      if (t && t.id === tId) {
+        rec.cleared = rec.cleared || {};
+        rec.cleared[reviewConcept(iss)] = now;
+        revChanged = true;
+      } else keep.push(iss);
+    });
+    if (keep.length !== rec.issues.length) rec.issues = keep;
+  });
+  if (revChanged) store.set(REVIEW_KEY, reviews);
+}
+function openKelemahanMateri(scope = 'ALL') {
+  const list = weakMateriList(scope);
+  const d = planDlg('dlg-weak-materi');
+  const rows = list.length ? list.map(w => {
+    const t = w.t;
+    const badge = t.group === 'SKB' ? `SKB ${t.skbCategory || ''}` : t.group;
+    const subTxt = w.subs && w.subs.length ? w.subs.slice(0, 3).map(esc).join(', ') : esc(t.summary || '');
+    return `
+      <div class="km-weak-item">
+        <div class="flex flex-wrap items-start justify-between gap-2">
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="materi-weak-badge">⚠ ${esc(badge)}${w.pct != null ? ` · ${w.pct}%` : ''}</span>
+              <span class="text-[0.68rem] font-semibold text-slate-500">${esc(w.source)}</span>
+            </div>
+            <div class="mt-1 text-sm font-extrabold text-slate-900">${esc(t.title)}</div>
+            ${subTxt ? `<p class="mt-0.5 text-xs text-slate-600 line-clamp-2">Fokus lemah: ${subTxt}</p>` : ''}
+          </div>
+          <button type="button" class="btn btn-ghost btn-xs text-slate-500" title="Tandai sudah dikuasai" onclick="App.clearWeakMateri('${esc(t.id)}')">✓ Kuasai</button>
+        </div>
+        <div class="mt-2.5 flex flex-wrap gap-1.5">
+          <button type="button" class="btn btn-warning btn-xs font-extrabold text-amber-950" onclick="$('#dlg-weak-materi').close(); App.rangkuman('${esc(t.id)}')">📖 Rangkuman Cepat</button>
+          <button type="button" class="btn btn-outline btn-xs" onclick="$('#dlg-weak-materi').close(); App.planStudy('${esc(t.id)}')">🎓 Belajar Materi</button>
+          <button type="button" class="btn btn-primary btn-xs" onclick="$('#dlg-weak-materi').close(); App.startMateriPractice('${esc(t.id)}')">⚡ Latih Soal</button>
+        </div>
+      </div>`;
+  }).join('') : '<div class="rkg-empty">Belum ada materi kelemahan tercatat. Selesaikan Tes Diagnostik atau Try Out agar kelemahanmu terpetakan otomatis!</div>';
+  d.innerHTML = `
+  <div class="modal-box max-w-2xl">
+    <div class="flex items-start justify-between gap-3">
+      <div>
+        <h3 class="text-lg font-extrabold text-neutral">⚠ Materi Kelemahan Anda Sebelumnya</h3>
+        <p class="mt-0.5 text-xs text-base-content/70">Pelajari cepat rangkuman atau kerjakan ulang soal pada materi yang masih lemah sebelum tenggat tes.</p>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm btn-circle" onclick="$('#dlg-weak-materi').close()" aria-label="Tutup">${icon('x', 'h-4 w-4')}</button>
+    </div>
+    <div class="mt-3 max-h-[55vh] space-y-2.5 overflow-y-auto pr-1">${rows}</div>
+    <div class="modal-action flex-wrap justify-between gap-2">
+      <div class="flex flex-wrap gap-2">
+        ${reviewIssues('ALL').length ? `<button type="button" class="btn btn-primary btn-sm" onclick="$('#dlg-weak-materi').close(); App.startWeakness('ALL')">⚡ Latih Campuran Kelemahan</button>` : ''}
+        <button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-weak-materi').close(); App.goWeakMateri()">Buka Kartu Materi Kuning</button>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="$('#dlg-weak-materi').close()">Tutup</button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
+  if (!d.open) d.showModal();
 }
 function materiLink(t, q) {
   const fallback = '#/materi/' + encodeURIComponent(t.id);
@@ -446,6 +695,7 @@ function navbar(active) {
     </a>
     <button type="button" class="mburger" onclick="App.toggleHMenu(event)" aria-label="Menu" aria-haspopup="true" aria-expanded="false" aria-controls="hmenu">${icon('menu', 'h-6 w-6')}</button>
     <div id="hmenu" class="hmenu" role="menu" hidden>
+      <button type="button" role="menuitem" onclick="App.hmenu('theme')">${icon(themeMode === 'dark' ? 'sun' : 'moon', 'h-5 w-5')}<span>${themeMode === 'dark' ? 'Mode Terang' : 'Mode Gelap'}</span></button>
       <button type="button" role="menuitem" onclick="App.hmenu('notif')">${icon('bell', 'h-5 w-5')}<span>Pengingat belajar</span></button>
       ${au ? `<button type="button" role="menuitem" onclick="App.hmenu('profile')">${icon('user', 'h-5 w-5')}<span>${srv && !usr ? 'Profil / Masuk' : 'Profil'}</span>${srv ? `<i class="hmenu-dot ${usr ? 'on' : ''}" aria-hidden="true"></i>` : ''}</button>` : ''}
     </div>
@@ -460,6 +710,7 @@ function navbar(active) {
       </div>
       <div class="navbar-center flex"><ul class="menu menu-horizontal gap-1 px-1">${li}</ul></div>
       <div class="navbar-end gap-1">
+        <button id="btn-theme" type="button" class="btn btn-ghost btn-sm btn-square rounded-xl text-slate-700 hover:bg-slate-100" onclick="App.toggleTheme()" aria-label="Ganti mode tampilan" title="${themeMode === 'dark' ? 'Mode Terang' : 'Mode Gelap'}">${icon(themeMode === 'dark' ? 'sun' : 'moon', 'h-5 w-5')}</button>
         ${window.Auth ? `<button class="btn btn-ghost btn-sm gap-2 rounded-xl text-slate-700 hover:bg-slate-100" onclick="Auth.openProfile()" aria-label="Profil dan akun">${icon('user', 'h-4 w-4')}<span class="font-semibold">${window.Auth.user() ? esc(window.Auth.user()) : (window.Auth.hasServer ? 'Masuk' : 'Profil')}</span></button>` : ''}
         <button class="btn btn-ghost btn-sm gap-2 text-slate-700 hover:bg-slate-100 rounded-xl" onclick="CPNSNotif.open()" aria-label="Pengingat belajar">${icon('bell', 'h-5 w-5')}<span class="hidden lg:inline">Pengingat</span></button>
       </div>
@@ -494,6 +745,30 @@ function pageHead(title, sub, extra = '') {
 }
 
 /* ---------- BERANDA ---------- */
+function homeHafalanCard() {
+  const sum = rkSavedSummary();
+  const n = sum.saved.length;
+  const g = sum.byGroup;
+  const lastHtml = sum.last
+    ? `<b>Terakhir ditandai ${esc(rkFormatAgo(sum.last.at))}:</b> <span class="font-bold">[${esc(sum.last.group)}]</span> ${esc(sum.last.topic)} → "${esc(sum.last.stepTitle)}"`
+    : 'Belum ada materi yang ditandai hafal. Tandai sub-bab yang sudah dikuasai agar besok langsung ingat hafalan kemarin.';
+  return `
+    <section id="home-hafalan" class="rk-home-box" aria-label="Catatan Tandai Hafal">
+      <div class="rk-home-top">
+        <div class="rk-home-title"><span>✓</span> <span>Tandai Hafal &amp; Ingat Hafalan Kemarin</span></div>
+        <span class="rk-home-badge">${n}/${sum.totalAll} hafal</span>
+      </div>
+      <div class="rk-home-last">${lastHtml}</div>
+      <div class="rk-home-meta">TWK ${g.TWK.read}/${g.TWK.total} · TIU ${g.TIU.read}/${g.TIU.total} · TKP ${g.TKP.read}/${g.TKP.total}${g.SKB.total ? ` · SKB ${g.SKB.read}/${g.SKB.total}` : ''}</div>
+      <button type="button" class="rk-home-btn" onclick="App.openHafalan()">📌 Lihat &amp; Tandai Hafalan (${n})</button>
+      <div class="rk-home-ggrid" aria-label="Buka Rangkuman Global TWK TIU TKP">
+        <button type="button" class="rk-home-gbtn" onclick="App.rangkumanGlobal('TWK')">Global TWK (${g.TWK.read}/${g.TWK.total})</button>
+        <button type="button" class="rk-home-gbtn" onclick="App.rangkumanGlobal('TIU')">Global TIU (${g.TIU.read}/${g.TIU.total})</button>
+        <button type="button" class="rk-home-gbtn" onclick="App.rangkumanGlobal('TKP')">Global TKP (${g.TKP.read}/${g.TKP.total})</button>
+      </div>
+    </section>`;
+}
+
 function renderHome() {
   const h = new Date().getHours();
   const sapa = h < 4 ? 'Selamat malam' : h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam';
@@ -602,15 +877,32 @@ function renderHome() {
   shell('', `
     <div class="home-wrap mx-auto w-full max-w-xl pb-2 pt-1 sm:pt-8">
       <header class="mb-4 px-0.5">
-        <h1 class="text-2xl font-extrabold leading-tight tracking-tight text-neutral">${sapa}!</h1>
-        <p class="mt-0.5 text-sm text-slate-600"><a href="#/planning" class="link link-primary font-bold">Planning 7 hari</a> · Target SKD 500+${preferred.bucket ? ` dan SKB ${esc(skbMeta(preferred.bucket).short)} 90%` : ''}</p>
+        <h1 class="text-2xl font-extrabold leading-tight tracking-tight text-neutral">${sapa}${preferred.name ? `, ${esc(preferred.name)}` : ''}!</h1>
+        <p class="mt-0.5 text-sm text-slate-600"><a href="#/planning" class="link link-primary font-bold">Planning ${planCfg ? planCfg.days : 7} hari</a> · Target SKD 500+${preferred.bucket ? ` dan SKB ${esc(skbMeta(preferred.bucket).short)} 90%` : ''}</p>
         <p class="mt-1 text-xs"><a href="#/materi/rencana-7-hari" class="link link-primary">Panduan 7 hari dan rumus cepat TIU</a></p>
       </header>
       <div class="home-grid">
       <div class="home-col home-col-left">
       ${resume}
       ${cont}
-      ${reviewIssues('ALL').length ? `<button type="button" class="lx-btn lx-blue mb-4" onclick="App.openReview()">${icon('bolt')} Latihan dari hasil tryout</button>` : ''}
+      ${(() => {
+        const weakHome = weakMateriList('ALL'), revN = reviewIssues('ALL').length;
+        if (!weakHome.length && !revN) return '';
+        const endedNote = !planCfg && planEnded ? `Dari akhir planning ${planEnded.days || ''} hari sebelumnya — kebut sebelum tes:` : 'Materi yang masih lemah dari hasil tesmu — klik untuk belajar kilat sebelum ujian:';
+        const topPills = weakHome.slice(0, 3).map(w => `<span class="materi-weak-badge">${esc(w.group)}: ${esc(w.title)}${w.pct != null ? ` (${w.pct}%)` : ''}</span>`).join('');
+        return `<div class="km-weak-home mb-4">
+          <div class="flex items-start justify-between gap-2">
+            <div><div class="text-xs font-extrabold uppercase tracking-wide text-amber-900">⚠ Kelemahan Anda Sebelumnya (${weakHome.length || revN} materi)</div>
+            <p class="mt-0.5 text-xs text-slate-700">${endedNote}</p></div>
+            <span class="materi-weak-badge">${weakHome.length || revN}</span>
+          </div>
+          ${topPills ? `<div class="mt-2 flex flex-wrap gap-1.5">${topPills}</div>` : ''}
+          <div class="mt-2.5 flex flex-wrap gap-2">
+            <button type="button" class="btn btn-warning btn-sm font-extrabold" onclick="App.openKelemahanMateri()">📖 Lihat Kelemahan (${weakHome.length || revN})</button>
+            ${revN ? `<button type="button" class="btn btn-outline btn-sm" onclick="App.openReview()">⚡ Latih Soal Kelemahan</button>` : ''}
+          </div>
+        </div>`;
+      })()}
       ${stats}
       </div>
       <section class="home-col home-col-right" aria-label="Pilih jalur belajar">
@@ -620,8 +912,21 @@ function renderHome() {
           ${go3('#/skd', 'bg-sky-500', 'clipboard', 'SKD', 'Latihan soal TWK, TIU, dan TKP, atau tryout lengkap.', `${fmtNum(skdTot)} soal · ${packsFor('SKD_FULL').length} tryout`)}
           ${go3('#/skb', 'bg-indigo-500', 'briefcase', 'SKB', 'Latihan soal sesuai bidang formasi yang kamu pilih.', `${fmtNum(skbKeys().reduce((a, k) => a + bankLen(k), 0))} soal · ${skbKeys().length} bidang`)}
         </div>
+        <div class="km-home-tools mt-3">
+          ${(() => {
+            const prepLabel = preferred.bucket ? ` (${esc(skbMeta(preferred.bucket).short)})` : (preferred.role ? ` (${esc(preferred.role)})` : '');
+            const setLink = !preferred.bucket ? ' <button type="button" class="link link-primary text-[0.7rem] font-bold ml-1" onclick="App.openOnboarding()">Pilih bidang SKB →</button>' : '';
+            return `<div class="km-home-tools-h">Persiapan Khusus CPNS Kementerian${prepLabel}${setLink}</div>`;
+          })()}
+          <div class="km-home-grid">
+            <button type="button" class="km-tool-btn" onclick="App.openNonCat('wawancara')"><span>🎙️</span><b>Lab Non-CAT</b><small>Wawancara, Pauli, Praktik</small></button>
+            <button type="button" class="km-tool-btn" onclick="App.openCalc()"><span>📊</span><b>Kalkulator 40:60</b><small>Simulasi skor &amp; peringkat</small></button>
+            <button type="button" class="km-tool-btn" onclick="App.openVault()"><span>🔖</span><b>Soal Salah &amp; Simpan</b><small>${Object.keys(wrongMap).length} salah · ${Object.keys(bookmarks).length} bookmark</small></button>
+          </div>
+        </div>
       </section>
       </div>
+      ${homeHafalanCard()}
     </div>
   `);
   initHomeCarousel();
@@ -727,7 +1032,7 @@ function renderSkd() {
 /* ---------- SKB ---------- */
 function renderSkb(key) {
   if (!key || !BANK[key]) {
-    const icons = { SKB_PRAKOM: 'db', SKB_KESEHATAN: 'check', SKB_HUKUM: 'clipboard', SKB_KEUANGAN: 'trophy', SKB_PENDIDIKAN: 'book' };
+    const icons = { SKB_PRAKOM: 'db', SKB_INGGRIS: 'book', SKB_KESEHATAN: 'check', SKB_HUKUM: 'clipboard', SKB_KEUANGAN: 'trophy', SKB_PENDIDIKAN: 'book' };
     const preferred = targetPreference().bucket;
     const cards = skbKeys().sort((a, b) => Number(b === preferred) - Number(a === preferred)).map(k => {
       const m = skbMeta(k), n = bankLen(k), ps = packsFor(k), np = ps.length;
@@ -749,6 +1054,17 @@ function renderSkb(key) {
     shell('skb', `
       ${breadcrumb([['#/', 'Beranda'], [null, 'SKB']])}
       ${pageHead('Seleksi Kompetensi Bidang (SKB)', 'Pilih bidang formasimu, lalu pilih paket latihan di dalamnya.')}
+      <div class="rkg-panel mb-4">
+        <div class="rkg-panel-head">
+          <div><div class="rkg-panel-title">🏛️ Pusat Persiapan SKB Kementerian (Prakom &amp; Non-CAT)</div>
+          <p class="rkg-panel-sub">Selain SKB CAT BKN, hampir semua kementerian menguji Wawancara, Psikotes/Kraepelin, Bahasa Inggris, &amp; Praktik Kerja.</p></div>
+        </div>
+        <div class="rkg-grid">
+          <button type="button" class="rkg-btn twk on" onclick="App.openNonCat('wawancara')"><span class="rkg-ic">🎙️</span><span class="rkg-meta"><span class="rkg-btn-t">Wawancara &amp; Praktik STAR</span><span class="rkg-btn-s">8 skenario + 4 studi kasus Prakom</span></span></button>
+          <button type="button" class="rkg-btn tiu" onclick="App.openNonCat('pauli')"><span class="rkg-ic">⚡</span><span class="rkg-meta"><span class="rkg-btn-t">Tes Konsentrasi Kraepelin</span><span class="rkg-btn-s">Simulasi kecepatan &amp; akurasi berhitung</span></span></button>
+          <button type="button" class="rkg-btn tkp" onclick="App.openCalc()"><span class="rkg-ic">📊</span><span class="rkg-meta"><span class="rkg-btn-t">Kalkulator 40% SKD + 60% SKB</span><span class="rkg-btn-s">Hitung nilai akhir &amp; kejar pesaing</span></span></button>
+        </div>
+      </div>
       ${cards ? `<div class="grid grid-cols-[minmax(0,1fr)] gap-3.5 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>`
         : `<div class="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-600">Bank soal SKB belum tersedia.</div>`}`);
     return;
@@ -785,21 +1101,31 @@ function renderMateri(id) {
 
   const isSkd = ui.materiTab !== 'SKB';
 
+  const weakMap = weakMateriMap();
+  const skdAll = MATERI.filter(t => t.group !== 'SKB');
+  const skbAll = MATERI.filter(t => t.group === 'SKB');
+  const weakSkdN = skdAll.filter(t => weakMap.has(t.id)).length;
+  const weakSkbN = skbAll.filter(t => weakMap.has(t.id)).length;
+
   const skdChipsData = [
     { id: 'ALL', name: 'Semua SKD' },
     { id: 'TWK', name: 'TWK (Wawasan Kebangsaan)' },
     { id: 'TIU', name: 'TIU (Intelegensia Umum)' },
     { id: 'TKP', name: 'TKP (Karakteristik Pribadi)' }
-  ];
+  ].concat(weakSkdN ? [{ id: 'WEAK', name: `⚠ Kelemahan (${weakSkdN})` }] : []);
 
   const skbChipsData = [
     { id: 'ALL', name: 'Semua Bidang SKB' },
     { id: 'PRAKOM', name: 'Pranata Komputer' },
+    { id: 'INGGRIS', name: 'Bahasa Inggris Kemen' },
     { id: 'KESEHATAN', name: 'Tenaga Kesehatan' },
     { id: 'HUKUM', name: 'Hukum & Kebijakan' },
     { id: 'KEUANGAN', name: 'Keuangan & Pajak' },
     { id: 'PENDIDIKAN', name: 'Pendidikan & Guru' }
-  ];
+  ].concat(weakSkbN ? [{ id: 'WEAK', name: `⚠ Kelemahan (${weakSkbN})` }] : []);
+
+  if (isSkd && ui.materiGroup === 'WEAK' && !weakSkdN) ui.materiGroup = 'ALL';
+  if (!isSkd && ui.materiSkbGroup === 'WEAK' && !weakSkbN) ui.materiSkbGroup = 'ALL';
 
   const chipCls = on => `shrink-0 snap-start whitespace-nowrap rounded-full border-2 border-b-4 px-4 py-2 text-xs font-extrabold transition active:translate-y-[2px] active:border-b-2 ${on ? 'border-primary bg-sky-50 text-primary' : 'border-slate-200 bg-white text-slate-600'}`;
   const chips = isSkd
@@ -808,12 +1134,16 @@ function renderMateri(id) {
 
   let list = [];
   if (isSkd) {
-    list = MATERI.filter(t => t.group !== 'SKB' && (ui.materiGroup === 'ALL' || t.group === ui.materiGroup));
+    list = ui.materiGroup === 'WEAK'
+      ? skdAll.filter(t => weakMap.has(t.id))
+      : skdAll.filter(t => ui.materiGroup === 'ALL' || t.group === ui.materiGroup);
   } else {
-    list = MATERI.filter(t => t.group === 'SKB' && (ui.materiSkbGroup === 'ALL' || t.skbCategory === ui.materiSkbGroup || (!t.skbCategory && ui.materiSkbGroup === 'ALL')));
+    list = ui.materiSkbGroup === 'WEAK'
+      ? skbAll.filter(t => weakMap.has(t.id))
+      : skbAll.filter(t => ui.materiSkbGroup === 'ALL' || t.skbCategory === ui.materiSkbGroup || (!t.skbCategory && ui.materiSkbGroup === 'ALL'));
   }
 
-  const skbIcons = { PRAKOM: 'db', KESEHATAN: 'check', HUKUM: 'clipboard', KEUANGAN: 'trophy', PENDIDIKAN: 'book' };
+  const skbIcons = { PRAKOM: 'db', INGGRIS: 'book', KESEHATAN: 'check', HUKUM: 'clipboard', KEUANGAN: 'trophy', PENDIDIKAN: 'book' };
   const groupIcons = { TWK: 'flag', TIU: 'puzzle', TKP: 'bulb' };
   let nDone = 0;
   const cards = list.map(t => {
@@ -821,15 +1151,17 @@ function renderMateri(id) {
     const n = materiPool(t).length;
     const pr = lessonProgress(t);
     const fin = pr.total > 0 && pr.pct === 100;
+    const wInfo = weakMap.get(t.id);
     if (fin) nDone++;
     const badgeLabel = t.group === 'SKB' ? (t.skbCategory ? `SKB ${t.skbCategory}` : 'SKB') : t.group;
     const ic = t.group === 'SKB' ? (skbIcons[t.skbCategory] || 'briefcase') : (groupIcons[t.group] || 'book');
     return `
-    <a href="#/materi/${t.id}" class="flex min-w-0 items-center gap-3.5 rounded-3xl border-2 border-b-4 p-3.5 transition active:translate-y-[2px] active:border-b-2 sm:hover:border-primary/40 ${fin ? 'border-green-300 bg-green-50/60' : 'border-slate-200 bg-white'}">
-      <span class="relative grid h-14 w-14 shrink-0 place-items-center rounded-2xl text-white ${st.bar}">${icon(ic, 'h-7 w-7')}${fin ? `<span class="absolute -right-1.5 -top-1.5 grid h-6 w-6 place-items-center rounded-full bg-green-500 ring-2 ring-white">${icon('tick', 'h-3.5 w-3.5')}</span>` : ''}</span>
+    <a href="#/materi/${t.id}" class="flex min-w-0 items-center gap-3.5 rounded-3xl border-2 border-b-4 p-3.5 transition active:translate-y-[2px] active:border-b-2 sm:hover:border-primary/40 ${wInfo ? 'materi-card-weak' : fin ? 'border-green-300 bg-green-50/60' : 'border-slate-200 bg-white'}">
+      <span class="relative grid h-14 w-14 shrink-0 place-items-center rounded-2xl text-white ${wInfo ? 'bg-amber-500' : st.bar}">${icon(ic, 'h-7 w-7')}${fin && !wInfo ? `<span class="absolute -right-1.5 -top-1.5 grid h-6 w-6 place-items-center rounded-full bg-green-500 ring-2 ring-white">${icon('tick', 'h-3.5 w-3.5')}</span>` : ''}</span>
       <span class="min-w-0 flex-1">
         <span class="flex flex-wrap items-center gap-1.5">
           <span class="rounded-full px-2 py-0.5 text-[0.65rem] font-extrabold ${st.badge}">${badgeLabel}</span>
+          ${wInfo ? `<span class="materi-weak-badge">⚠ Kelemahan${wInfo.pct != null ? ` · ${wInfo.pct}%` : ''}</span>` : ''}
           ${fin ? `<span class="inline-flex items-center gap-1 rounded-full bg-green-500 px-2 py-0.5 text-[0.65rem] font-extrabold text-white">${icon('tick', 'h-3 w-3')} Selesai</span>` : ''}
         </span>
         <span class="mt-1 block text-[0.95rem] font-extrabold leading-snug text-slate-900">${esc(t.title)}</span>
@@ -1289,7 +1621,9 @@ function rkQuestion(q, n) {
   const opts = (q.options || []).map((o, k) => `<li class="rk-opt${k === q.ans ? ' ok' : ''}"><span class="rk-k">${LETTERS[k]}</span><span class="rk-t">${escO(o)}</span>${k === q.ans ? '<b class="rk-tick">✓</b>' : ''}</li>`).join('');
   const why = q.explanation ? `<div class="rk-why"><b>Cara mengerjakan:</b> ${esc(q.explanation)}</div>` : '';
   const trick = q.trick && !String(q.explanation || '').includes(q.trick) ? `<div class="rk-why"><b>Trik:</b> ${esc(q.trick)}</div>` : '';
-  return `<div class="rk-q"><div class="rk-qn">Contoh soal ${n}</div><div class="rk-qt">${escQ(q)}</div>${q.svg ? `<div class="q-svg my-2 overflow-auto rounded-xl bg-base-200/60 p-2">${q.svg}</div>` : ''}<ul class="rk-opts">${opts}</ul>${why}${trick}</div>`;
+  const saved = isBookmarked(q);
+  const bmBtn = q.id ? `<button type="button" class="rk-bm-btn${saved ? ' on' : ''}" data-bm="${esc(q.id)}" onclick="App.toggleBookmark('${esc(q.id)}', this)">${saved ? '★ Tersimpan' : '☆ Tandai sulit'}</button>` : '';
+  return `<div class="rk-q"><div class="flex items-center justify-between gap-2"><div class="rk-qn">Contoh soal ${n}</div>${bmBtn}</div><div class="rk-qt">${escQ(q)}</div>${q.svg ? `<div class="q-svg my-2 overflow-auto rounded-xl bg-base-200/60 p-2">${q.svg}</div>` : ''}<ul class="rk-opts">${opts}</ul>${why}${trick}</div>`;
 }
 function rkBody(t, reserved = new Set(reservedFinalKeys())) {
   const steps = lessonSteps(t), plan = lessonPlan(t), d = lessonDone(t);
@@ -1299,7 +1633,10 @@ function rkBody(t, reserved = new Set(reservedFinalKeys())) {
       : `<div class="materi-body">${wrapTables(st.html)}</div>`;
     const qs = (plan[i] || []).filter(q => q && q.options && q.options.length && !reserved.has(questions.key(q)));
     const ex = qs.length ? `<div class="rk-ex"><div class="rk-ex-h">Contoh soal & cara mengerjakannya</div>${qs.map((q, n) => rkQuestion(q, n + 1)).join('')}</div>` : '';
-    return `<details class="rk-item"${steps.length === 1 ? ' open' : ''}><summary><span class="rk-num${d[i] ? ' done' : ''}">${d[i] ? '✓' : i + 1}</span><span class="rk-sum-t">${esc(st.title)}</span><span class="rk-chev" aria-hidden="true">▾</span></summary><div class="rk-in">${content}${ex}</div></details>`;
+    const readOn = isRkRead(t.id, st.title);
+    const sumReadBtn = `<button type="button" class="rk-sum-read${readOn ? ' on' : ''}" aria-pressed="${readOn ? 'true' : 'false'}" title="Tandai sub-bab ini sudah hafal / dikuasai" onclick="event.preventDefault();event.stopPropagation();App.rangkumanToggleRead(this)">${readOn ? '✓ Hafal' : 'Tandai hafal'}</button>`;
+    const readBtn = `<div class="rk-read-row"><button type="button" class="rk-read-btn${readOn ? ' on' : ''}" aria-pressed="${readOn ? 'true' : 'false'}" onclick="App.rangkumanToggleRead(this)">${readOn ? '✓ Sudah hafal / dibaca' : 'Tandai sudah hafal'}</button></div>`;
+    return `<details class="rk-item"${steps.length === 1 ? ' open' : ''} data-rk-id="${esc(t.id)}" data-rk-title="${esc(st.title)}" data-read="${readOn ? '1' : '0'}"><summary><span class="rk-num${d[i] ? ' done' : ''}">${d[i] ? '✓' : i + 1}</span><span class="rk-sum-t">${esc(st.title)}</span>${sumReadBtn}<span class="rk-chev" aria-hidden="true">▾</span></summary><div class="rk-in">${content}${ex}${readBtn}</div></details>`;
   }).join('');
   return items;
 }
@@ -1322,6 +1659,7 @@ function rkOpen(id, chapter) {
   rk = { mode: 'topic', t };
   const el = rkEnsureOverlay();
   const n = lessonSteps(t).length;
+  const readN = lessonSteps(t).filter(st => isRkRead(t.id, st.title)).length;
   const globalCta = RK_GLOBAL_META[t.group]
     ? (() => {
         const st = rkGlobalStats(t.group);
@@ -1332,9 +1670,9 @@ function rkOpen(id, chapter) {
     <div class="lx-top"><button type="button" class="lx-x" onclick="App.rangkumanClose()" aria-label="Tutup rangkuman">${icon('x', 'h-6 w-6')}</button>
       <div class="rk-head"><div class="rk-kicker">RANGKUMAN</div><div class="rk-title">${esc(t.title)}</div></div></div>
     <div class="lx-body" id="rk-scroll"><div class="lx-wrap">
-      <p class="rk-intro">Semua materi, rumus, studi kasus, dan contoh soal beserta cara mengerjakannya ada di sini. Ketuk judul untuk membuka. ${n} bagian.</p>
+      <p class="rk-intro">Semua materi, rumus, studi kasus, dan contoh soal beserta cara mengerjakannya ada di sini. Ketuk judul untuk membuka atau klik <b>Tandai hafal</b> di kanan judul (<b id="rk-read-counter">${readN}/${n}</b> bagian ditandai hafal).</p>
       ${globalCta}
-      <div class="rk-tools"><button type="button" class="rk-tool" onclick="App.rangkumanToggle(true)">Buka semua</button><button type="button" class="rk-tool" onclick="App.rangkumanToggle(false)">Tutup semua</button></div>
+      <div class="rk-tools"><button type="button" class="rk-tool" onclick="App.rangkumanToggle(true)">Buka semua</button><button type="button" class="rk-tool" onclick="App.rangkumanToggle(false)">Tutup semua</button><button type="button" class="rk-tool" id="rk-read-btn" aria-pressed="false" onclick="App.rangkumanToggleReadOnly(this)">✓ Sudah hafal (<span id="rk-read-pill-n">${readN}</span>)</button><button type="button" class="rk-tool" id="rk-unread-btn" aria-pressed="false" onclick="App.rangkumanToggleUnread(this)">Belum hafal saja</button><button type="button" class="rk-tool" onclick="App.rangkumanPrint()">🖨️ Cetak / PDF</button></div>
       ${rkBody(t)}
       <button type="button" class="lx-btn lx-ghost mt-4" onclick="App.rangkumanClose()">Tutup rangkuman</button>
     </div></div>`;
@@ -1352,23 +1690,27 @@ function rkOpenGlobal(group = 'TWK') {
   rk = { mode: 'global', group: grp };
   const el = rkEnsureOverlay();
   const reserved = new Set(reservedFinalKeys());
-  let totalParts = 0, doneParts = 0;
+  let totalParts = 0, doneParts = 0, readParts = 0;
   const chapters = topics.map((t, ti) => {
     const steps = lessonSteps(t);
     const pr = lessonProgress(t);
+    const chapRead = steps.filter(st => isRkRead(t.id, st.title)).length;
+    const chapAll = chapRead === steps.length && steps.length > 0;
     totalParts += steps.length;
     doneParts += pr.done;
+    readParts += chapRead;
     return `
       <section id="rk-chap-${t.id}" class="rkg-chap">
         <div class="rkg-chap-head ${meta.tone}">
           <div class="rkg-chap-meta">
             <span>Topik ${ti + 1} dari ${topics.length}</span>
-            <span>${pr.done}/${steps.length} langkah selesai · ${steps.length} bagian</span>
+            <span>${pr.done}/${steps.length} langkah · <span class="rkg-chap-readstat" data-chap-read="${t.id}">✓ ${chapRead}/${steps.length} hafal</span></span>
           </div>
           <h2 class="rkg-chap-title">${ti + 1}. ${esc(t.title)}</h2>
           <p class="rkg-chap-sum">${esc(t.summary)}</p>
           <div class="rkg-chap-acts">
             <button type="button" class="rkg-chap-btn" onclick="App.rangkumanToggleChap('rk-chap-${t.id}')">Buka / tutup bab ini</button>
+            <button type="button" class="rkg-chap-btn rkg-chap-read${chapAll ? ' on' : ''}" data-chap-btn="${t.id}" onclick="App.rangkumanToggleChapRead('${t.id}')">${chapAll ? '✓ Bab sudah hafal' : '✓ Tandai bab ini hafal'}</button>
             <button type="button" class="rkg-chap-btn rkg-chap-link" onclick="App.rangkumanGoTopic('${t.id}')">Buka jalur belajar →</button>
           </div>
         </div>
@@ -1376,10 +1718,11 @@ function rkOpenGlobal(group = 'TWK') {
       </section>`;
   }).join('');
 
+  const allSavedN = rkSavedSummary().saved.length;
   const tabs = ['TWK', 'TIU', 'TKP'].map(k => {
     const m = RK_GLOBAL_META[k], st = rkGlobalStats(k);
     return `<button type="button" class="rkg-pill ${m.tone}${k === grp ? ' on' : ''}" onclick="App.rangkumanGlobal('${k}')">${icon(m.icon, 'h-3.5 w-3.5')} ${k} (${st.count})</button>`;
-  }).join('');
+  }).join('') + `<button type="button" class="rkg-pill hafal" onclick="App.openHafalan('saved', '${grp}')">✓ Hafalan Saya (<span id="rk-hafalan-tab-n">${allSavedN}</span>)</button>`;
 
   const toc = topics.map((t, ti) =>
     `<button type="button" class="rkg-toc-chip" onclick="App.rangkumanJump('rk-chap-${t.id}')">${ti + 1}. ${esc(t.title)}</button>`
@@ -1390,18 +1733,113 @@ function rkOpenGlobal(group = 'TWK') {
       <div class="rk-head"><div class="rk-kicker">RANGKUMAN GLOBAL SKD</div><div class="rk-title">${esc(meta.title)} · ${topics.length} Topik (${totalParts} Bagian)</div></div></div>
     <div class="lx-body" id="rk-scroll"><div class="lx-wrap">
       <div class="rkg-tabs" role="tablist" aria-label="Pilih Rangkuman Global">${tabs}</div>
-      <p class="rk-intro">${esc(meta.desc)} Progres saat ini: <b>${doneParts}/${totalParts}</b> langkah selesai.</p>
+      <p class="rk-intro">${esc(meta.desc)} Klik <b>Tandai hafal</b> di kanan tiap judul sub-bab atau <b>✓ Tandai bab ini hafal</b>. Progres: <b id="rk-read-counter">${readParts}/${totalParts}</b> bagian ditandai hafal · <b>${doneParts}/${totalParts}</b> langkah kuis selesai.</p>
       <div class="rkg-search-wrap">
         <span class="rkg-search-ic">${icon('search', 'h-4 w-4')}</span>
         <input id="rk-search" type="search" class="rkg-search" placeholder="Cari sub-bab, rumus, UU, atau kata kunci di semua ${grp}..." oninput="App.rangkumanFilter(this.value)" aria-label="Cari di rangkuman global ${grp}">
         <div id="rk-search-stat" class="rkg-search-stat">Menampilkan semua ${totalParts} bagian dari ${topics.length} topik.</div>
       </div>
       <div class="rkg-toc" aria-label="Daftar isi topik ${grp}">${toc}</div>
-      <div class="rk-tools"><button type="button" class="rk-tool" onclick="App.rangkumanToggle(true)">Buka semua</button><button type="button" class="rk-tool" onclick="App.rangkumanToggle(false)">Tutup semua</button></div>
+      <div class="rk-tools"><button type="button" class="rk-tool" onclick="App.rangkumanToggle(true)">Buka semua</button><button type="button" class="rk-tool" onclick="App.rangkumanToggle(false)">Tutup semua</button><button type="button" class="rk-tool" id="rk-read-btn" aria-pressed="false" onclick="App.rangkumanToggleReadOnly(this)">✓ Sudah hafal (<span id="rk-read-pill-n">${readParts}</span>)</button><button type="button" class="rk-tool" id="rk-unread-btn" aria-pressed="false" onclick="App.rangkumanToggleUnread(this)">Belum hafal saja</button><button type="button" class="rk-tool" onclick="App.rangkumanPrint()">🖨️ Cetak / PDF</button></div>
       <div id="rk-chapters">${chapters}</div>
       <div id="rk-empty" class="rkg-empty" hidden>Tidak ada materi atau sub-bab yang cocok dengan kata kunci tersebut.</div>
       <button type="button" class="lx-btn lx-ghost mt-4" onclick="App.rangkumanClose()">Tutup rangkuman</button>
     </div></div>`;
+  const b = $('#rk-scroll'); if (b) b.scrollTop = 0;
+}
+function rkRenderHafalanBody() {
+  if (!rk || rk.mode !== 'hafalan') return;
+  const sum = rkSavedSummary();
+  const g = sum.byGroup;
+  const statusTabs = [
+    ['saved', `✓ Sudah Hafal (${sum.saved.length})`],
+    ['unread', `Belum Hafal (${sum.totalAll - sum.saved.length})`],
+    ['all', `Semua (${sum.totalAll})`]
+  ].map(([id, lbl]) => `<button type="button" class="rkg-pill${rk.status === id ? ' on twk' : ''}" onclick="App.rangkumanHafalanSet('status', '${id}')">${lbl}</button>`).join('');
+
+  const grpTabs = [
+    ['ALL', `Semua (${sum.totalAll})`],
+    ['TWK', `TWK (${g.TWK.read}/${g.TWK.total})`],
+    ['TIU', `TIU (${g.TIU.read}/${g.TIU.total})`],
+    ['TKP', `TKP (${g.TKP.read}/${g.TKP.total})`]
+  ].concat(g.SKB.total ? [['SKB', `SKB (${g.SKB.read}/${g.SKB.total})`]] : [])
+    .map(([id, lbl]) => {
+      const tone = id === 'TWK' || id === 'TIU' || id === 'TKP' ? id.toLowerCase() : 'twk';
+      return `<button type="button" class="rkg-pill ${tone}${rk.group === id ? ' on' : ''}" onclick="App.rangkumanHafalanSet('group', '${id}')">${lbl}</button>`;
+    }).join('');
+
+  const terms = String(rk.query || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+  let rows = sum.items.filter(x => {
+    if (rk.status === 'saved' && !x.read) return false;
+    if (rk.status === 'unread' && x.read) return false;
+    if (rk.group !== 'ALL' && x.group !== rk.group) return false;
+    if (terms.length) {
+      const txt = `${x.group} ${x.topic} ${x.stepTitle}`.toLowerCase();
+      if (!terms.every(w => txt.includes(w))) return false;
+    }
+    return true;
+  });
+  if (rk.status === 'saved') rows = rows.slice().sort((a, b) => b.at - a.at);
+
+  const listHtml = rows.length
+    ? rows.map(x => `
+        <div class="rk-hf-card${x.read ? ' is-read' : ''}">
+          <div class="rk-hf-left">
+            <div class="rk-hf-tags">
+              <span class="rk-hf-tag ${esc(x.group.toLowerCase())}">${esc(x.group)}</span>
+              <span class="rk-hf-time${x.read ? '' : ' muted'}">${x.read ? `✓ Ditandai ${esc(rkFormatAgo(x.at))}` : 'Belum ditandai hafal'}</span>
+            </div>
+            <div class="rk-hf-title">${esc(x.stepTitle)}</div>
+            <div class="rk-hf-topic">${esc(x.topic)}</div>
+          </div>
+          <div class="rk-hf-acts">
+            <button type="button" class="rk-sum-read${x.read ? ' on' : ''}" data-hf-id="${esc(x.tId)}" data-hf-title="${esc(x.stepTitle)}" aria-pressed="${x.read ? 'true' : 'false'}" onclick="App.rangkumanHafalanToggle(this)">${x.read ? '✓ Hafal' : 'Tandai hafal'}</button>
+            <button type="button" class="rk-hf-go" onclick="App.rangkuman('${esc(x.tId)}', ${x.stepIdx})">Buka →</button>
+          </div>
+        </div>`).join('')
+    : `<div class="rkg-empty">${rk.status === 'saved' ? 'Belum ada materi yang ditandai hafal di kategori ini. Pilih tab "Belum Hafal" atau "Semua" untuk mulai menandai.' : 'Tidak ada sub-bab yang cocok dengan filter ini.'}</div>`;
+
+  const lastNote = sum.last
+    ? `<b>Terakhir ditandai ${esc(rkFormatAgo(sum.last.at))}:</b> [${esc(sum.last.group)}] ${esc(sum.last.topic)} → "${esc(sum.last.stepTitle)}"`
+    : 'Pilih sub-bab yang sudah dikuasai lalu klik <b>Tandai hafal</b> untuk menyimpannya.';
+
+  const tabsEl = $('#rk-hf-tabs'), grpEl = $('#rk-hf-grps'), bodyEl = $('#rk-hf-body'), sumEl = $('#rk-hf-summary');
+  if (tabsEl) tabsEl.innerHTML = statusTabs;
+  if (grpEl) grpEl.innerHTML = grpTabs;
+  if (sumEl) sumEl.innerHTML = lastNote;
+  if (bodyEl) bodyEl.innerHTML = `<div class="rkg-search-stat mb-2">Menampilkan ${rows.length} sub-bab.</div><div class="rk-hf-list">${listHtml}</div>`;
+}
+function rkOpenHafalan(status = null, group = 'ALL') {
+  const prevGroup = rk && rk.mode === 'global' && rk.group ? rk.group : (rk && rk.mode === 'hafalan' ? rk.backGroup : null);
+  const sum = rkSavedSummary();
+  const st = status || (sum.saved.length ? 'saved' : 'all');
+  const grp = group && (group === 'ALL' || ['TWK', 'TIU', 'TKP', 'SKB'].includes(group)) ? group : 'ALL';
+  rk = { mode: 'hafalan', status: st, group: grp, query: '', backGroup: prevGroup };
+  const el = rkEnsureOverlay();
+  const backHtml = prevGroup
+    ? `<button type="button" class="rkg-chap-btn rkg-chap-link" onclick="App.rangkumanGlobal('${prevGroup}')">← Kembali ke Global ${prevGroup}</button>`
+    : '';
+  el.innerHTML = `
+    <div class="lx-top"><button type="button" class="lx-x" onclick="App.rangkumanClose()" aria-label="Tutup daftar hafalan">${icon('x', 'h-6 w-6')}</button>
+      <div class="rk-head"><div class="rk-kicker">CATATAN HAFALAN</div><div class="rk-title">Daftar Hafalan &amp; Tandai Materi (TWK · TIU · TKP · SKB)</div></div></div>
+    <div class="lx-body" id="rk-scroll"><div class="lx-wrap">
+      <div class="rkg-chap-acts mb-3">
+        ${backHtml}
+        <button type="button" class="rkg-chap-btn" onclick="App.rangkumanGlobal('TWK')">Global TWK</button>
+        <button type="button" class="rkg-chap-btn" onclick="App.rangkumanGlobal('TIU')">Global TIU</button>
+        <button type="button" class="rkg-chap-btn" onclick="App.rangkumanGlobal('TKP')">Global TKP</button>
+      </div>
+      <div id="rk-hf-summary" class="rk-home-last mb-3"></div>
+      <div id="rk-hf-tabs" class="rkg-tabs"></div>
+      <div id="rk-hf-grps" class="rkg-tabs"></div>
+      <div class="rkg-search-wrap">
+        <span class="rkg-search-ic">${icon('search', 'h-4 w-4')}</span>
+        <input id="rk-hf-q" type="search" class="rkg-search" placeholder="Cari sub-bab atau topik hafalan..." oninput="App.rangkumanHafalanSet('query', this.value)" aria-label="Cari di daftar hafalan">
+      </div>
+      <div id="rk-hf-body"></div>
+      <button type="button" class="lx-btn lx-ghost mt-4" onclick="App.rangkumanClose()">Tutup daftar hafalan</button>
+    </div></div>`;
+  rkRenderHafalanBody();
   const b = $('#rk-scroll'); if (b) b.scrollTop = 0;
 }
 function rkClose(fromPop) {
@@ -1410,11 +1848,26 @@ function rkClose(fromPop) {
   const el = $('#rangkuman'); if (el) el.remove();
   if (!lesson) document.documentElement.classList.remove('lx-open');
   if (!fromPop) { try { if (history.state && history.state.rk) history.back(); } catch (e) { /* abaikan */ } }
+  const h = (location.hash || '').replace(/^#/, '');
+  if (!exam && (!h || h === '/')) renderHome();
 }
 window.addEventListener('popstate', () => { if (rk) rkClose(true); });
 const rangkumanApi = {
   rangkuman: rkOpen,
   rangkumanGlobal: rkOpenGlobal,
+  openHafalan: rkOpenHafalan,
+  rangkumanHafalanSet(field, val) {
+    if (!rk || rk.mode !== 'hafalan') return;
+    rk[field] = val;
+    rkRenderHafalanBody();
+  },
+  rangkumanHafalanToggle(btn) {
+    const tId = btn && btn.dataset && btn.dataset.hfId;
+    const title = btn && btn.dataset && btn.dataset.hfTitle;
+    if (!tId || !title) return;
+    toggleRkReadState(tId, title);
+    rkRenderHafalanBody();
+  },
   rangkumanClose: () => rkClose(false),
   rangkumanToggle(on) { document.querySelectorAll('#rangkuman details.rk-item').forEach(d => { if (!d.hidden) d.open = !!on; }); },
   rangkumanToggleChap(chapId) {
@@ -1436,28 +1889,190 @@ const rangkumanApi = {
   },
   rangkumanFilter(val) {
     const root = $('#rangkuman'); if (!root) return;
-    const terms = String(val || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const q = val !== undefined ? val : (($('#rk-search') && $('#rk-search').value) || '');
+    const terms = String(q || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const unreadBtn = $('#rk-unread-btn');
+    const readBtn = $('#rk-read-btn');
+    const unreadOnly = !!(unreadBtn && unreadBtn.classList && unreadBtn.classList.contains('on'));
+    const readOnly = !!(readBtn && readBtn.classList && (readBtn.classList.contains('read-on') || readBtn.classList.contains('on')));
     let shown = 0, chShown = 0;
-    root.querySelectorAll('.rkg-chap').forEach(ch => {
-      const titleEl = ch.querySelector('.rkg-chap-title');
-      const chapTitle = (titleEl ? (titleEl.textContent || titleEl.innerHTML || '') : '').toLowerCase();
-      const chapMatch = terms.length > 0 && terms.every(w => chapTitle.includes(w));
-      let any = false;
-      ch.querySelectorAll('.rk-item').forEach(d => {
-        const txt = ((d.textContent || d.innerHTML || '') + ' ' + chapTitle).toLowerCase();
-        const ok = !terms.length || chapMatch || terms.every(w => txt.includes(w));
-        d.hidden = !ok;
-        if (ok) { any = true; shown++; }
+    const chaps = root.querySelectorAll('.rkg-chap');
+    const isReadItem = d => (d.dataset && d.dataset.read === '1') || (d.getAttribute && d.getAttribute('data-read') === '1');
+    const matchReadState = d => unreadOnly ? !isReadItem(d) : (readOnly ? isReadItem(d) : true);
+    if (chaps && chaps.length) {
+      chaps.forEach(ch => {
+        const titleEl = ch.querySelector('.rkg-chap-title');
+        const chapTitle = (titleEl ? (titleEl.textContent || titleEl.innerHTML || '') : '').toLowerCase();
+        const chapMatch = terms.length > 0 && terms.every(w => chapTitle.includes(w));
+        let any = false;
+        ch.querySelectorAll('.rk-item').forEach(d => {
+          const txt = ((d.textContent || d.innerHTML || '') + ' ' + chapTitle).toLowerCase();
+          const matchText = !terms.length || chapMatch || terms.every(w => txt.includes(w));
+          const ok = matchText && matchReadState(d);
+          d.hidden = !ok;
+          if (ok) { any = true; shown++; }
+        });
+        ch.hidden = !any;
+        if (any) chShown++;
       });
-      ch.hidden = !any;
-      if (any) chShown++;
-    });
+    } else {
+      root.querySelectorAll('.rk-item').forEach(d => {
+        const txt = (d.textContent || d.innerHTML || '').toLowerCase();
+        const matchText = !terms.length || terms.every(w => txt.includes(w));
+        const ok = matchText && matchReadState(d);
+        d.hidden = !ok;
+        if (ok) shown++;
+      });
+    }
+    const modeTag = unreadOnly ? ' (belum hafal)' : (readOnly ? ' (sudah hafal)' : '');
     const st = $('#rk-search-stat');
-    if (st) st.textContent = terms.length
-      ? `Ditemukan ${shown} bagian di ${chShown} topik materi.`
+    if (st) st.textContent = (terms.length || unreadOnly || readOnly)
+      ? `Ditemukan ${shown} bagian${chaps && chaps.length ? ` di ${chShown} topik materi` : ''}${modeTag}.`
       : `Menampilkan semua ${shown} bagian dari ${chShown} topik.`;
-    const empty = $('#rk-empty');
-    if (empty) empty.hidden = shown > 0;
+    let empty = $('#rk-empty');
+    if (!empty && (unreadOnly || readOnly) && root.querySelector) {
+      const tools = root.querySelector('.rk-tools');
+      if (tools && tools.insertAdjacentElement) {
+        empty = document.createElement('div');
+        empty.id = 'rk-empty';
+        empty.className = 'rkg-empty';
+        tools.insertAdjacentElement('afterend', empty);
+      }
+    }
+    if (empty) {
+      empty.textContent = readOnly
+        ? 'Belum ada bagian yang ditandai hafal di tampilan ini.'
+        : (unreadOnly && !terms.length ? 'Semua bagian di materi ini sudah ditandai hafal!' : 'Tidak ada materi atau sub-bab yang cocok dengan kata kunci tersebut.');
+      empty.hidden = shown > 0;
+    }
+  },
+  rangkumanToggleUnread(btn) {
+    if (!btn) btn = $('#rk-unread-btn');
+    if (!btn) return;
+    const on = !btn.classList.contains('on');
+    btn.classList.toggle('on', on);
+    if (btn.setAttribute) btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.textContent = on ? 'Tampilkan semua' : 'Belum hafal saja';
+    const readBtn = $('#rk-read-btn');
+    if (on && readBtn && readBtn.classList) {
+      readBtn.classList.remove('read-on', 'on');
+      if (readBtn.setAttribute) readBtn.setAttribute('aria-pressed', 'false');
+    }
+    this.rangkumanFilter();
+  },
+  rangkumanToggleReadOnly(btn) {
+    if (!btn) btn = $('#rk-read-btn');
+    if (!btn) return;
+    const on = !(btn.classList.contains('read-on') || btn.classList.contains('on'));
+    btn.classList.toggle('read-on', on);
+    if (btn.setAttribute) btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    const unreadBtn = $('#rk-unread-btn');
+    if (on && unreadBtn && unreadBtn.classList) {
+      unreadBtn.classList.remove('on');
+      if (unreadBtn.setAttribute) unreadBtn.setAttribute('aria-pressed', 'false');
+      unreadBtn.textContent = 'Belum hafal saja';
+    }
+    this.rangkumanFilter();
+  },
+  rangkumanSyncCounters(root) {
+    if (!root || !root.querySelectorAll) return;
+    const items = Array.from(root.querySelectorAll('.rk-item'));
+    const done = items.filter(d => (d.dataset && d.dataset.read === '1') || (d.getAttribute && d.getAttribute('data-read') === '1')).length;
+    const counter = $('#rk-read-counter');
+    if (counter) counter.textContent = `${done}/${items.length}`;
+    const pillN = $('#rk-read-pill-n');
+    if (pillN) pillN.textContent = String(done);
+    const tabN = $('#rk-hafalan-tab-n');
+    if (tabN) tabN.textContent = String(rkSavedSummary().saved.length);
+  },
+  rangkumanSyncChapHead(tId) {
+    const ch = document.getElementById('rk-chap-' + tId);
+    if (!ch) return;
+    const items = Array.from(ch.querySelectorAll('.rk-item'));
+    const total = items.length;
+    const done = items.filter(d => (d.dataset && d.dataset.read === '1') || (d.getAttribute && d.getAttribute('data-read') === '1')).length;
+    const statEl = ch.querySelector ? ch.querySelector('.rkg-chap-readstat') : null;
+    if (statEl) statEl.textContent = `✓ ${done}/${total} hafal`;
+    const btnEl = ch.querySelector ? ch.querySelector('.rkg-chap-read') : null;
+    if (btnEl) {
+      const all = total > 0 && done === total;
+      btnEl.classList.toggle('on', all);
+      btnEl.textContent = all ? '✓ Bab sudah hafal' : '✓ Tandai bab ini hafal';
+    }
+  },
+  rangkumanToggleChapRead(tId) {
+    const t = MATERI.find(x => x.id === tId); if (!t) return;
+    const steps = lessonSteps(t);
+    const allRead = steps.length > 0 && steps.every(st => isRkRead(t.id, st.title));
+    const target = !allRead;
+    steps.forEach(st => setRkReadState(t.id, st.title, target));
+    const root = $('#rangkuman');
+    const ch = document.getElementById('rk-chap-' + tId);
+    if (ch && ch.querySelectorAll) {
+      ch.querySelectorAll('.rk-item').forEach(item => {
+        if (item.dataset) item.dataset.read = target ? '1' : '0';
+        else if (item.setAttribute) item.setAttribute('data-read', target ? '1' : '0');
+        item.querySelectorAll('.rk-sum-read').forEach(b => {
+          b.classList.toggle('on', target);
+          if (b.setAttribute) b.setAttribute('aria-pressed', target ? 'true' : 'false');
+          b.textContent = target ? '✓ Hafal' : 'Tandai hafal';
+        });
+        item.querySelectorAll('.rk-read-btn').forEach(b => {
+          b.classList.toggle('on', target);
+          if (b.setAttribute) b.setAttribute('aria-pressed', target ? 'true' : 'false');
+          b.textContent = target ? '✓ Sudah hafal / dibaca' : 'Tandai sudah hafal';
+        });
+      });
+    }
+    this.rangkumanSyncChapHead(tId);
+    this.rangkumanSyncCounters(root);
+    const unreadBtn = $('#rk-unread-btn'), readBtn = $('#rk-read-btn');
+    if ((unreadBtn && unreadBtn.classList && unreadBtn.classList.contains('on')) || (readBtn && readBtn.classList && readBtn.classList.contains('read-on'))) {
+      this.rangkumanFilter();
+    }
+  },
+  rangkumanToggleRead(tIdOrEl, title, btn) {
+    let tId = tIdOrEl, stTitle = title, item = null;
+    if (tIdOrEl && typeof tIdOrEl === 'object') {
+      item = tIdOrEl.closest ? tIdOrEl.closest('.rk-item') : null;
+      tId = item && item.dataset ? item.dataset.rkId : (tIdOrEl.dataset && tIdOrEl.dataset.rkId);
+      stTitle = item && item.dataset ? item.dataset.rkTitle : (tIdOrEl.dataset && tIdOrEl.dataset.rkTitle);
+      btn = tIdOrEl;
+    }
+    if (!tId || !stTitle) return false;
+    const on = toggleRkReadState(tId, stTitle);
+    const root = $('#rangkuman');
+    if (!item && root && root.querySelectorAll) {
+      item = Array.from(root.querySelectorAll('.rk-item')).find(d => d.dataset && d.dataset.rkId === tId && d.dataset.rkTitle === stTitle) || null;
+    }
+    if (item) {
+      if (item.dataset) item.dataset.read = on ? '1' : '0';
+      else if (item.setAttribute) item.setAttribute('data-read', on ? '1' : '0');
+      item.querySelectorAll('.rk-sum-read').forEach(b => {
+        b.classList.toggle('on', on);
+        if (b.setAttribute) b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.textContent = on ? '✓ Hafal' : 'Tandai hafal';
+      });
+      item.querySelectorAll('.rk-read-btn').forEach(b => {
+        b.classList.toggle('on', on);
+        if (b.setAttribute) b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.textContent = on ? '✓ Sudah hafal / dibaca' : 'Tandai sudah hafal';
+      });
+    } else if (btn && btn.classList) {
+      btn.classList.toggle('on', on);
+      btn.textContent = on ? '✓ Sudah hafal / dibaca' : 'Tandai sudah hafal';
+    }
+    this.rangkumanSyncChapHead(tId);
+    this.rangkumanSyncCounters(root);
+    const unreadBtn = $('#rk-unread-btn'), readBtn = $('#rk-read-btn');
+    if ((unreadBtn && unreadBtn.classList && unreadBtn.classList.contains('on')) || (readBtn && readBtn.classList && readBtn.classList.contains('read-on'))) {
+      this.rangkumanFilter();
+    }
+    return on;
+  },
+  rangkumanPrint() {
+    document.querySelectorAll('#rangkuman details.rk-item').forEach(d => { if (!d.hidden) d.open = true; });
+    try { window.print(); } catch (e) { toast('Gunakan Ctrl+P / menu Cetak browser untuk simpan ke PDF.'); }
   }
 };
 
@@ -1473,189 +2088,223 @@ const rangkumanApi = {
    ========================================================================== */
 const PLAN_KEY = 'cpns_plan_v1';
 const PLANQ_KEY = 'cpns_plan_q_v1';
-const PLAN_MAX = 30;
-const PLAN_TO_N = 30;        // soal per Try Out
-const PLAN_DRILL_N = 20;     // soal latihan harian TIU
-const PLAN_DRILL_GROUPS = ['TIU'];
+const PLAN_MIN = 5;
+const PLAN_INIT_MAX = 30;
+const PLAN_MAX = 60;
+const PLAN_DIAG_N = 45;      // Diagnostik SKD awal (15 TWK + 15 TIU + 15 TKP)
+const PLAN_RETEST_N = 60;    // Evaluasi ulang tengah SKD (20 TWK + 20 TIU + 20 TKP)
+const PLAN_TO_N = 110;       // Final Try Out SKD lengkap
+const PLAN_DRILL_N = 15;     // Soal latihan terarah kelemahan harian
 const PLAN_XS = [0, 40, 66, 40, 0, -40, -66, -40];
 let planCfg = planSanitize(store.get(PLAN_KEY, null));
 let planQ = store.get(PLANQ_KEY, null);
 let planDraft = null;
 
 function planSanitize(c) {
-  if (c?.test === 'GABUNG') return { test: 'GABUNG', cat: typeof c.cat === 'string' ? c.cat : 'PRAKOM', days: 7, at: c.at || Date.now(), updated: c.updated || c.at };
-  if (!c || (c.test !== 'SKD' && c.test !== 'SKB')) return null;
-  const days = Math.round(Number(c.days));
-  if (!(days >= 1)) return null;
-  return { test: c.test, cat: c.test === 'SKB' ? String(c.cat || '') : '', days: Math.min(days, PLAN_MAX), at: c.at || Date.now() };
+  if (!c || !['SKD', 'SKB', 'GABUNG'].includes(c.test)) return null;
+  const rawD = Math.round(Number(c.days));
+  if (!(rawD >= 1) && c.test !== 'GABUNG') return null;
+  const days = rawD >= PLAN_MIN ? Math.min(rawD, PLAN_MAX) : (c.test === 'GABUNG' ? 7 : Math.max(PLAN_MIN, rawD));
+  const baseDays = Math.max(PLAN_MIN, Math.min(Math.round(Number(c.baseDays)) || days, days));
+  return {
+    test: c.test,
+    cat: c.test === 'SKD' ? '' : (typeof c.cat === 'string' ? c.cat : 'PRAKOM'),
+    days,
+    baseDays,
+    at: c.at || Date.now(),
+    updated: c.updated || c.at || Date.now(),
+    phases: c.phases && typeof c.phases === 'object' ? c.phases : {},
+    extensions: Array.isArray(c.extensions) ? c.extensions : [],
+    reviewed: c.reviewed && typeof c.reviewed === 'object' ? c.reviewed : {}
+  };
 }
 const planDlg = id => {
   let d = document.getElementById(id);
   if (!d) { d = document.createElement('dialog'); d.id = id; d.className = 'modal modal-bottom sm:modal-middle'; document.body.appendChild(d); }
   return d;
 };
-const stepCount = t => (t.sections || []).length + ((t.tips || []).length ? 1 : 0);   // sama dengan lessonSteps(t).length
+const stepCount = t => (t.sections || []).length + ((t.tips || []).length ? 1 : 0);
 const planSkbCats = () => MATERI.reduce((a, t) => { if (t.group === 'SKB' && t.skbCategory && !a.includes(t.skbCategory)) a.push(t.skbCategory); return a; }, []);
 const planCatName = c => skbMeta('SKB_' + c).name;
 const planFieldOptions = test => test === 'GABUNG' ? targetSkbKeys().map(key => key.slice(4)) : planSkbCats();
+function planPoolTopics(cfg) {
+  if (!cfg) return [];
+  if (cfg.test === 'SKB') return MATERI.filter(t => t.group === 'SKB' && t.skbCategory === cfg.cat && stepCount(t) > 0);
+  const skd = MATERI.filter(t => ['TWK', 'TIU', 'TKP'].includes(t.group) && stepCount(t) > 0);
+  if (cfg.test === 'GABUNG' && cfg.cat) {
+    return skd.concat(MATERI.filter(t => t.group === 'SKB' && t.skbCategory === cfg.cat && stepCount(t) > 0));
+  }
+  return skd;
+}
 function planLists(cfg) {
-  const L = cfg.test === 'SKB'
-    ? [{ g: 'SKB', topics: MATERI.filter(t => t.group === 'SKB' && t.skbCategory === cfg.cat) }]
-    : ['TWK', 'TIU', 'TKP'].map(g => ({ g, topics: MATERI.filter(t => t.group === g) }));
-  return L.map(l => ({ g: l.g, topics: l.topics.filter(t => stepCount(t) > 0) })).filter(l => l.topics.length);
+  const topics = planPoolTopics(cfg);
+  return topics.length ? [{ g: cfg.test, topics }] : [];
 }
-const planTotal = cfg => planLists(cfg).reduce((a, l) => a + l.topics.reduce((b, t) => b + stepCount(t), 0), 0);
-const planMinDays = cfg => cfg.test === 'GABUNG' ? 7 : 2 * Math.max(1, planLists(cfg).length);                 // minimal: 1 hari belajar + 1 Try Out per kelompok
-const planMaxDays = cfg => cfg.test === 'GABUNG' ? 7 : Math.max(planMinDays(cfg), Math.min(PLAN_MAX, planTotal(cfg) + planLists(cfg).length));
+const planMinDays = () => PLAN_MIN;
+const planMaxDays = cfg => cfg?.extensions?.length ? PLAN_MAX : PLAN_INIT_MAX;
 
-/* pecah n langkah berurutan menjadi d bagian hampir sama besar (sisa dibagi ke hari-hari awal) */
-function evenChunks(arr, d) {
-  const out = [], base = Math.floor(arr.length / d), extra = arr.length % d;
-  let p = 0;
-  for (let i = 0; i < d; i++) { const n = base + (i < extra ? 1 : 0); out.push(arr.slice(p, p + n)); p += n; }
-  return out;
-}
-/* berapa hari belajar untuk tiap kelompok agar beban per hari paling merata:
-   utamakan beban harian terberat sekecil mungkin, lalu selisih antarhari sekecil mungkin */
-function planAlloc(ns, D) {
-  const k = ns.length;
-  let best = null;
-  const score = alloc => {
-    let max = 0, sq = 0;
-    alloc.forEach((d, i) => {
-      const b = Math.floor(ns[i] / d), x = ns[i] % d;
-      if (x) { max = Math.max(max, b + 1); sq += x * (b + 1) * (b + 1); }
-      if (d - x) { max = Math.max(max, b); sq += (d - x) * b * b; }
-    });
-    return [max, sq];
-  };
-  const rec = (i, left, cur) => {
-    if (i === k - 1) {
-      if (left < 1 || left > ns[i]) return;
-      const a = cur.concat(left), s = score(a);
-      if (!best || s[0] < best.s[0] || (s[0] === best.s[0] && s[1] < best.s[1])) best = { a, s };
-      return;
-    }
-    for (let d = 1; d <= Math.min(ns[i], left - (k - 1 - i)); d++) rec(i + 1, left - d, cur.concat(d));
-  };
-  rec(0, D, []);
-  return best ? best.a : ns.map(() => 1);
-}
-function planDayInfo(units, no) {
-  const segs = [];
-  units.forEach(u => {
-    const s = segs[segs.length - 1];
-    if (s && s.t === u.t) { s.to = u.i; s.units.push(u); } else segs.push({ t: u.t, from: u.i, to: u.i, units: [u] });
+/* Jadwal checkpoint adaptif: Hari 1 = Diagnostik, tengah = Test Ulang berkala, Hari akhir = Final */
+function planComputeCheckpoints(cfg) {
+  const B = Math.max(PLAN_MIN, Math.min(cfg.baseDays || cfg.days || 7, PLAN_MAX));
+  const mids = [];
+  if (B <= 5) mids.push(3);
+  else if (B <= 8) mids.push(Math.ceil(B / 2));     // 7 hari -> Hari 4
+  else if (B <= 10) mids.push(4, 7);                // 10 hari -> Hari 4 & 7
+  else if (B <= 12) mids.push(5, 9);
+  else {
+    for (let d = 5; d <= B - 3; d += 4) mids.push(d);
+  }
+  const cps = [1, ...mids.filter(d => d > 1 && d < B), B];
+  let cur = B;
+  (cfg.extensions || []).forEach(ext => {
+    const add = Math.max(1, Math.round(Number(ext.added) || 0));
+    if (add >= 6 && cur + Math.ceil(add / 2) < cur + add) cps.push(cur + Math.ceil(add / 2));
+    cur += add;
+    if (cur <= PLAN_MAX) cps.push(cur);
   });
-  const gs = [];
-  segs.forEach(s => { if (!gs.includes(s.t.group)) gs.push(s.t.group); });
-  return { no, units, segs, label: gs.join(' + ') };
+  return [...new Set(cps)].filter(d => d >= 1 && d <= cfg.days).sort((a, b) => a - b);
 }
-/* susun hari: untuk tiap kelompok -> hari belajar (blok berurutan) lalu 1 hari Try Out */
+
+const combinedKey = (cfg, day, scope) => `PLAN-${cfg.at}-GABUNG-${day}-${scope === 'SKD' ? 'SKD' : cfg.cat}`;
+const planChkKey = (cfg, dayNo) => `PLAN-${cfg.at}-CHK-${dayNo}`;
+const planDrillKey = (cfg, dayNo) => cfg.test === 'GABUNG' ? `PLAN-${cfg.at}-GABUNG-${dayNo}-DRILL` : `PLAN-${cfg.at}-DR-${dayNo}`;
+function planHasSkbBank(cfg) { return cfg.cat && targetSkbKeys().includes('SKB_' + cfg.cat); }
+
+function planCheckpointDone(cfg, dayNo) {
+  if (!cfg) return false;
+  if (cfg.test === 'GABUNG') {
+    const hasSkd = !!results[combinedKey(cfg, dayNo, 'SKD')];
+    const hasSkb = !planHasSkbBank(cfg) || !!results[combinedKey(cfg, dayNo, 'SKB')];
+    return hasSkd && hasSkb;
+  }
+  return !!results[planChkKey(cfg, dayNo)];
+}
+function planPhaseReady(cfg, cpDay) {
+  if (!cfg) return false;
+  if (cfg.phases && cfg.phases[cpDay]) return true;
+  if (cfg.test === 'GABUNG') return !!results[combinedKey(cfg, cpDay, 'SKD')] || (planHasSkbBank(cfg) && !!results[combinedKey(cfg, cpDay, 'SKB')]);
+  return !!results[planChkKey(cfg, cpDay)];
+}
+
+function planSelectDayTopics(cfg, day) {
+  const pool = planPoolTopics(cfg);
+  const cp = day.phaseCheckpoint;
+  if (!planPhaseReady(cfg, cp)) {
+    return { ready: false, topics: [], weakSubs: [], weakGroups: [], summary: '', hasWeak: false };
+  }
+  const snap = (cfg.phases && cfg.phases[cp]) || {};
+  const weakIds = Array.isArray(snap.weakIds) ? snap.weakIds : [];
+  const weakGroups = Array.isArray(snap.weakGroups) ? snap.weakGroups : [];
+  const ordered = [];
+  const push = t => { if (t && !ordered.includes(t)) ordered.push(t); };
+  weakIds.forEach(id => push(pool.find(t => t.id === id)));
+  const globalWeak = weakMateriMap();
+  pool.filter(t => globalWeak.has(t.id)).forEach(push);
+  pool.filter(t => weakGroups.includes(t.group)).forEach(push);
+  pool.filter(t => lessonProgress(t).pct < 100).forEach(push);
+  pool.forEach(push);
+  if (!ordered.length) return { ready: true, topics: [], weakSubs: [], weakGroups, summary: snap.summary || '', hasWeak: false };
+  const perDay = Math.min(ordered.length, cfg.test === 'GABUNG' ? 3 : 2);
+  const offset = day.dayOffset * perDay;
+  const picked = [];
+  for (let k = 0; k < perDay; k++) {
+    const t = ordered[(offset + k) % ordered.length];
+    if (t && !picked.includes(t)) picked.push(t);
+  }
+  return {
+    ready: true,
+    topics: picked,
+    weakSubs: Array.isArray(snap.weakSubs) ? snap.weakSubs : [],
+    weakGroups,
+    summary: snap.summary || '',
+    hasWeak: weakIds.length > 0 || picked.some(t => globalWeak.has(t.id))
+  };
+}
+
 function planBuild(cfg) {
-  const lists = planLists(cfg).map(l => {
-    const units = [];
-    l.topics.forEach(t => { const n = stepCount(t); for (let i = 0; i < n; i++) units.push({ t, i }); });
-    return { g: l.g, topics: l.topics, units };
-  });
-  if (!lists.length) return [];
-  const G = lists.length;
-  const D = Math.max(2 * G, Math.min(cfg.days, planMaxDays(cfg)));
-  const alloc = G > 1 ? planAlloc(lists.map(l => l.units.length), D - G) : [D - G];
+  if (!cfg) return [];
+  const total = Math.max(PLAN_MIN, Math.min(cfg.days || 7, PLAN_MAX));
+  const cps = planComputeCheckpoints(cfg);
+  const cpSet = new Set(cps);
   const days = [];
-  lists.forEach((l, gi) => {
-    const startNo = days.length + 1;
-    evenChunks(l.units, alloc[gi]).forEach(u => {
-      const d = planDayInfo(u, days.length + 1);
-      d.kind = 'learn'; d.g = l.g; d.topics = l.topics; d.set = 'DR-' + d.no;
-      if (PLAN_DRILL_GROUPS.includes(l.g)) d.drill = { key: `PLAN-${cfg.at}-DR-${d.no}`, n: PLAN_DRILL_N };
-      days.push(d);
-    });
-    days.push({ no: days.length + 1, kind: 'tryout', g: l.g, topics: l.topics, units: [], segs: [], label: 'Try Out ' + l.g,
-      set: 'TO-' + l.g, packKey: `PLAN-${cfg.at}-TO-${l.g}`, n: PLAN_TO_N, fromNo: startNo, toNo: days.length });
-  });
+  for (let d = 1; d <= total; d++) {
+    if (cpSet.has(d)) {
+      const idx = cps.indexOf(d);
+      const kind = d === 1 ? 'diagnostic' : d === total ? 'final' : 'retest';
+      const prevCp = idx > 0 ? cps[idx - 1] : null;
+      const nextCp = idx + 1 < cps.length ? cps[idx + 1] : null;
+      days.push({
+        no: d,
+        kind,
+        g: cfg.test,
+        packKey: planChkKey(cfg, d),
+        phaseFrom: prevCp ? prevCp + 1 : 1,
+        phaseTo: prevCp ? d - 1 : 1,
+        nextPhaseEnd: nextCp ? nextCp - 1 : total,
+        label: kind === 'diagnostic' ? 'Tes Kelemahan Awal' : kind === 'final' ? 'Try Out Final' : 'Try Out Evaluasi Ulang',
+        topics: planPoolTopics(cfg),
+        segs: []
+      });
+    } else {
+      let prevCp = 1, nextCp = total;
+      for (let i = 0; i < cps.length; i++) {
+        if (cps[i] < d) prevCp = cps[i];
+        if (cps[i] > d) { nextCp = cps[i]; break; }
+      }
+      const dayOffset = d - prevCp - 1;
+      const phaseLen = Math.max(1, nextCp - prevCp - 1);
+      const dayObj = {
+        no: d,
+        kind: 'learn',
+        g: cfg.test,
+        phaseCheckpoint: prevCp,
+        phaseStart: prevCp + 1,
+        phaseEnd: nextCp - 1,
+        dayOffset,
+        phaseLen,
+        drillKey: planDrillKey(cfg, d),
+        label: prevCp === 1 ? 'Materi & Soal Kelemahan' : 'Perbaikan Sisa Kelemahan'
+      };
+      const info = planSelectDayTopics(cfg, dayObj);
+      dayObj.ready = info.ready;
+      dayObj.topics = info.topics;
+      dayObj.weakSubs = info.weakSubs;
+      dayObj.weakGroups = info.weakGroups;
+      dayObj.phaseSummary = info.summary;
+      dayObj.hasWeak = info.hasWeak;
+      days.push(dayObj);
+    }
+  }
   return days;
 }
-function planProg(units) {
-  let done = 0, part = 0;
-  units.forEach(u => {
-    if (lessonDone(u.t)[u.i]) done++;
-    else { const p = lessonPart(u.t, u.i); if (p && p.total) part += p.solved / p.total; }
-  });
-  const n = units.length, full = n > 0 && done === n;
-  return { done, n, full, sum: done + part, pct: full ? 100 : Math.min(99, Math.round((done + part) / Math.max(n, 1) * 100)) };
-}
-/* progres satu hari: hari belajar = langkah materi (+ latihan harian TIU, bobot 25% dari jumlah langkah, min. 2); Try Out = 0/100 */
-const planDrillW = d => Math.max(2, Math.round(d.units.length / 4));
-function planDayProg(d) {
-  if (d.kind === 'tryout') { const r = results[d.packKey]; return { n: 1, done: r ? 1 : 0, sum: r ? 1 : 0, full: !!r, pct: r ? 100 : 0, rec: r || null }; }
-  const p = planProg(d.units);
-  if (!d.drill) return p;
-  const w = planDrillW(d), r = results[d.drill.key], dd = r ? w : 0, n = p.n + w, sum = p.sum + dd, full = p.full && !!r;
-  return { n, done: p.done + dd, sum, full, pct: full ? 100 : Math.min(99, Math.round(sum / n * 100)), steps: p, rec: r || null };
-}
-const planNextStep = t => { const d = lessonDone(t), n = stepCount(t); let i = 0; while (i < n && d[i]) i++; return i < n ? i : -1; };
-const planRange = (a, b) => a === b ? `${a}` : `${a}–${b}`;
-function planSummary(days) {
-  const out = [];
-  days.forEach(d => {
-    let r = out.find(x => x.g === d.g);
-    if (!r) out.push(r = { g: d.g, learn: 0, min: 1e9, max: 0, drill: false });
-    if (d.kind === 'learn') { r.learn++; r.min = Math.min(r.min, d.units.length); r.max = Math.max(r.max, d.units.length); if (d.drill) r.drill = true; }
-  });
-  return out;
-}
 
-/* ---------- soal Try Out & latihan harian ---------- */
-/* Pilih n soal dari materi `primary` (lalu `secondary`), bergiliran antar-topik agar semua materi terwakili.
-   Urutan prioritas: belum pernah dipakai di langkah materi & belum pernah dikerjakan -> baru satu dari keduanya -> sisanya.
-   Soal yang sudah dipakai Try Out/latihan lain di planning yang sama dihindari. */
-function planPickQs(primary, secondary, n, ctx, seed) {
-  const out = [], mine = new Set();
-  const valid = q => questions.valid(q) && q.q.length <= 650;
-  const run = (topics, limit) => {
-    const lists = topics.map(t => materiPool(t).filter(valid).map(q => ({
-      q, key: questions.key(q), h: hashStr(q.id + '|' + seed),
-      tier: (ctx.lesson.has(questions.key(q)) ? 1 : 0) + (seenBefore(q) ? 4 : 0) + (ctx.taken.has(questions.key(q)) ? 2 : 0)
-    })).sort((a, b) => (a.tier - b.tier) || (a.h - b.h)));
-    const order = shuffle(lists.map((_, i) => i), seed + 'o');
-    for (let mt = 0; mt <= limit && out.length < n; mt++) {
-      let moved = true;
-      while (out.length < n && moved) {
-        moved = false;
-        for (const i of order) {
-          if (out.length >= n) break;
-          const c = lists[i].find(x => x.tier <= mt && !mine.has(x.key));
-          if (c) { out.push(c.q); mine.add(c.key); moved = true; }
-        }
-      }
+const planTopicReviewed = (cfg, dayNo, tId) => !!(cfg && cfg.reviewed && cfg.reviewed[`${dayNo}:${tId}`]);
+function planDayProg(d) {
+  const cfg = planCfg;
+  if (!cfg) return { n: 1, done: 0, full: false, pct: 0, rec: null };
+  if (d.kind !== 'learn') {
+    if (cfg.test === 'GABUNG') {
+      const skdRec = results[combinedKey(cfg, d.no, 'SKD')] || null;
+      const hasSkb = planHasSkbBank(cfg);
+      const skbRec = hasSkb ? (results[combinedKey(cfg, d.no, 'SKB')] || null) : null;
+      const done = Number(!!skdRec) + (hasSkb ? Number(!!skbRec) : 0);
+      const total = 1 + (hasSkb ? 1 : 0);
+      return { n: total, done, full: done === total, pct: Math.round((done / total) * 100), rec: skdRec, skbRec };
     }
-  };
-  if (secondary.length) {
-    run(primary, 1);
-    if (out.length < n) run(secondary, 1);
-    if (out.length < n) run(primary, 3);
-    if (out.length < n) run(secondary, 3);
-    if (out.length < n) run(primary, 7);
-    if (out.length < n) run(secondary, 7);
-  } else run(primary, 7);
-  out.forEach(q => ctx.taken.add(questions.key(q)));
-  return shuffle(out, seed + 'f').map(q => q.id);
+    const r = results[d.packKey] || null;
+    return { n: 1, done: r ? 1 : 0, full: !!r, pct: r ? 100 : 0, rec: r };
+  }
+  if (!d.ready) return { n: 1, done: 0, full: false, pct: 0, locked: true, rec: null };
+  const drillRec = results[d.drillKey] || null;
+  const revDone = (d.topics || []).filter(t => planTopicReviewed(cfg, d.no, t.id)).length;
+  const tot = Math.max(1, (d.topics || []).length) + 1;
+  const done = revDone + (drillRec ? 1 : 0);
+  const full = revDone >= (d.topics || []).length && !!drillRec;
+  return { n: tot, done, full, pct: full ? 100 : Math.min(99, Math.round((done / tot) * 100)), rec: drillRec, revDone };
 }
-function planGen(cfg) {
-  const days = planBuild(cfg), sets = {}, ctx = { lesson: new Set(), taken: new Set() };
-  planLists(cfg).forEach(l => l.topics.forEach(t => lessonPlan(t).forEach(a => a.forEach(q => ctx.lesson.add(questions.key(q))))));
-  days.filter(d => d.kind === 'tryout').forEach(d => { sets[d.set] = planPickQs(d.topics, [], d.n, ctx, cfg.at + d.set); });
-  days.filter(d => d.drill).forEach(d => {
-    const prim = []; d.segs.forEach(s => { if (!prim.includes(s.t)) prim.push(s.t); });
-    sets[d.set] = planPickQs(prim, d.topics.filter(t => !prim.includes(t)), d.drill.n, ctx, cfg.at + d.set);
-  });
-  planQ = { at: cfg.at, sets };
-  store.set(PLANQ_KEY, planQ);
-  return sets;
-}
-const planEnsureSets = () => (planCfg && planQ && planQ.at === planCfg.at) ? planQ.sets : (planCfg ? planGen(planCfg) : null);
-const planReservedSet = () => { const s = new Set(); if (planCfg && planQ && planQ.at === planCfg.at) Object.values(planQ.sets).forEach(a => a.forEach(id => s.add(questions.resolve(id)))); return s; };
+const planNextStep = t => { const d = lessonDone(t), n = stepCount(t); let i = 0; while (i < n && d[i]) i++; return i < n ? i : 0; };
+
+/* ---------- Pengelola Soal Adaptif Planning ---------- */
 let planIdx = null, planIdxN = -1;
 function planQIndex() {
   const n = Object.values(BANK).reduce((a, x) => a + x.length, 0) + MATERI.length;
@@ -1669,55 +2318,55 @@ function planQIndex() {
   planIdxN = n;
   return planIdx;
 }
-/* paket ujian untuk Try Out / latihan harian (dipakai findPack -> dialog mulai -> mesin ujian yang sama) */
-function planPackByKey(key) {
-  const cfg = planCfg;
-  if (!cfg || key.indexOf('PLAN-' + cfg.at + '-') !== 0) return null;
-  if (cfg.test === 'GABUNG') return combinedPack(cfg, key);
-  const d = planBuild(cfg).find(x => (x.kind === 'tryout' ? x.packKey : (x.drill && x.drill.key)) === key);
-  if (!d) return null;
-  const sets = planEnsureSets(), idx = planQIndex();
-  const base = ((sets && sets[d.set]) || []).map(id => idx.get(questions.resolve(id))).filter(Boolean);
-  const blocked = new Set(Object.entries(sets || {}).filter(([set]) => set !== d.set)
-    .flatMap(([, ids]) => ids.map(id => idx.get(questions.resolve(id))).filter(Boolean).map(questions.key)));
-  const daily = [...new Set(d.segs.map(seg => seg.t))];
-  const pool = (daily.length ? daily.concat(d.topics.filter(t => !daily.includes(t))) : d.topics)
-    .flatMap(materiPool).filter(q => questions.valid(q) && q.q.length <= 650);
-  const count = d.n || d.drill.n;
-  const free = q => !seenBefore(q) && !blocked.has(questions.key(q));
-  const qs = selectQuestions(base.filter(free), count);
-  const used = new Set(qs.map(questions.key));
-  const replacements = selectQuestions(pool.filter(free), count - qs.length, used);
-  qs.push(...replacements);
-  replacements.forEach(q => used.add(questions.key(q)));
-  qs.push(...selectQuestions(base.concat(pool), count - qs.length, used));
-  if (!qs.length) return null;
-  const isTo = d.kind === 'tryout', gname = d.g === 'SKB' ? 'SKB ' + planCatName(cfg.cat) : d.g;
-  return {
-    key, group: 'PLAN', kind: 'CAT', mode: 'PLAN', plan: true, planSet: d.set, skbBucket: cfg.test === 'SKB' ? 'SKB_' + cfg.cat : null,
-    title: isTo ? `Try Out ${gname}` : `Latihan Harian ${d.g} · Hari ${d.no}`,
-    compose: isTo ? `${qs.length} soal campuran dari seluruh materi ${gname} (Hari ${d.fromNo}–${d.toNo})` : `${qs.length} soal latihan materi Hari ${d.no}`,
-    questions: qs, minutes: isTo ? (d.g === 'TIU' ? 45 : 30) : Math.max(10, qs.length)
-  };
+
+function planPickStratified(pool, count, seed, preferSubs = [], blockedKeys = new Set()) {
+  const valid = pool.filter(q => questions.valid(q) && (q.q || '').length <= 650 && !blockedKeys.has(questions.key(q)));
+  const prefSet = new Set(preferSubs.map(s => String(s).toLowerCase()));
+  const bySub = new Map();
+  valid.forEach(q => {
+    const k = q.sub || 'Umum';
+    if (!bySub.has(k)) bySub.set(k, []);
+    bySub.get(k).push(q);
+  });
+  const subKeys = shuffle([...bySub.keys()], seed + 'sub').sort((a, b) => {
+    const pa = prefSet.has(a.toLowerCase()) ? 0 : 1;
+    const pb = prefSet.has(b.toLowerCase()) ? 0 : 1;
+    return pa - pb;
+  });
+  subKeys.forEach(k => {
+    bySub.set(k, bySub.get(k).sort((a, b) => (seenBefore(a) ? 1 : 0) - (seenBefore(b) ? 1 : 0) || hashStr(a.id + seed) - hashStr(b.id + seed)));
+  });
+  const picked = [], used = new Set();
+  let guard = 0;
+  while (picked.length < count && guard++ < count * 5) {
+    let progressed = false;
+    for (const k of subKeys) {
+      if (picked.length >= count) break;
+      const arr = bySub.get(k);
+      const q = arr.find(x => !used.has(questions.key(x)));
+      if (q) { picked.push(q); used.add(questions.key(q)); progressed = true; }
+    }
+    if (!progressed) break;
+  }
+  return shuffle(picked, seed + 'fin');
 }
 
-/* ---------- Planning gabungan tujuh hari ---------- */
-const COMBINED_DAYS = ['Ukur kemampuan awal', 'Perbaiki konsep terlemah', 'Latih akurasi dan kecepatan',
-  'Uji kembali konsep sulit', 'Simulasi kedua', 'Perbaiki kesalahan yang masih muncul', 'Ukur kesiapan akhir'];
-const isSimulationDay = day => [1, 5, 7].includes(day);
-const combinedKey = (cfg, day, scope) => `PLAN-${cfg.at}-GABUNG-${day}-${scope === 'SKD' ? 'SKD' : cfg.cat}`;
+function planBuildSkdMix(nTwk, nTiu, nTkp, seed, preferSubs = [], blockedKeys = new Set()) {
+  const p1 = planPickStratified(BANK.SKD_TWK || [], nTwk, seed + 'twk', preferSubs, blockedKeys);
+  const p2 = planPickStratified(BANK.SKD_TIU || [], nTiu, seed + 'tiu', preferSubs, blockedKeys);
+  const p3 = planPickStratified(BANK.SKD_TKP || [], nTkp, seed + 'tkp', preferSubs, blockedKeys);
+  return [...p1, ...p2, ...p3];
+}
 
 function finalSetName(field) { return 'FINAL-' + field; }
-
 function reservedFinalKeys() {
   if (planCfg?.test !== 'GABUNG' || planQ?.at !== planCfg.at) return [];
   const field = 'SKB_' + planCfg.cat;
-  if (results[combinedKey(planCfg, 7, 'SKB')]) return [];
+  if (results[combinedKey(planCfg, planCfg.days || 7, 'SKB')]) return [];
   const saved = planQ.sets?.[finalSetName(field)] || [];
   const idx = planQIndex();
   return saved.map(id => idx.get(questions.resolve(id))).filter(Boolean).map(questions.key);
 }
-
 function reserveFinalSkb(cfg) {
   const field = 'SKB_' + cfg.cat;
   const pool = BANK[field] || [];
@@ -1733,79 +2382,190 @@ function reserveFinalSkb(cfg) {
   return planQ.sets[slot].map(id => idx.get(questions.resolve(id))).filter(q => q && bucketOfId[q.id] === field);
 }
 
-function combinedPack(cfg, key) {
-  const match = /-GABUNG-([1-7])-(SKD|[A-Z0-9_]+)$/.exec(key);
-  if (!match) return null;
-  const day = Number(match[1]), isSkb = match[2] !== 'SKD';
-  const field = 'SKB_' + cfg.cat;
-  if (isSkb && (match[2] !== cfg.cat || !targetSkbKeys().includes(field))) return null;
-  const scope = isSkb ? field : 'SKD';
-  const reserved = isSkb ? reserveFinalSkb(cfg) : [];
-  const label = isSkb ? 'SKB ' + skbMeta(field).short : 'SKD';
-  const common = { key, plan: true, skbBucket: isSkb ? field : null };
-  if (isSimulationDay(day)) {
-    const group = isSkb ? field : 'SKD_FULL', packs = packsFor(group);
-    if (!packs.length) return null;
-    const fullSets = isSkb ? packs.filter(p => p.questions.length === Math.min(SKB_SIZE, bankLen(field))) : packs;
-    const base = fullSets[([1, 5, 7].indexOf(day)) % fullSets.length];
-    const pack = preparePack(base);
-    if (isSkb && day === 7) {
-      const fresh = reserved.filter(q => !seenBefore(q));
-      const used = new Set(fresh.map(questions.key));
-      pack.questions = fresh.concat(selectQuestions(BANK[field], base.questions.length - fresh.length, used, true));
+function planEnsureSlotQs(cfg, slot, builder) {
+  if (!planQ || planQ.at !== cfg.at || !planQ.sets) planQ = { at: cfg.at, sets: {} };
+  const idx = planQIndex();
+  let ids = planQ.sets[slot];
+  if (!Array.isArray(ids) || !ids.length) {
+    const qs = builder();
+    if (qs.length) {
+      ids = qs.map(q => q.id);
+      planQ.sets[slot] = ids;
+      store.set(PLANQ_KEY, planQ);
     }
-    if (!pack.questions.length) return null;
-    return { ...pack, ...common, compose: isSkb ? `${pack.questions.length} soal ${skbMeta(field).short}` : pack.compose,
-      title: `Simulasi ${label} · Hari ${day}`, forceTimed: true };
   }
-  const fallback = isSkb ? BANK[field] : Object.keys(FULL_MIX).flatMap(c => BANK['SKD_' + c] || []);
-  const targeted = weaknessQuestions(scope);
-  const qs = targeted.length ? targeted : selectQuestions(shuffle(fallback || []), 12);
-  if (!qs.length) return null;
-  return { ...common, group: 'PLAN', kind: 'CAT', mode: 'PLAN', adaptive: true,
-    title: `Latihan ${label} · Hari ${day}`, compose: targeted.length ? `${qs.length} soal baru dari topik prioritas` : `${qs.length} soal campuran untuk pemetaan awal`,
-    questions: qs, minutes: Math.max(10, qs.length) };
+  const out = (ids || []).map(id => idx.get(questions.resolve(id))).filter(Boolean);
+  return out.length ? out : builder();
 }
 
-function renderCombinedPlan(cfg) {
-  const field = 'SKB_' + cfg.cat;
-  const fieldName = skbMeta(field).short;
-  const count = Math.min(SKB_SIZE, bankLen(field));
-  const preferred = targetPreference();
-  const canPractice = targetSkbKeys().includes(field);
-  const rows = COMBINED_DAYS.map((title, i) => {
-    const day = i + 1, sim = isSimulationDay(day);
-    const skd = combinedKey(cfg, day, 'SKD'), skb = combinedKey(cfg, day, 'SKB');
-    return `<details class="mb-3 rounded-2xl border border-base-300 bg-base-100 p-3" ${!results[skd] || !results[skb] ? 'data-pending' : ''}>
-      <summary class="cursor-pointer text-sm font-extrabold">Hari ${day} · ${title} · ${Number(!!results[skd]) + Number(!!results[skb])}/2 tugas</summary>
-      <div class="mt-3 space-y-2">
-        ${planPackRow(skd, sim ? 'Tryout SKD lengkap' : 'Latihan terarah SKD', sim ? '110 soal · 100 menit' : 'Berdasarkan hasil terbaru jika tersedia', results[skd], 'SKD')}
-        ${canPractice ? planPackRow(skb, sim ? 'Simulasi SKB ' + fieldName : 'Latihan terarah ' + fieldName,
-          sim ? `${count} soal · target ${Math.ceil(count * SKB_TARGET)} benar` : 'Berdasarkan hasil terbaru jika tersedia', results[skb], 'SKB')
-          : '<p class="text-sm text-base-content/70">Bank soal bidang ini belum tersedia di perangkat ini. Pilih bidang lain lewat Atur planning.</p>'}
-      </div></details>`;
-  }).join('');
-  shell('planning', `<div class="mx-auto max-w-xl">
-    ${pageHead('Planning 7 Hari', `SKD 505/550 · SKB ${esc(fieldName)} 90%`)}
-    ${preferred.bucket === field && preferred.role ? `<p class="mb-3 text-sm text-slate-600">Target jabatan <b>${esc(preferred.role)}</b></p>` : ''}
-    ${rows}
-    <div class="pl-actions">
-      <button type="button" class="lx-btn lx-blue" onclick="App.planSetup()">Atur planning</button>
-      <button type="button" class="lx-btn lx-red" onclick="App.planReset()">Reset planning</button>
-    </div></div>`);
-  const current = $('#app details[data-pending]');
-  if (current) current.open = true;
+function planPackByKey(key) {
+  const cfg = planCfg;
+  if (!cfg || !key || key.indexOf('PLAN-' + cfg.at + '-') !== 0) return null;
+  const days = planBuild(cfg);
+
+  // 1. Cek paket gabungan GABUNG (checkpoint SKD/SKB atau drill harian)
+  if (cfg.test === 'GABUNG') {
+    const mDrill = new RegExp(`^PLAN-${cfg.at}-GABUNG-(\\d+)-DRILL$`).exec(key);
+    if (mDrill) {
+      const day = days[Number(mDrill[1]) - 1];
+      if (!day || day.kind !== 'learn') return null;
+      const qs = planEnsureSlotQs(cfg, 'DR-' + day.no, () => {
+        const pool = day.topics.flatMap(materiPool);
+        return planPickStratified(pool, PLAN_DRILL_N, cfg.at + 'dr' + day.no, day.weakSubs || []);
+      });
+      if (!qs.length) return null;
+      return {
+        key, group: 'PLAN', kind: 'CAT', mode: 'PLAN', plan: true, planDay: day.no, planPhase: 'learn', adaptive: true,
+        skbBucket: planHasSkbBank(cfg) ? 'SKB_' + cfg.cat : null,
+        title: `Latihan Kelemahan · Hari ${day.no}`,
+        compose: `${qs.length} soal terarah dari topik kelemahan Hari ${day.no}`,
+        questions: qs, minutes: Math.max(15, qs.length)
+      };
+    }
+    const mChk = /-GABUNG-(\d+)-(SKD|[A-Z0-9_]+)$/.exec(key);
+    if (!mChk) return null;
+    const dayNo = Number(mChk[1]), isSkb = mChk[2] !== 'SKD', field = 'SKB_' + cfg.cat;
+    if (isSkb && (mChk[2] !== cfg.cat || !planHasSkbBank(cfg))) return null;
+    const day = days[dayNo - 1] || { no: dayNo, kind: dayNo === 1 ? 'diagnostic' : (dayNo === cfg.days ? 'final' : 'retest') };
+    const phase = day.kind === 'learn' ? 'retest' : day.kind;
+    const prevSnap = cfg.phases?.[day.phaseFrom ? day.phaseFrom - 1 : 1];
+    const preferSubs = prevSnap?.weakSubs || [];
+    if (!isSkb) {
+      if (phase === 'final') {
+        const qs = planEnsureSlotQs(cfg, `G-SKD-${dayNo}`, () => planBuildSkdMix(FULL_MIX.TWK, FULL_MIX.TIU, FULL_MIX.TKP, cfg.at + 'fskd' + dayNo, preferSubs));
+        return { key, group: 'SKD_FULL', kind: 'FULL', mode: 'SKD', plan: true, planDay: dayNo, planPhase: 'final', planRole: 'SKD', forceTimed: true, title: `Final Try Out SKD · Hari ${dayNo}`, compose: `${qs.length} soal (30 TWK · 35 TIU · 45 TKP)`, questions: qs, minutes: 100 };
+      }
+      const mix = phase === 'diagnostic' ? [15, 15, 15] : [20, 20, 20];
+      const qs = planEnsureSlotQs(cfg, `G-SKD-${dayNo}`, () => planBuildSkdMix(mix[0], mix[1], mix[2], cfg.at + 'gskd' + dayNo, preferSubs));
+      return {
+        key, group: 'SKD_FULL', kind: 'FULL', mode: 'SKD', plan: true, planDay: dayNo, planPhase: phase, planRole: 'SKD',
+        title: phase === 'diagnostic' ? 'Tes Kelemahan Awal SKD · Hari 1' : `Evaluasi Ulang SKD · Hari ${dayNo}`,
+        compose: `${qs.length} soal (${mix[0]} TWK · ${mix[1]} TIU · ${mix[2]} TKP) untuk memetakan kelemahan`,
+        questions: qs, minutes: qs.length
+      };
+    }
+    const pool = BANK[field] || [], short = skbMeta(field).short;
+    if (phase === 'final') {
+      const reserved = reserveFinalSkb(cfg);
+      const count = Math.min(SKB_SIZE, pool.length);
+      const qs = reserved.length >= count ? reserved.slice(0, count) : reserved.concat(planPickStratified(pool, count - reserved.length, cfg.at + 'fskb' + dayNo, preferSubs, new Set(reserved.map(questions.key))));
+      return { key, group: field, kind: 'CAT', mode: 'SKB', skbBucket: field, plan: true, planDay: dayNo, planPhase: 'final', planRole: 'SKB', forceTimed: true, title: `Final Try Out SKB ${short} · Hari ${dayNo}`, compose: `${qs.length} soal SKB ${short}`, questions: qs, minutes: Math.max(20, qs.length) };
+    }
+    const targetN = phase === 'diagnostic' ? Math.min(30, pool.length) : Math.min(45, pool.length);
+    const qs = planEnsureSlotQs(cfg, `G-SKB-${dayNo}`, () => planPickStratified(pool, targetN, cfg.at + 'gskb' + dayNo, preferSubs));
+    return {
+      key, group: field, kind: 'CAT', mode: 'SKB', skbBucket: field, plan: true, planDay: dayNo, planPhase: phase, planRole: 'SKB',
+      title: phase === 'diagnostic' ? `Tes Kelemahan Awal SKB ${short} · Hari 1` : `Evaluasi Ulang SKB ${short} · Hari ${dayNo}`,
+      compose: `${qs.length} soal merata seluruh materi ${short}`, questions: qs, minutes: Math.max(20, qs.length)
+    };
+  }
+
+  // 2. Paket Planning SKD atau SKB murni
+  const mChk = new RegExp(`^PLAN-${cfg.at}-CHK-(\\d+)$`).exec(key);
+  if (mChk) {
+    const dayNo = Number(mChk[1]);
+    const day = days[dayNo - 1];
+    if (!day) return null;
+    const phase = day.kind;
+    const prevSnap = day.phaseFrom ? cfg.phases?.[day.phaseFrom - 1] : null;
+    const preferSubs = prevSnap?.weakSubs || [];
+    if (cfg.test === 'SKD') {
+      if (phase === 'final') {
+        const qs = planEnsureSlotQs(cfg, `CHK-${dayNo}`, () => planBuildSkdMix(FULL_MIX.TWK, FULL_MIX.TIU, FULL_MIX.TKP, cfg.at + 'chk' + dayNo, preferSubs));
+        return { key, group: 'SKD_FULL', kind: 'FULL', mode: 'SKD', plan: true, planDay: dayNo, planPhase: 'final', forceTimed: true, title: `Try Out Final SKD Lengkap · Hari ${dayNo}`, compose: `${qs.length} soal (30 TWK · 35 TIU · 45 TKP) standar CAT BKN`, questions: qs, minutes: 100 };
+      }
+      const mix = phase === 'diagnostic' ? [15, 15, 15] : [20, 20, 20];
+      const qs = planEnsureSlotQs(cfg, `CHK-${dayNo}`, () => planBuildSkdMix(mix[0], mix[1], mix[2], cfg.at + 'chk' + dayNo, preferSubs));
+      return {
+        key, group: 'SKD_FULL', kind: 'FULL', mode: 'SKD', plan: true, planDay: dayNo, planPhase: phase,
+        title: phase === 'diagnostic' ? 'Tes Kelemahan Awal SKD · Hari 1' : `Try Out Evaluasi Ulang SKD · Hari ${dayNo}`,
+        compose: `${qs.length} soal (${mix[0]} TWK · ${mix[1]} TIU · ${mix[2]} TKP) untuk memetakan materi lemah`,
+        questions: qs, minutes: qs.length
+      };
+    }
+    const field = 'SKB_' + cfg.cat, pool = BANK[field] || [], short = skbMeta(field).short;
+    const count = phase === 'diagnostic' ? Math.min(30, pool.length) : phase === 'retest' ? Math.min(45, pool.length) : Math.min(50, pool.length);
+    const qs = planEnsureSlotQs(cfg, `CHK-${dayNo}`, () => planPickStratified(pool, count, cfg.at + 'chkb' + dayNo, preferSubs));
+    if (!qs.length) return null;
+    return {
+      key, group: field, kind: 'CAT', mode: 'SKB', skbBucket: field, plan: true, planDay: dayNo, planPhase: phase,
+      forceTimed: phase === 'final',
+      title: phase === 'diagnostic' ? `Tes Kelemahan Awal SKB ${short} · Hari 1` : phase === 'final' ? `Try Out Final SKB ${short} · Hari ${dayNo}` : `Evaluasi Ulang SKB ${short} · Hari ${dayNo}`,
+      compose: `${qs.length} soal SKB ${short}`, questions: qs, minutes: Math.max(20, qs.length)
+    };
+  }
+
+  // 3. Latihan Kelemahan Harian (DR-dayNo)
+  const mDr = new RegExp(`^PLAN-${cfg.at}-DR-(\\d+)$`).exec(key);
+  if (mDr) {
+    const day = days[Number(mDr[1]) - 1];
+    if (!day || day.kind !== 'learn') return null;
+    const qs = planEnsureSlotQs(cfg, 'DR-' + day.no, () => {
+      const pool = (day.topics || []).flatMap(materiPool);
+      const fallback = pool.length ? pool : planPoolTopics(cfg).flatMap(materiPool);
+      return planPickStratified(fallback, PLAN_DRILL_N, cfg.at + 'dr' + day.no, day.weakSubs || []);
+    });
+    if (!qs.length) return null;
+    return {
+      key, group: 'PLAN', kind: 'CAT', mode: 'PLAN', plan: true, planDay: day.no, planPhase: 'learn', adaptive: true,
+      skbBucket: cfg.test === 'SKB' ? 'SKB_' + cfg.cat : null,
+      title: `Latihan Soal Kelemahan · Hari ${day.no}`,
+      compose: `${qs.length} soal dari materi prioritas Hari ${day.no}`,
+      questions: qs, minutes: Math.max(15, qs.length)
+    };
+  }
+  return null;
 }
 
-/* ---------- halaman Planning ---------- */
+function planOnCheckpointFinish(curExam, r, curWeakFromExam) {
+  if (!planCfg || !curExam?.pack?.plan || curExam.pack.planPhase === 'learn') return;
+  const dayNo = Number(curExam.pack.planDay) || 1;
+  const weakGroups = new Set();
+  if (curExam.pack.kind === 'FULL') {
+    ['TWK', 'TIU', 'TKP'].forEach(c => {
+      const item = r.sum[c];
+      if (!item) return;
+      const scaledPg = PASSING[c] * (item.max / (FULL_MIX[c] * 5));
+      if (item.score < scaledPg || (item.score / item.max) < 0.78) weakGroups.add(c);
+    });
+  } else if (curExam.pack.mode === 'SKB' && r.max && (r.total / r.max) < 0.8) {
+    weakGroups.add('SKB');
+  }
+  const weakSubs = new Set();
+  curWeakFromExam.forEach(w => {
+    weakGroups.add(w.t.group);
+    (w.subs || []).forEach(s => weakSubs.add(s));
+  });
+  const weakIds = curWeakFromExam.map(w => w.t.id);
+  const pct = r.max ? Math.round((r.total / r.max) * 100) : 0;
+  const prev = planCfg.phases?.[dayNo];
+  const mergedIds = [...new Set([...(prev?.weakIds || []), ...weakIds])];
+  const mergedSubs = [...new Set([...(prev?.weakSubs || []), ...weakSubs])].slice(0, 8);
+  const mergedGroups = [...new Set([...(prev?.weakGroups || []), ...weakGroups])];
+  const summary = curWeakFromExam.length
+    ? `Kelemahan terdeteksi: ${curWeakFromExam.slice(0, 3).map(w => `${w.t.group} (${w.t.title})`).join(', ')}`
+    : `Skor ${pct}% — fokus pertajam materi prioritas.`;
+  planCfg.phases = planCfg.phases || {};
+  planCfg.phases[dayNo] = { at: Date.now(), pct, weakGroups: mergedGroups, weakIds: mergedIds, weakSubs: mergedSubs, summary };
+  store.set(PLAN_KEY, planCfg);
+
+  // Hapus cache soal drill fase setelah checkpoint agar digenerate ulang mengikuti kelemahan terbaru
+  if (planQ && planQ.at === planCfg.at && planQ.sets) {
+    const days = planBuild(planCfg);
+    days.filter(d => d.kind === 'learn' && d.phaseCheckpoint === dayNo).forEach(d => {
+      delete planQ.sets['DR-' + d.no];
+    });
+    store.set(PLANQ_KEY, planQ);
+  }
+}
+
+/* ---------- Halaman Planning Adaptif ---------- */
 function renderPlanning() {
   const cfg = planCfg;
-  if (cfg?.test === 'GABUNG') { renderCombinedPlan(cfg); return; }
   const days = cfg ? planBuild(cfg) : [];
   const progs = days.map(planDayProg);
   const nowIdx = progs.findIndex(p => !p.full), allDone = days.length > 0 && nowIdx === -1;
-  const mean = progs.length ? progs.reduce((a, p) => a + p.pct, 0) / progs.length : 0;
-  const pctAll = allDone ? 100 : Math.min(99, Math.floor(mean));
+  const pctAll = allDone ? 100 : (progs.length ? Math.min(99, Math.floor(progs.reduce((a, p) => a + p.pct, 0) / progs.length)) : 0);
   const nDaysDone = progs.filter(p => p.full).length;
 
   const actions = `
@@ -1816,43 +2576,94 @@ function renderPlanning() {
 
   let body = '';
   if (!cfg || !days.length) {
+    const endedBanner = planEnded
+      ? `<div class="km-weak-home mb-4">
+           <div class="text-xs font-extrabold uppercase tracking-wide text-amber-900">✓ Planning ${planEnded.days || ''} Hari Telah Diselesaikan</div>
+           <p class="mt-1 text-xs text-slate-700">Materi yang masih lemah sudah ditandai kuning lembut di halaman Materi dan Beranda untuk dipelajari sebelum tes.</p>
+           ${weakMateriList('ALL').length ? `<div class="mt-2.5 flex flex-wrap gap-2"><button type="button" class="btn btn-warning btn-sm font-extrabold" onclick="App.openKelemahanMateri()">📖 Lihat Kelemahan (${weakMateriList('ALL').length})</button><button type="button" class="btn btn-outline btn-sm" onclick="App.goWeakMateri()">Buka Kartu Kuning</button></div>` : ''}
+         </div>`
+      : '';
     body = `
+    ${endedBanner}
     <div class="pl-empty">
       <span class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-sky-100 text-sky-700">${icon('calendar', 'h-7 w-7')}</span>
-      <h2 class="mt-3 text-base font-extrabold text-slate-900">Belum ada planning</h2>
-      <p class="mx-auto mt-1 text-xs leading-relaxed text-slate-600" style="max-width:20rem">Tekan <b>Atur planning</b>, pilih tes (SKD atau SKB) dan berapa hari kamu mau belajar (maks. ${PLAN_MAX} hari). Materi dibagi otomatis, dan tiap bagian ditutup dengan <b>Try Out ${PLAN_TO_N} soal</b>.</p>
+      <h2 class="mt-3 text-base font-extrabold text-slate-900">Belum ada planning adaptif</h2>
+      <p class="mx-auto mt-1 text-xs leading-relaxed text-slate-600" style="max-width:22rem">Pilih durasi (5–${PLAN_INIT_MAX} hari). <b>Hari 1 selalu dimulai Tes Pemetaan Kelemahan</b>, lalu materi &amp; soal disusun otomatis mengikuti kelemahanmu disisipi Try Out Ulang berkala hingga Try Out Final.</p>
     </div>${actions}`;
   } else {
-    const label = cfg.test === 'SKB' ? `SKB ${esc(planCatName(cfg.cat))}` : 'SKD';
-    const split = planSummary(days).map(r => `${esc(r.g)} ${r.learn} hari + Try Out`).join(' · ');
+    const label = cfg.test === 'SKB' ? `SKB ${esc(planCatName(cfg.cat))}` : cfg.test === 'GABUNG' ? `SKD + SKB ${esc(skbMeta('SKB_' + cfg.cat).short)}` : 'SKD Lengkap';
     const cur = allDone ? days.length : nowIdx + 1;
+    const cpDoneList = days.filter(d => d.kind !== 'learn' && cfg.phases?.[d.no]).sort((a, b) => b.no - a.no);
+    const latestCp = cpDoneList[0] ? cfg.phases[cpDoneList[0].no] : null;
+    const scopeWeak = weakMateriList(cfg.test === 'SKB' ? 'SKB_' + cfg.cat : cfg.test === 'SKD' ? 'SKD' : 'ALL');
+
+    const weakCard = latestCp
+      ? `<div class="pl-phase-card ${scopeWeak.length ? 'warn' : ''}">
+           <div class="flex flex-wrap items-center justify-between gap-2">
+             <div class="text-xs font-extrabold uppercase tracking-wide">${scopeWeak.length ? `⚠ Peta Kelemahan Terdeteksi (Tes Hari ${cpDoneList[0].no})` : `✓ Hasil Tes Hari ${cpDoneList[0].no}`}</div>
+             ${scopeWeak.length ? `<button type="button" class="btn btn-warning btn-xs font-extrabold" onclick="App.openKelemahanMateri()">📖 Lihat Kelemahan (${scopeWeak.length})</button>` : ''}
+           </div>
+           <p class="mt-1 text-xs leading-relaxed">${esc(latestCp.summary || '')}</p>
+           ${latestCp.weakSubs?.length ? `<div class="mt-1.5 flex flex-wrap gap-1">${latestCp.weakSubs.slice(0, 4).map(s => `<span class="materi-weak-badge">${esc(s)}</span>`).join('')}</div>` : ''}
+         </div>`
+      : `<div class="pl-phase-card">
+           <div class="text-xs font-extrabold uppercase tracking-wide text-sky-900">📌 Langkah 1: Tes Pemetaan Kelemahan</div>
+           <p class="mt-1 text-xs leading-relaxed text-slate-600">Mulai dari <b>Hari 1</b> terlebih dahulu agar sistem mengetahui persis materi SKD/SKB mana yang masih lemah dan otomatis menyusun jadwal Hari 2–${days.length - 1}.</p>
+         </div>`;
+
+    const finalDay = days[days.length - 1];
+    const finalProg = progs[days.length - 1];
+    const finalDone = finalDay && finalDay.kind === 'final' && finalProg?.full;
+    const finalWeak = scopeWeak.slice(0, 6);
+    const finalBox = finalDone
+      ? `<div id="plan-final-box" class="pl-final-box ${finalWeak.length ? '' : 'ok'}">
+           <div class="text-sm font-extrabold">${finalWeak.length ? `⚠ Try Out Final Selesai — Masih Ada ${scopeWeak.length} Materi Perlu Penguatan` : '🎉 Try Out Final Selesai — Kesiapan Sudah Kuat!'}</div>
+           <p class="mt-1 text-xs leading-relaxed opacity-85">${finalWeak.length
+             ? 'Jika masih ada waktu menjelang tes, tambah durasi planning agar sistem menyusun siklus perbaikan baru. Jika sudah mendekati tenggat waktu, akhiri planning — semua kelemahanmu sudah ditandai kuning di Materi & Beranda.'
+             : 'Anda bisa menambah hari penguatan akhir atau menyelesaikan planning sekarang.'}</p>
+           ${finalWeak.length ? `<div class="mt-2 flex flex-wrap gap-1.5">${finalWeak.map(w => `<button type="button" class="materi-weak-badge cursor-pointer" onclick="App.rangkuman('${esc(w.id)}')">⚠ ${esc(w.title)}${w.pct != null ? ` (${w.pct}%)` : ''}</button>`).join('')}</div>` : ''}
+           <div class="mt-3 flex flex-wrap gap-2">
+             ${cfg.days + 3 <= PLAN_MAX ? '<button type="button" class="btn btn-primary btn-sm" onclick="App.planExtend(3)">➕ Tambah +3 Hari</button>' : ''}
+             ${cfg.days + 5 <= PLAN_MAX ? '<button type="button" class="btn btn-primary btn-sm" onclick="App.planExtend(5)">➕ Tambah +5 Hari</button>' : ''}
+             ${cfg.days + 7 <= PLAN_MAX ? '<button type="button" class="btn btn-outline btn-sm" onclick="App.planExtend(7)">+7 Hari</button>' : ''}
+             <button type="button" class="btn btn-warning btn-sm font-extrabold" onclick="App.planFinishWeakness()">✓ Sudahi Planning &amp; Simpan Kelemahan</button>
+           </div>
+         </div>`
+      : '';
+
     const nodes = days.map((d, i) => {
-      const p = progs[i], isNow = i === nowIdx, isTo = d.kind === 'tryout';
-      const st = (p.full ? 'done' : isNow ? 'now' : 'todo' + (p.pct ? ' part' : '')) + (isTo ? ' to' : '');
-      const sub = isTo ? `Try Out ${esc(d.g)} · ${d.n} soal campuran` : `${esc(d.label)} · ${d.units.length} langkah${d.drill ? ' + latihan' : ''}`;
-      const inner = p.full ? icon('tick', 'h-8 w-8') : isTo ? icon('clipboard', 'h-7 w-7') : `<span class="pl-pct">${p.pct}<small>%</small></span>`;
+      const p = progs[i], isNow = i === nowIdx;
+      const roleCls = d.kind === 'diagnostic' ? 'diag' : d.kind === 'retest' ? 'retest' : d.kind === 'final' ? 'to' : '';
+      const st = (p.full ? 'done' : isNow ? 'now' : 'todo' + (p.pct ? ' part' : '')) + (roleCls ? ' ' + roleCls : '');
+      const sub = d.kind === 'diagnostic' ? 'Tes kelemahan awal'
+        : d.kind === 'final' ? 'Try Out Final + evaluasi akhir'
+        : d.kind === 'retest' ? 'Test Ulang · evaluasi progres'
+        : d.ready ? `${d.topics.length} materi lemah + soal` : `Menunggu Tes Hari ${d.phaseCheckpoint}`;
+      const inner = p.full ? icon('tick', 'h-8 w-8') : d.kind !== 'learn' ? icon('clipboard', 'h-7 w-7') : `<span class="pl-pct">${p.pct}<small>%</small></span>`;
       return `
       <div class="lx-step" style="--x:${PLAN_XS[i % PLAN_XS.length]}px">
-        <button type="button" class="lx-node pl-node ${st}" style="--pct:${p.pct}" onclick="App.planDay(${d.no})" aria-label="Hari ${d.no}: ${isTo ? 'Try Out ' + esc(d.g) : esc(d.label)}, ${p.full ? 'tuntas' : p.pct + ' persen tuntas'}">
-          ${isNow ? `<span class="lx-bubble">${p.pct ? 'LANJUT' : 'MULAI'}</span>` : ''}${inner}
+        <button type="button" class="lx-node pl-node ${st}" style="--pct:${p.pct}" onclick="App.planDay(${d.no})" aria-label="Hari ${d.no}: ${esc(d.label)}">
+          ${isNow ? `<span class="lx-bubble">${d.kind === 'diagnostic' ? 'TES AWAL' : p.pct ? 'LANJUT' : 'MULAI'}</span>` : ''}${inner}
         </button>
-        <div class="lx-label ${p.full || isNow || p.pct ? '' : 'dim'}">Hari ${d.no}</div>
-        <div class="pl-sub ${isTo ? 'to' : ''}">${sub}</div>
+        <div class="lx-label ${p.full || isNow || p.pct ? '' : 'dim'}">Hari ${d.no} · ${d.kind === 'diagnostic' ? 'Diagnostik' : d.kind === 'retest' ? 'Test Ulang' : d.kind === 'final' ? 'Final' : 'Belajar'}</div>
+        <div class="pl-sub ${d.kind === 'final' ? 'to' : ''}">${esc(sub)}</div>
       </div>`;
     }).join('');
     const finalNode = `
       <div class="lx-step" style="--x:${PLAN_XS[days.length % PLAN_XS.length]}px">
         <div class="lx-node final ${allDone ? '' : 'lock'}" role="img" aria-label="${allDone ? 'Planning selesai' : 'Target planning'}">${icon('trophy', 'h-8 w-8')}</div>
-        <div class="lx-label ${allDone ? '' : 'dim'}">${allDone ? 'Planning selesai! 🎉' : 'Target selesai'}</div>
+        <div class="lx-label ${allDone ? '' : 'dim'}">${allDone ? 'Siklus selesai! 🎉' : 'Target akhir'}</div>
       </div>`;
+
+    const cps = planComputeCheckpoints(cfg);
     body = `
     <div class="lx-hero">
       <div class="flex items-center justify-between gap-2">
         <span class="badge border-0 bg-white/20 font-bold text-white">${label}</span>
         <span class="text-xs font-bold text-white/90">Hari ${cur} dari ${days.length}</span>
       </div>
-      <h2 class="mt-2 text-xl font-extrabold leading-snug">Planning ${days.length} hari</h2>
-      <p class="mt-1 text-xs leading-relaxed text-white/85">${split}</p>
+      <h2 class="mt-2 text-xl font-extrabold leading-snug">Planning ${days.length} Hari</h2>
+      <p class="mt-1 text-xs leading-relaxed text-white/85">Tes Awal (Hari 1) → Materi &amp; Soal Kelemahan → Test Ulang (Hari ${cps.slice(1, -1).join(', ') || '-'}) → Final (Hari ${days.length})</p>
       <div class="mt-3 flex items-center gap-3">
         <div class="lx-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pctAll}"><div class="lx-fill" style="width:${Math.max(pctAll, 4)}%"></div></div>
         <span class="shrink-0 text-xs font-bold text-white">${pctAll}%</span>
@@ -1860,6 +2671,8 @@ function renderPlanning() {
       <p class="mt-1.5 text-[0.7rem] font-semibold text-white/85">${nDaysDone} dari ${days.length} hari tuntas</p>
       ${allDone ? '' : `<button type="button" class="lx-btn lx-green mt-3" onclick="App.planDay(${cur})">${icon('play', 'h-5 w-5')} ${progs[nowIdx].pct ? 'Lanjutkan' : 'Mulai'} Hari ${cur}</button>`}
     </div>
+    ${finalBox}
+    ${weakCard}
     ${actions}
     <div class="lx-path" aria-label="Jalur planning belajar">${nodes}${finalNode}</div>`;
   }
@@ -1867,35 +2680,42 @@ function renderPlanning() {
   shell('planning', `
     ${breadcrumb([['#/', 'Beranda'], [null, 'Planning']])}
     <div class="mx-auto max-w-xl">
-      ${pageHead('Planning Belajar', `Atur berapa hari kamu belajar. Materi dibagi otomatis per hari, tiap bagian ditutup Try Out ${PLAN_TO_N} soal campuran.`)}
+      ${pageHead('Planning Belajar Adaptif', 'Hari 1 tes kelemahan, materi & soal menyesuaikan hasilmu secara berkala sampai siap ujian.')}
       ${body}
     </div>
   `);
 }
 
-/* ---------- lembar "Atur planning" ---------- */
+/* ---------- Lembar "Atur planning" ---------- */
 function planPaintSetup() {
   const d = planDlg('dlg-plan'), dr = planDraft, cats = planFieldOptions(dr.test);
   const box = d.querySelector('.modal-box'), keep = box ? box.scrollTop : 0;
-  const combined = dr.test === 'GABUNG';
   const okSave = dr.test === 'SKD' || cats.includes(dr.cat);
-  const minD = planMinDays(dr), maxD = okSave || combined ? planMaxDays(dr) : PLAN_MAX;
+  const minD = PLAN_MIN, maxD = PLAN_INIT_MAX;
   dr.days = Math.max(minD, Math.min(dr.days, maxD));
-  const days = okSave && !combined ? planBuild(dr) : [];
-  const prev = planSummary(days).map(r => `<li class="flex items-baseline justify-between gap-3"><span class="font-extrabold text-slate-800">${esc(r.g)}</span><span class="text-right text-slate-600">${r.learn} hari belajar + Try Out<span class="block text-[0.7rem] text-slate-500">±${planRange(r.min, r.max)} langkah/hari${r.drill ? ` + latihan harian ${PLAN_DRILL_N} soal` : ''}</span></span></li>`).join('');
+  const cps = planComputeCheckpoints({ days: dr.days, baseDays: dr.days, extensions: [] });
+  const prevItems = [];
+  for (let i = 0; i < cps.length; i++) {
+    const c = cps[i];
+    if (c === 1) prevItems.push(`<li><b>Hari 1:</b> Tes Pemetaan Kelemahan Awal (${esc(dr.test)})</li>`);
+    else {
+      const prevCp = cps[i - 1];
+      if (c - prevCp > 1) prevItems.push(`<li><b>Hari ${prevCp + 1}${c - 1 > prevCp + 1 ? '–' + (c - 1) : ''}:</b> Materi &amp; soal terarah sesuai kelemahan Hari ${prevCp}</li>`);
+      prevItems.push(`<li><b>Hari ${c}:</b> ${c === dr.days ? 'Try Out Final + Tambah waktu / Sudahi' : 'Test Ulang (Evaluasi progres &amp; sisa kelemahan)'}</li>`);
+    }
+  }
   const opt = (on, act, txt, sub) => `<button type="button" class="pl-opt ${on ? 'on' : ''}" aria-pressed="${on}" onclick="${act}">${txt}${sub ? `<span class="block text-[0.68rem] font-semibold opacity-75">${sub}</span>` : ''}</button>`;
-  const nG = planLists(dr).length;
   d.innerHTML = `
   <div class="modal-box max-w-md">
     <div class="flex items-start justify-between gap-3">
       <div><h3 class="text-xl font-extrabold text-neutral">Atur planning</h3>
-      <p class="mt-0.5 text-sm text-base-content/70">Pilih jadwal gabungan 7 hari atau fokus ke satu tes.</p></div>
+      <p class="mt-0.5 text-sm text-base-content/70">Susun jadwal belajar adaptif sesuai target waktu Anda (5–30 hari).</p></div>
       <button class="btn btn-ghost btn-sm btn-circle" onclick="$('#dlg-plan').close()" aria-label="Tutup">${icon('x', 'h-4 w-4')}</button>
     </div>
 
     <div class="pl-label mt-4">Tes yang dipelajari</div>
     <div class="pl-seg">${opt(dr.test === 'SKD', "App.planSetTest('SKD')", 'SKD', 'TWK · TIU · TKP')}${opt(dr.test === 'SKB', "App.planSetTest('SKB')", 'SKB', 'Satu bidang formasi')}</div>
-    <div class="mt-2">${opt(combined, "App.planSetTest('GABUNG')", 'SKD + SKB', '7 hari · simulasi dan latihan kelemahan')}</div>
+    <div class="mt-2">${opt(dr.test === 'GABUNG', "App.planSetTest('GABUNG')", 'SKD + SKB Terpadu', '5–30 hari · tes awal, materi & evaluasi berkala')}</div>
 
     ${dr.test !== 'SKD' ? `
     <div class="pl-label mt-4">Bidang SKB</div>
@@ -1903,18 +2723,17 @@ function planPaintSetup() {
       ? cats.map(c => `<button type="button" class="pl-chip ${dr.cat === c ? 'on' : ''}" aria-pressed="${dr.cat === c}" onclick="App.planSetCat('${esc(c)}')">${esc(planCatName(c))}</button>`).join('')
       : '<span class="text-sm text-slate-500">Belum ada materi SKB.</span>'}</div>` : ''}
 
-    ${combined ? '<p class="mt-3 text-sm text-slate-600">Hari 1, 5, dan 7 untuk simulasi. Hari lainnya untuk memperbaiki hasil sebelumnya.</p>' : `
-    <div class="pl-label mt-4">Total hari (termasuk hari Try Out)</div>
+    <div class="pl-label mt-4">Total hari (${minD}–${maxD} hari)</div>
     <div class="pl-step">
       <button type="button" onclick="App.planStep(-1)" aria-label="Kurangi hari" ${dr.days <= minD ? 'disabled' : ''}>−</button>
       <input type="number" inputmode="numeric" min="${minD}" max="${maxD}" value="${dr.days}" aria-label="Jumlah hari belajar" onchange="App.planSetDays(this.value)">
       <button type="button" onclick="App.planStep(1)" aria-label="Tambah hari" ${dr.days >= maxD ? 'disabled' : ''}>+</button>
     </div>
-    <div class="pl-chips mt-3 justify-center">${[7, 14, 21, 30].filter(n => n >= minD && n <= maxD).map(n => `<button type="button" class="pl-chip ${dr.days === n ? 'on' : ''}" onclick="App.planSetDays(${n})">${n} hari</button>`).join('')}</div>
-    <p class="mt-2 text-center text-xs text-slate-500">Minimal ${minD} hari (${nG} hari Try Out + hari belajar)${maxD < PLAN_MAX ? `; materi ini baru ${planTotal(dr)} langkah, jadi maksimal ${maxD} hari.` : `, maksimal ${PLAN_MAX} hari.`}</p>`}
+    <div class="pl-chips mt-3 justify-center">${[5, 7, 10, 14, 21, 30].map(n => `<button type="button" class="pl-chip ${dr.days === n ? 'on' : ''}" onclick="App.planSetDays(${n})">${n} hari</button>`).join('')}</div>
 
-    ${prev ? `<div class="pl-prev"><div class="pl-label" style="margin-bottom:.4rem">Pembagian otomatis</div><ul class="space-y-2">${prev}</ul>
-      <p class="mt-2 text-[0.7rem] leading-snug text-slate-500">Try Out: ${PLAN_TO_N} soal campuran dari seluruh materi kelompok itu, diambil dari soal yang belum pernah muncul di langkah materi.</p></div>` : ''}
+    <div class="pl-prev"><div class="pl-label" style="margin-bottom:.4rem">Pola siklus ${dr.days} hari</div>
+      <ul class="space-y-1.5 text-xs text-slate-700">${prevItems.join('')}</ul>
+    </div>
 
     <div class="modal-action act-stack">
       <button class="btn btn-ghost" onclick="$('#dlg-plan').close()">Batal</button>
@@ -1926,7 +2745,7 @@ function planPaintSetup() {
   if (!d.open) d.showModal();
 }
 
-/* ---------- lembar detail satu hari ---------- */
+/* ---------- Lembar detail satu hari ---------- */
 function planPackRow(key, title, sub, rec, tag) {
   const st = rec ? `Skor terakhir ${rec.last.score}/${rec.last.max} · terbaik ${rec.best.score}` : 'Belum dikerjakan';
   return `
@@ -1942,41 +2761,77 @@ function planPackRow(key, title, sub, rec, tag) {
 }
 function planDayOpen(no) {
   if (!planCfg) return;
-  const day = planBuild(planCfg)[no - 1]; if (!day) return;
-  const p = planDayProg(day), isTo = day.kind === 'tryout';
-  let rows = '', cta = '';
-  if (isTo) {
-    rows = planPackRow(day.packKey, `Try Out ${day.g === 'SKB' ? 'SKB ' + planCatName(planCfg.cat) : day.g}`,
-      `${day.n} soal campuran dari seluruh materi (Hari ${day.fromNo}–${day.toNo}). Soal baru yang belum muncul di langkah materi.`, p.rec, 'TRY OUT');
-    cta = `<button class="btn btn-primary" onclick="App.planPack('${esc(day.packKey)}')">${p.full ? 'Ulangi Try Out' : 'Mulai Try Out'} ${icon('arrowR', 'h-4 w-4')}</button>`;
+  const days = planBuild(planCfg), day = days[no - 1];
+  if (!day) return;
+  const p = planDayProg(day);
+  let rows = '', cta = '', note = '';
+  if (day.kind !== 'learn') {
+    const desc = day.kind === 'diagnostic'
+      ? 'Tes pemetaan awal untuk menemukan kelemahan sub-topik Anda. Setelah selesai, jadwal belajar berikutnya langsung disesuaikan.'
+      : day.kind === 'final'
+      ? 'Try Out Final untuk menguji seluruh hasil perbaikan Anda serta menentukan opsi tambah waktu atau selesai.'
+      : `Evaluasi ulang setelah belajar Hari ${day.phaseFrom}–${day.phaseTo}. Jika masih ada materi lemah, fase berikutnya fokus ke sisa kelemahan itu.`;
+    note = `<p class="mt-2 text-xs leading-relaxed text-slate-600">${desc}</p>`;
+    if (planCfg.test === 'GABUNG') {
+      const skdK = combinedKey(planCfg, day.no, 'SKD'), skbK = combinedKey(planCfg, day.no, 'SKB');
+      const hasSkb = planHasSkbBank(planCfg), short = hasSkb ? skbMeta('SKB_' + planCfg.cat).short : '';
+      rows = planPackRow(skdK, day.kind === 'diagnostic' ? 'Tes Diagnostik SKD' : day.kind === 'final' ? 'Final Try Out SKD Lengkap' : 'Test Ulang SKD',
+        day.kind === 'final' ? '110 soal · 100 menit' : `${day.kind === 'diagnostic' ? 45 : 60} soal proporsional TWK · TIU · TKP`, p.rec, 'SKD')
+        + (hasSkb ? `<div class="mt-2"></div>` + planPackRow(skbK, day.kind === 'diagnostic' ? `Tes Diagnostik SKB ${short}` : day.kind === 'final' ? `Final SKB ${short}` : `Test Ulang SKB ${short}`,
+          'Mengukur penguasaan tiap sub-bab bidang formasi', p.skbRec, 'SKB') : '');
+      cta = `<button class="btn btn-primary" onclick="App.planPack('${esc(!p.rec ? skdK : (hasSkb && !p.skbRec ? skbK : skdK))}')">${p.full ? 'Ulangi Tes' : 'Mulai Tes'} ${icon('arrowR', 'h-4 w-4')}</button>`;
+    } else {
+      const gName = planCfg.test === 'SKB' ? `SKB ${planCatName(planCfg.cat)}` : 'SKD';
+      const skbMax = planCfg.test === 'SKB' ? (BANK['SKB_' + planCfg.cat] || []).length : 0;
+      const cnt = planCfg.test === 'SKD'
+        ? (day.kind === 'diagnostic' ? 45 : day.kind === 'retest' ? 60 : 110)
+        : Math.min(day.kind === 'diagnostic' ? 30 : day.kind === 'retest' ? 45 : 50, skbMax || 50);
+      rows = planPackRow(day.packKey, `${day.label} · ${gName}`, `${cnt} soal campuran terstruktur`, p.rec, day.kind === 'diagnostic' ? 'DIAGNOSTIK' : day.kind === 'final' ? 'FINAL TRY OUT' : 'TEST ULANG');
+      cta = `<button class="btn btn-primary" onclick="App.planPack('${esc(day.packKey)}')">${p.full ? 'Ulangi Tes' : 'Mulai Tes'} ${icon('arrowR', 'h-4 w-4')}</button>`;
+    }
+    const snap = planCfg.phases?.[day.no];
+    if (snap) {
+      note += `<div class="mt-2 rounded-xl border border-amber-300 bg-amber-50 p-2.5 text-xs text-amber-900"><b>Hasil Pemetaan Hari ${day.no}:</b> ${esc(snap.summary)}</div>`;
+    }
+  } else if (!day.ready) {
+    note = `<div class="mt-2 rounded-xl border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900"><b>Menunggu Tes Hari ${day.phaseCheckpoint}:</b> Selesaikan dulu tes pemetaan/evaluasi di Hari ${day.phaseCheckpoint} agar materi dan soal Hari ${day.no} otomatis disusun sesuai kelemahanmu.</div>`;
+    cta = `<button class="btn btn-primary" onclick="$('#dlg-plan-day').close(); App.planDay(${day.phaseCheckpoint})">Buka Tes Hari ${day.phaseCheckpoint} ${icon('arrowR', 'h-4 w-4')}</button>`;
   } else {
-    const first = day.segs.find(s => !planProg(s.units).full);
-    rows = day.segs.map(s => {
-      const sp = planProg(s.units), total = stepCount(s.t);
-      const rng = s.from === s.to ? `Langkah ${s.from + 1}` : `Langkah ${s.from + 1}–${s.to + 1}`;
+    note = day.phaseSummary ? `<div class="mt-2 rounded-xl border border-amber-300 bg-amber-50 p-2.5 text-xs text-amber-900"><b>Fokus dari Evaluasi Hari ${day.phaseCheckpoint}:</b> ${esc(day.phaseSummary)}</div>` : '';
+    const wMap = weakMateriMap();
+    rows = day.topics.map(t => {
+      const rev = planTopicReviewed(planCfg, day.no, t.id);
+      const isW = wMap.has(t.id);
       return `
-    <div class="pl-row ${sp.full ? 'ok' : ''}">
-      <div class="min-w-0 flex-1">
-        <span class="inline-block rounded-full px-2 py-0.5 text-[0.65rem] font-extrabold ${catStyle(s.t.group).badge}">${s.t.group === 'SKB' ? esc('SKB ' + (s.t.skbCategory || '')) : s.t.group}</span>
-        <div class="pl-row-t mt-1">${esc(s.t.title)}</div>
-        <div class="pl-row-s">${rng} dari ${total} · ${sp.done}/${sp.n} tuntas${sp.full ? '' : ` · ${sp.pct}%`}</div>
-        <div class="lx-track"><div class="lx-fill" style="width:${sp.full ? 100 : Math.max(sp.pct, 3)}%"></div></div>
-      </div>
-      ${sp.full ? `<span class="pl-ok" aria-label="Tuntas">${icon('tick', 'h-5 w-5')}</span>` : `<button type="button" class="pl-go" onclick="App.planStudy('${esc(s.t.id)}')">${sp.done || sp.pct ? 'Lanjut' : 'Belajar'}</button>`}
-    </div>`;
-    }).join('');
-    if (day.drill) rows += planPackRow(day.drill.key, `Latihan Harian ${day.g}`, `${day.drill.n} soal baru dari materi hari ini — perbanyak latihan, rumus ${day.g} sulit kalau hanya dihafal.`, p.rec, 'LATIHAN HARIAN');
-    if (first) cta = `<button class="btn btn-primary" onclick="App.planStudy('${esc(first.t.id)}')">${p.pct ? 'Lanjutkan belajar' : 'Mulai belajar'} ${icon('arrowR', 'h-4 w-4')}</button>`;
-    else if (day.drill && !p.rec) cta = `<button class="btn btn-primary" onclick="App.planPack('${esc(day.drill.key)}')">Kerjakan latihan harian ${icon('arrowR', 'h-4 w-4')}</button>`;
+      <div class="pl-row ${rev ? 'ok' : isW ? 'materi-card-weak' : ''}">
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <span class="inline-block rounded-full px-2 py-0.5 text-[0.65rem] font-extrabold ${catStyle(t.group).badge}">${t.group === 'SKB' ? esc('SKB ' + (t.skbCategory || '')) : t.group}</span>
+            ${isW ? '<span class="materi-weak-badge">⚠ Kelemahan</span>' : ''}
+          </div>
+          <div class="pl-row-t mt-1">${esc(t.title)}</div>
+          <div class="mt-2 flex flex-wrap gap-1.5">
+            <button type="button" class="btn btn-warning btn-xs font-extrabold" onclick="$('#dlg-plan-day').close(); App.rangkuman('${esc(t.id)}')">📖 Rangkuman</button>
+            <button type="button" class="btn btn-outline btn-xs" onclick="App.planStudyDay(${day.no}, '${esc(t.id)}')">🎓 Step Materi</button>
+            <button type="button" class="btn ${rev ? 'btn-success text-white' : 'btn-ghost'} btn-xs" onclick="App.planToggleDayTopic(${day.no}, '${esc(t.id)}')">${rev ? '✓ Sudah diulang' : 'Tandai selesai'}</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('') + `<div class="mt-2"></div>` + planPackRow(day.drillKey, `Latihan Soal Kelemahan · Hari ${day.no}`, `${PLAN_DRILL_N} soal pilihan dari topik prioritas hari ini`, p.rec, 'LATIHAN SOAL');
+    const firstTopic = day.topics.find(t => !planTopicReviewed(planCfg, day.no, t.id));
+    cta = firstTopic
+      ? `<button class="btn btn-primary" onclick="App.planStudyDay(${day.no}, '${esc(firstTopic.id)}')">Belajar Materi ${icon('arrowR', 'h-4 w-4')}</button>`
+      : `<button class="btn btn-primary" onclick="App.planPack('${esc(day.drillKey)}')">${p.rec ? 'Ulangi Soal Kelemahan' : 'Kerjakan Soal Kelemahan'} ${icon('arrowR', 'h-4 w-4')}</button>`;
   }
   const d = planDlg('dlg-plan-day');
   d.innerHTML = `
   <div class="modal-box max-w-md">
     <div class="flex items-start justify-between gap-3">
-      <div><h3 class="text-xl font-extrabold text-neutral">Hari ${day.no}${isTo ? ' · Try Out' : ''}</h3>
-      <p class="mt-0.5 text-sm text-base-content/70">${isTo ? `${esc(day.g)} · ${day.n} soal campuran` : `${esc(day.label)} · ${day.units.length} langkah materi + soal${day.drill ? ' + latihan harian' : ''}`}</p></div>
+      <div><h3 class="text-xl font-extrabold text-neutral">Hari ${day.no} · ${esc(day.label)}</h3>
+      <p class="mt-0.5 text-sm text-base-content/70">${day.kind !== 'learn' ? 'Checkpoint Evaluasi' : day.ready ? `${day.topics.length} materi prioritas + ${PLAN_DRILL_N} soal kelemahan` : 'Menunggu hasil tes sebelumnya'}</p></div>
       <button class="btn btn-ghost btn-sm btn-circle" onclick="$('#dlg-plan-day').close()" aria-label="Tutup">${icon('x', 'h-4 w-4')}</button>
     </div>
+    ${note}
     <div class="mt-3 rounded-2xl ${p.full ? 'bg-green-50' : 'bg-slate-100'} p-3">
       <div class="mb-1.5 flex items-baseline justify-between gap-2 text-xs"><span class="font-semibold text-slate-600">${p.full ? 'Hari ini tuntas 🎉' : 'Tuntas hari ini'}</span><b class="text-sm text-slate-900">${p.pct}%</b></div>
       <div class="lx-track"><div class="lx-fill" style="width:${p.full ? 100 : Math.max(p.pct, 3)}%"></div></div>
@@ -1988,13 +2843,13 @@ function planDayOpen(no) {
     </div>
   </div>
   <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
-  d.showModal();
+  if (!d.open) d.showModal();
 }
 
 const planApi = {
   planSetup() {
     const c = planCfg, preferred = targetPreference().bucket.slice(4);
-    planDraft = c ? { test: c.test, cat: c.cat, days: c.days } : { test: 'GABUNG', cat: '', days: 7 };
+    planDraft = c ? { test: c.test, cat: c.cat, days: Math.min(PLAN_INIT_MAX, c.baseDays || c.days) } : { test: 'SKD', cat: '', days: 7 };
     if (preferred && planFieldOptions(planDraft.test).includes(preferred)) planDraft.cat = preferred;
     planPaintSetup();
   },
@@ -2004,7 +2859,7 @@ const planApi = {
     const cats = planFieldOptions(t);
     if (t !== 'SKD' && !cats.includes(planDraft.cat)) {
       const preferred = targetPreference().bucket.slice(4);
-      planDraft.cat = cats.includes(preferred) ? preferred : '';
+      planDraft.cat = cats.includes(preferred) ? preferred : (cats[0] || '');
     }
     planPaintSetup();
   },
@@ -2013,27 +2868,23 @@ const planApi = {
   planStep(k) { if (!planDraft) return; planDraft.days += k; planPaintSetup(); },
   planSave() {
     if (!planDraft) return;
-    const c = planSanitize(Object.assign({}, planDraft, { at: Date.now() }));
+    const c = planSanitize(Object.assign({}, planDraft, { baseDays: planDraft.days, at: Date.now(), phases: {}, extensions: [], reviewed: {} }));
     if (!c || (c.test !== 'SKD' && !planFieldOptions(c.test).includes(c.cat))) return;
-    c.days = Math.max(planMinDays(c), Math.min(c.days, planMaxDays(c)));
-    const unchanged = planCfg?.test === c.test && planCfg.cat === c.cat && planCfg.days === c.days;
-    if (unchanged || (c.test === 'GABUNG' && planCfg?.test === 'GABUNG')) c.at = planCfg.at;
-    c.updated = Date.now();
+    c.days = Math.max(PLAN_MIN, Math.min(c.days, PLAN_INIT_MAX));
+    c.baseDays = c.days;
     planCfg = c;
     store.set(PLAN_KEY, c);
+    planQ = { at: c.at, sets: {} };
+    store.set(PLANQ_KEY, planQ);
     if (c.cat) saveStudyTarget(targetPreference().role, 'SKB_' + c.cat);
-    if (c.test === 'GABUNG') reserveFinalSkb(c);
-    else if (!unchanged) {
-      planQ = null; store.del(PLANQ_KEY);
-      planGen(c);
-    }
+    if (c.test === 'GABUNG' && planHasSkbBank(c)) reserveFinalSkb(c);
     const d = $('#dlg-plan'); if (d && d.open) d.close();
-    toast(`Planning ${c.days} hari dibuat.`);
+    toast(`Planning ${c.days} Hari dibuat. Mulai dari Tes Kelemahan Hari 1!`);
     if (location.hash === '#/planning') renderPlanning(); else go('#/planning');
   },
   async planReset() {
     if (!planCfg) { toast('Belum ada planning.'); return; }
-    if (!await ask({ title: 'Reset planning?', text: 'Pengaturan planning (tes, jumlah hari, dan soal Try Out) dihapus. Progres materi dan soal yang sudah kamu kerjakan tidak ikut terhapus.', ok: 'Reset planning', danger: true })) return;
+    if (!await ask({ title: 'Reset planning?', text: 'Jadwal planning akan dihapus. Progres materi dan catatan kelemahan Anda tetap tersimpan.', ok: 'Reset planning', danger: true })) return;
     planCfg = null; planQ = null; store.set(PLAN_KEY, { at: Date.now(), reset: true }); store.del(PLANQ_KEY);
     toast('Planning direset.');
     if (location.hash === '#/planning') renderPlanning();
@@ -2043,8 +2894,49 @@ const planApi = {
     const t = MATERI.find(x => x.id === id); if (!t) return;
     const d = $('#dlg-plan-day'); if (d && d.open) d.close();
     const i = planNextStep(t);
-    if (i < 0) { toast('Semua langkah topik ini sudah selesai.'); return; }
     lessonOpen(id, i);
+  },
+  planStudyDay(dayNo, id) {
+    if (planCfg) {
+      planCfg.reviewed = planCfg.reviewed || {};
+      planCfg.reviewed[`${dayNo}:${id}`] = Date.now();
+      store.set(PLAN_KEY, planCfg);
+    }
+    this.planStudy(id);
+  },
+  planToggleDayTopic(dayNo, id) {
+    if (!planCfg) return;
+    planCfg.reviewed = planCfg.reviewed || {};
+    const k = `${dayNo}:${id}`;
+    if (planCfg.reviewed[k]) delete planCfg.reviewed[k]; else planCfg.reviewed[k] = Date.now();
+    store.set(PLAN_KEY, planCfg);
+    planDayOpen(dayNo);
+    if (location.hash === '#/planning') renderPlanning();
+  },
+  planExtend(addDays = 5) {
+    if (!planCfg) return;
+    const add = Math.max(1, Math.min(Math.round(Number(addDays) || 5), PLAN_MAX - planCfg.days));
+    if (add <= 0) { toast(`Durasi planning sudah maksimal (${PLAN_MAX} hari).`); return; }
+    planCfg.extensions = Array.isArray(planCfg.extensions) ? planCfg.extensions : [];
+    planCfg.extensions.push({ afterDay: planCfg.days, added: add, at: Date.now() });
+    planCfg.days += add;
+    planCfg.updated = Date.now();
+    store.set(PLAN_KEY, planCfg);
+    const dr = $('#dlg-result'); if (dr && dr.open) dr.close();
+    toast(`Waktu planning ditambah +${add} hari fokus sisa kelemahan!`);
+    if (location.hash === '#/planning') renderPlanning(); else go('#/planning');
+  },
+  planFinishWeakness() {
+    if (!planCfg) return;
+    const wList = weakMateriList('ALL');
+    planEnded = { at: Date.now(), test: planCfg.test, days: planCfg.days, weakIds: wList.map(w => w.id) };
+    store.set(PLAN_ENDED_KEY, planEnded);
+    planCfg = null; planQ = null;
+    store.set(PLAN_KEY, { at: Date.now(), reset: true });
+    store.del(PLANQ_KEY);
+    const dr = $('#dlg-result'); if (dr && dr.open) dr.close();
+    toast('Planning selesai! Materi kelemahan ditandai kuning lembut di Materi & Beranda.');
+    if (location.hash === '#/planning') renderPlanning(); else go('#/planning');
   },
   planPack(key) {
     const d = $('#dlg-plan-day'); if (d && d.open) d.close();
@@ -2056,20 +2948,40 @@ const planApi = {
 /* ==========================================================================
    MESIN UJIAN
    ========================================================================== */
+function shuffleQuestionOptions(q) {
+  if (!q || !Array.isArray(q.options) || q.options.length < 2) return q;
+  if (/kecukupan/i.test(q.sub || '') || /Pernyataan \(1\)|A dan B benar|opsi di atas|semua (pilihan |jawaban )?benar/i.test(q.q || '')) return q;
+  if (q.options.some(o => /\b[A-E] dan [A-E]\b|semua (di atas|benar)/i.test(String(o || '')))) return q;
+  const idx = shuffle(q.options.map((_, k) => k));
+  const inv = new Array(idx.length);
+  idx.forEach((orig, nw) => { inv[orig] = nw; });
+  const options = idx.map((orig, nw) => {
+    const raw = String(q.options[orig] || '').replace(/^[A-E]\.\s*/, '');
+    return raw.startsWith('IMG:') ? raw : `${LETTERS[nw]}. ${raw}`;
+  });
+  const scores = idx.map(orig => q.scores[orig]);
+  return Object.assign({}, q, { options, scores, ans: inv[q.ans], _letterMap: inv });
+}
 function startExam(pack, opts = {}) {
   if (pack.planSet && planQ && pack.key.startsWith('PLAN-' + planQ.at + '-')) {
     planQ.sets[pack.planSet] = pack.questions.map(q => q.id);
     store.set(PLANQ_KEY, planQ);
   }
-  const qs = pack.questions.map((q, i) => Object.assign({}, q, { no: i + 1 }));
+  const strict = !!opts.strict;
+  const qs = pack.questions.map((q, i) => {
+    const item = strict ? shuffleQuestionOptions(q) : Object.assign({}, q);
+    return Object.assign(item, { no: i + 1 });
+  });
   exam = {
     pack, qs, fresh: qs.map(q => !seenBefore(q)),
     answers: new Array(qs.length).fill(null),
     doubts: new Array(qs.length).fill(false),
-    idx: 0, filter: 'ALL',
+    struck: qs.map(() => []),
+    idx: 0, filter: 'ALL', strict,
     remaining: pack.minutes ? pack.minutes * 60 : null, tickAt: performance.now(),
     elapsed: 0, spent: new Array(qs.length).fill(0), visible: new Set(), paused: false, finished: false,
-    instant: opts.instant !== false, assisted: opts.instant !== false
+    instant: strict ? false : opts.instant !== false,
+    assisted: strict ? false : opts.instant !== false
   };
   if (!timerHandle) timerHandle = setInterval(tick, 1000);
   go('#/ujian');
@@ -2146,21 +3058,33 @@ function paintScores() {
   const s = scoreSummary();
   const ans = exam.answers.filter(a => a !== null).length;
   let html = '';
-  if (exam.pack.kind === 'FULL') {
+  const hideLive = exam.strict && !exam.finished;
+  if (!hideLive && exam.pack.kind === 'FULL') {
     html += chip('TWK', s.TWK.score, PASSING.TWK, s.TWK.score >= PASSING.TWK);
     html += chip('TIU', s.TIU.score, PASSING.TIU, s.TIU.score >= PASSING.TIU);
     html += chip('TKP', s.TKP.score, PASSING.TKP, s.TKP.score >= PASSING.TKP);
   }
   const tot = Object.values(s).reduce((a, b) => a + b.score, 0);
-  html += chip('Skor', tot, exam.qs.length * 5, false);
+  if (!hideLive) html += chip('Skor', tot, exam.qs.length * 5, false);
+  else html += chip('Mode', 'CAT Ketat', null, false);
   html += chip('Terjawab', ans, exam.qs.length, false);
   box.innerHTML = html;
-  $('#x-sub').textContent = (exam.finished ? 'Mode tinjau pembahasan' : exam.remaining == null ? 'Tanpa batas waktu' : exam.pack.compose);
+  $('#x-sub').textContent = (exam.finished ? 'Mode tinjau pembahasan' : exam.strict ? 'Mode CAT Ketat • Opsi diacak' : exam.remaining == null ? 'Tanpa batas waktu' : exam.pack.compose);
   const fin = $('#x-finish');
   if (fin) { fin.textContent = exam.finished ? 'Lihat hasil' : 'Selesai'; fin.onclick = exam.finished ? () => openResult() : () => App.finish(); }
 }
 
 /* panel soal */
+function formatExplanationText(q) {
+  let exp = String(q.explanation || '');
+  if (q._letterMap && exp) {
+    exp = exp.replace(/\b([A-E])(?=\s*\(\s*[1-5]\s*\))/g, (_, L) => {
+      const nIdx = q._letterMap[LETTERS.indexOf(L)];
+      return nIdx != null ? LETTERS[nIdx] : L;
+    });
+  }
+  return exp;
+}
 function feedbackHtml(q, chosen) {
   const key = LETTERS[q.ans];
   let cls, head;
@@ -2177,12 +3101,13 @@ function feedbackHtml(q, chosen) {
   }
   const mt = materiForQuestion(q);
   const source = typeof q.source === 'string' && q.source.startsWith('https://jdih.lkpp.go.id/') ? q.source : '';
+  const expText = formatExplanationText(q);
   return `
   <div class="overflow-hidden rounded-2xl border border-base-300 fade-in">
     <div class="break-words px-4 py-3 text-[0.95rem] font-bold leading-snug ${cls}" role="status">${head}</div>
     <div class="grid gap-3 bg-base-200/50 p-3 text-[0.95rem] sm:p-4 md:grid-cols-2">
       <div class="min-w-0 rounded-xl bg-amber-50 p-3.5 ring-1 ring-amber-200"><div class="mb-1.5 flex items-center gap-1.5 text-sm font-bold text-amber-900">${icon('bolt', 'h-4 w-4')} Cara cepat</div><div class="break-words leading-relaxed">${esc(q.trick) || '—'}</div></div>
-      <div class="min-w-0 rounded-xl bg-base-100 p-3.5 ring-1 ring-base-300"><div class="mb-1.5 flex items-center gap-1.5 text-sm font-bold text-primary">${icon('bulb', 'h-4 w-4')} Pembahasan</div><div class="break-words leading-relaxed">${esc(q.explanation) || '—'}</div></div>
+      <div class="min-w-0 rounded-xl bg-base-100 p-3.5 ring-1 ring-base-300"><div class="mb-1.5 flex items-center gap-1.5 text-sm font-bold text-primary">${icon('bulb', 'h-4 w-4')} Pembahasan</div><div class="break-words leading-relaxed">${esc(expText) || '—'}</div></div>
     </div>
     ${source ? `<p class="px-3 text-xs"><a class="link link-primary" href="${esc(source)}" target="_blank" rel="noopener">Rujukan JDIH LKPP</a></p>` : ''}
     ${mt ? `<div class="border-t border-base-300 bg-base-100 px-4 py-1.5"><a class="link link-primary inline-flex min-h-[2.75rem] items-center break-words text-sm font-semibold" href="${materiLink(mt, q)}" onclick="App.leaveToMateri()">Pelajari materi: ${esc(mt.title)} →</a></div>` : ''}
@@ -2199,6 +3124,7 @@ function paintQuestion() {
   const cs = catStyle(q.category);
   const catLabel = ['TWK', 'TIU', 'TKP'].includes(q.category) ? q.category : 'SKB';
   const rule = q.category === 'TKP' ? 'Skor opsi 1–5 • kosong 0' : 'Benar +5 • salah/kosong 0';
+  const struckList = (exam.struck && exam.struck[exam.idx]) || [];
   const opts = q.options.map((o, i) => {
     let cls = '';
     if (chosen !== null && key) {
@@ -2206,6 +3132,8 @@ function paintQuestion() {
       else if (i === chosen) cls = q.category === 'TKP' ? 'is-mid' : 'is-wrong';
     } else if (chosen === null && exam.finished && i === q.ans) cls = 'is-correct';
     else if (chosen === i) cls = 'is-selected';
+    const isStruck = !!struckList[i] && chosen !== i;
+    if (isStruck) cls += ' is-struck';
     let tag = '';
     if (key && (chosen !== null || exam.finished)) {
       const v = q.scores[i];
@@ -2213,14 +3141,18 @@ function paintQuestion() {
         ? `<span class="badge badge-sm ml-auto shrink-0 ${v === 5 ? 'badge-success text-white' : 'badge-ghost'}">+${v}</span>`
         : (v === 5 ? `<span class="badge badge-success badge-sm ml-auto shrink-0 text-white">Benar</span>` : '');
     }
-    return `<button class="opt ${cls} max-lg:min-h-[3.75rem] max-lg:items-center max-lg:py-3" ${exam.finished ? 'disabled' : ''} onclick="App.pick(${i})" aria-pressed="${chosen === i}">
-      <span class="letter max-lg:!h-9 max-lg:!w-9 max-lg:!text-base">${LETTERS[i]}</span><span class="min-w-0 flex-1 text-base leading-snug lg:pt-1 lg:text-[0.95rem]">${escO(o)}</span>${tag}</button>`;
+    const strikeBtn = !exam.finished
+      ? `<button type="button" class="opt-strike${isStruck ? ' on' : ''}" onclick="App.toggleStrike(${i})" title="${isStruck ? 'Batalkan coretan' : 'Coret opsi pengecoh'}" aria-label="${isStruck ? 'Batalkan coretan opsi ' + LETTERS[i] : 'Coret opsi ' + LETTERS[i]}">${isStruck ? '↺' : '⊘'}</button>`
+      : '';
+    return `<div class="opt-row"><button class="opt ${cls} max-lg:min-h-[3.75rem] max-lg:items-center max-lg:py-3" ${exam.finished ? 'disabled' : ''} onclick="App.pick(${i})" aria-pressed="${chosen === i}">
+      <span class="letter max-lg:!h-9 max-lg:!w-9 max-lg:!text-base">${LETTERS[i]}</span><span class="min-w-0 flex-1 text-base leading-snug lg:pt-1 lg:text-[0.95rem]">${escO(o)}</span>${tag}</button>${strikeBtn}</div>`;
   }).join('');
   const last = exam.idx === exam.qs.length - 1;
   const nAns = exam.answers.filter(a => a !== null).length;
   const pctAns = Math.round((nAns / exam.qs.length) * 100);
   /* label bilah aksi sedikit lebih besar di HP */
   const nb = (cls, ...a) => xb('max-lg:!min-h-[3.5rem] max-lg:!text-[.75rem] ' + cls, ...a);
+  const bmOn = isBookmarked(q);
 
   box.innerHTML = `
     <div class="h-1.5 w-full bg-base-200" role="progressbar" aria-label="Soal terjawab" aria-valuemin="0" aria-valuemax="${exam.qs.length}" aria-valuenow="${nAns}"><div class="h-full bg-primary transition-[width] duration-300" style="width:${pctAns}%"></div></div>
@@ -2229,6 +3161,7 @@ function paintQuestion() {
         <span class="badge badge-primary badge-lg font-bold">Soal ${q.no} / ${exam.qs.length}</span>
         <span class="badge badge-lg border-0 font-semibold ${cs.badge}">${catLabel}</span>
         <span class="badge badge-ghost h-auto min-h-[1.25rem] max-w-full whitespace-normal break-words py-1 text-left">${esc(q.sub)}</span>
+        <button type="button" class="rk-bm-btn${bmOn ? ' on' : ''}" onclick="App.toggleBookmarkCurrent()">${bmOn ? '★ Tersimpan' : '☆ Simpan sulit'}</button>
         <span class="w-full text-xs text-base-content/60 sm:ml-auto sm:w-auto sm:text-base-content/50">${rule}${exam.finished && q.category === 'TIU' && exam.spent[exam.idx] ? ` · Waktu ${fmtClock(exam.spent[exam.idx])}` : ''}</span>
       </div>
       <div class="whitespace-pre-line break-words text-[1.08rem] font-medium leading-relaxed text-neutral sm:text-[1.05rem]">${escQ(q)}</div>
@@ -2579,12 +3512,16 @@ function computeResult() {
   const answered = exam.answers.filter(a => a !== null).length;
   const correct = exam.qs.filter((q, i) => exam.answers[i] !== null && q.scores[exam.answers[i]] === 5).length;
   const bySub = {};
+  const byTime = {};
   exam.qs.forEach((q, i) => {
     const o = bySub[q.sub] = bySub[q.sub] || { q, n: 0, score: 0, max: 0 };
     o.n++; o.max += 5;
     if (exam.answers[i] !== null) o.score += q.scores[exam.answers[i]];
+    const cat = ['TWK', 'TIU', 'TKP'].includes(q.category) ? q.category : 'SKB';
+    const bt = byTime[cat] = byTime[cat] || { sec: 0, n: 0 };
+    bt.n++; bt.sec += exam.spent[i] || 0;
   });
-  return { sum, total, max, answered, correct, wrong: answered - correct, empty: exam.qs.length - answered, bySub };
+  return { sum, total, max, answered, correct, wrong: answered - correct, empty: exam.qs.length - answered, bySub, byTime };
 }
 function scoreByExposure() {
   const splits = [{ label: 'Soal baru', score: 0, max: 0 }, { label: 'Soal pengulangan', score: 0, max: 0 }];
@@ -2693,8 +3630,37 @@ function openResult() {
       </div>
       <p class="text-sm text-base-content/70">${split.filter(item => item.max).map(item => `${item.label} ${item.score}/${item.max} (${item.max / 5} soal)`).join(' · ')}</p>
       ${tiu.length ? `<p class="text-sm text-base-content/70">TIU · ${tiu.map(([name, item]) => `${name} ${item.score}/${item.max}`).join(' · ')}</p>` : ''}
+      ${Object.keys(r.byTime).length ? (() => {
+        const rec = { TWK: '≤18m', TIU: '≥45m', TKP: '≤25m' };
+        const rows = Object.entries(r.byTime).map(([c, t]) => {
+          const avg = Math.round(t.sec / Math.max(t.n, 1));
+          return `<div class="rounded-xl border border-base-300 bg-base-200/40 px-3 py-2 text-xs"><b class="text-neutral">${c}</b> · ${fmtClock(t.sec)} <span class="text-base-content/60">(${avg} dtk/soal${full && rec[c] ? ` · ideal ${rec[c]}` : ''})</span></div>`;
+        }).join('');
+        return `<div><h4 class="mb-1.5 text-sm font-bold text-neutral">Manajemen Waktu Pengerjaan</h4><div class="grid gap-2 sm:grid-cols-3">${rows}</div></div>`;
+      })() : ''}
+      ${(() => {
+        if (!exam.pack.plan) return '';
+        const snap = planCfg?.phases?.[exam.pack.planDay];
+        const isFinal = exam.pack.planPhase === 'final';
+        if (exam.pack.planPhase === 'learn') {
+          return `<div class="rounded-xl border border-sky-200 bg-sky-50 p-3 text-xs text-slate-800"><b>Latihan Planning Hari ${exam.pack.planDay} selesai!</b> <button type="button" class="link link-primary font-bold ml-1" onclick="App.exitToList()">Kembali ke Planning →</button></div>`;
+        }
+        return `<div class="rounded-xl border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900">
+          <b>${isFinal ? 'Try Out Final Planning Selesai!' : `Peta Kelemahan Hari ${exam.pack.planDay} Diperbarui!`}</b>
+          ${snap?.summary ? `<p class="mt-1">${esc(snap.summary)}</p>` : ''}
+          <div class="mt-2 flex flex-wrap gap-2">
+            <button type="button" class="btn btn-primary btn-xs" onclick="App.exitToList()">Lanjut ke Planning →</button>
+            ${isFinal && planCfg && planCfg.days + 5 <= PLAN_MAX ? '<button type="button" class="btn btn-outline btn-xs" onclick="App.planExtend(5)">➕ Tambah +5 Hari</button>' : ''}
+            ${isFinal && planCfg ? '<button type="button" class="btn btn-warning btn-xs font-extrabold" onclick="App.planFinishWeakness()">✓ Sudahi Planning</button>' : ''}
+          </div>
+        </div>`;
+      })()}
       ${weakHtml}
       ${reviewSummary('sesi')}
+      <div class="flex flex-wrap gap-2">
+        ${full ? `<button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openCalc(${r.total})">📊 Hitung Nilai Akhir 40:60</button>` : ''}
+        <button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openVault()">🔖 Soal Salah &amp; Bookmark</button>
+      </div>
       <div class="modal-action act-stack mt-2">
         <button class="btn btn-ghost max-sm:h-12" onclick="App.exitToList()">Daftar paket</button>
         <button class="btn btn-outline max-sm:h-12" onclick="App.restartExam(true)">${icon('refresh', 'h-4 w-4')} Ulangi</button>
@@ -2705,12 +3671,44 @@ function openResult() {
   <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
   if (!d.open) d.showModal();
 }
+function recordWrongQuestions() {
+  const now = Date.now(), dayMs = 86400000;
+  let changed = false;
+  exam.qs.forEach((q, i) => {
+    const a = exam.answers[i];
+    if (a === null) return;
+    const rid = questions.resolve(q.id);
+    const sc = q.scores[a];
+    const miss = q.category === 'TKP' ? sc < 4 : sc < 5;
+    if (miss) {
+      const prev = wrongMap[rid] || { count: 0, interval: 1 };
+      wrongMap[rid] = {
+        id: rid, bucket: reviewBucket(q, exam.pack) || '', sub: q.sub || '',
+        count: prev.count + 1, wrongAt: now, interval: 1, nextDueAt: now + dayMs, lastScore: sc
+      };
+      changed = true;
+    } else if (sc === 5 && wrongMap[rid]) {
+      if ((wrongMap[rid].interval || 1) >= 3) delete wrongMap[rid];
+      else {
+        const nextInt = (wrongMap[rid].interval || 1) * 3;
+        wrongMap[rid].interval = nextInt;
+        wrongMap[rid].nextDueAt = now + nextInt * dayMs;
+        wrongMap[rid].lastScore = 5;
+      }
+      changed = true;
+    }
+  });
+  if (changed) store.set(WRONG_KEY, wrongMap);
+}
 function finishExam() {
   if (!exam || exam.finished) return;
   exam.finished = true; exam.paused = false;
+  const r = computeResult();
   saveReview();
+  recordWrongQuestions();
+  const curWeakFromExam = syncWeakMateriFromExam(r, exam);
+  if (exam.pack.plan) planOnCheckpointFinish(exam, r, curWeakFromExam);
   if (!exam.pack.noSave) {
-    const r = computeResult();
     saveExamHistory(r);
     const rec = results[exam.pack.key] || { attempts: 0, best: { score: -1, max: r.max } };
     rec.attempts++;
@@ -2770,10 +3768,16 @@ function openStart(key) {
       <li class="flex gap-2">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Waktu bisa dijeda dari menu titik tiga (⋮) di pojok kanan atas.</span></li>
       <li class="hidden gap-2 md:flex">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Pintasan keyboard: A–E untuk memilih, ← → untuk pindah soal.</span></li>
     </ul>
-    ${p.forceTimed ? '<p class="mt-4 text-xs text-base-content/70">Pembahasan tersedia setelah simulasi selesai.</p>' : `<label class="mt-4 flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-base-200 px-4 py-3">
-      <span><span class="block text-sm font-semibold text-neutral">Bahas instan</span><span class="text-xs text-base-content/60">Kunci &amp; pembahasan langsung tampil setelah menjawab. Matikan untuk suasana ujian sebenarnya.</span></span>
-      <input type="checkbox" id="st-instant" class="toggle toggle-primary shrink-0" ${store.get('cpns_instant', p.kind !== 'FULL') ? 'checked' : ''}>
-    </label>`}
+    ${p.forceTimed ? '<p class="mt-4 text-xs text-base-content/70">Pembahasan tersedia setelah simulasi selesai.</p>' : `<div class="mt-4 space-y-2.5">
+      <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-base-200 px-4 py-3">
+        <span><span class="block text-sm font-semibold text-neutral">Bahas instan</span><span class="text-xs text-base-content/60">Kunci &amp; pembahasan langsung tampil setelah menjawab. Matikan untuk suasana ujian sebenarnya.</span></span>
+        <input type="checkbox" id="st-instant" class="toggle toggle-primary shrink-0" ${store.get('cpns_instant', p.kind !== 'FULL') ? 'checked' : ''} onchange="if(this.checked && $('#st-strict')) $('#st-strict').checked=false">
+      </label>
+      <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-base-200 px-4 py-3">
+        <span><span class="block text-sm font-semibold text-neutral">Mode CAT BKN Ketat</span><span class="text-xs text-base-content/60">Acak urutan opsi A–E, sembunyikan skor langsung saat ujian, tanpa tombol jeda waktu.</span></span>
+        <input type="checkbox" id="st-strict" class="toggle toggle-secondary shrink-0" ${store.get('cpns_strict', false) ? 'checked' : ''} onchange="if(this.checked && $('#st-instant')) $('#st-instant').checked=false">
+      </label>
+    </div>`}
     <div class="modal-action act-stack">
       <button class="btn btn-ghost" onclick="$('#dlg-start').close()">Batal</button>
       <button class="btn btn-primary" onclick="App.confirmStart('${p.key}')">Mulai ujian ${icon('arrowR', 'h-4 w-4')}</button>
@@ -2842,8 +3846,8 @@ const App = {
         <button class="btn btn-ghost btn-sm btn-circle" onclick="$('#dlg-menu').close()" aria-label="Tutup">${icon('x', 'h-4 w-4')}</button>
       </div>
       <div class="divide-y divide-base-200">
-        ${timed ? row(exam.paused ? 'play' : 'pause', exam.paused ? 'Lanjutkan waktu' : 'Jeda waktu', "$('#dlg-menu').close();App.togglePause()") : ''}
-        ${exam.finished || exam.pack.forceTimed ? '' : `<label class="flex cursor-pointer items-center justify-between gap-3 px-3 py-3.5"><span class="flex items-center gap-3 text-[0.95rem] font-semibold">${icon('bulb', 'h-5 w-5 shrink-0 text-neutral')}Bahas instan</span><input type="checkbox" class="toggle toggle-primary shrink-0" ${exam.instant ? 'checked' : ''} onchange="App.toggleInstant(this.checked)"></label>`}
+        ${timed && !exam.strict ? row(exam.paused ? 'play' : 'pause', exam.paused ? 'Lanjutkan waktu' : 'Jeda waktu', "$('#dlg-menu').close();App.togglePause()") : ''}
+        ${exam.finished || exam.pack.forceTimed || exam.strict ? '' : `<label class="flex cursor-pointer items-center justify-between gap-3 px-3 py-3.5"><span class="flex items-center gap-3 text-[0.95rem] font-semibold">${icon('bulb', 'h-5 w-5 shrink-0 text-neutral')}Bahas instan</span><input type="checkbox" class="toggle toggle-primary shrink-0" ${exam.instant ? 'checked' : ''} onchange="App.toggleInstant(this.checked)"></label>`}
         ${row('refresh', 'Mulai ulang paket', "$('#dlg-menu').close();App.restartExam()")}
       </div>
       <button class="btn btn-primary mt-4 w-full" onclick="$('#dlg-menu').close();${exam.finished ? 'App.openResult()' : 'App.finish()'}">${exam.finished ? 'Lihat hasil' : 'Akhiri ujian'}</button>
@@ -2870,18 +3874,67 @@ const App = {
   hmenu(which) {
     const m = $('#hmenu'); if (m) m.hidden = true;
     const b = $('.mburger'); if (b) b.setAttribute('aria-expanded', 'false');
-    if (which === 'notif' && window.CPNSNotif) window.CPNSNotif.open();
+    if (which === 'theme') App.toggleTheme();
+    else if (which === 'notif' && window.CPNSNotif) window.CPNSNotif.open();
     else if (which === 'profile' && window.Auth) window.Auth.openProfile();
+  },
+  toggleTheme() {
+    applyTheme(themeMode === 'dark' ? 'light' : 'dark');
+    if (!exam) route();
+    else {
+      const btn = $('#btn-theme');
+      if (btn) btn.innerHTML = icon(themeMode === 'dark' ? 'sun' : 'moon', 'h-5 w-5');
+    }
+  },
+  toggleBookmark(id, btn) {
+    const on = toggleBookmarkById(id);
+    if (btn) { btn.classList.toggle('on', on); btn.textContent = on ? '★ Tersimpan' : '☆ Tandai sulit'; }
+    toast(on ? 'Soal disimpan ke Bookmark.' : 'Bookmark dihapus.');
+  },
+  toggleBookmarkCurrent() {
+    if (!exam) return;
+    const q = exam.qs[exam.idx];
+    const on = toggleBookmarkById(q.id);
+    paintQuestion();
+    toast(on ? 'Soal ditandai ke Bookmark.' : 'Tanda Bookmark dihapus.');
+  },
+  toggleStrike(i) {
+    if (!exam || exam.finished) return;
+    const arr = exam.struck[exam.idx] || (exam.struck[exam.idx] = []);
+    arr[i] = !arr[i];
+    if (arr[i] && exam.answers[exam.idx] === i) exam.answers[exam.idx] = null;
+    paintScores(); paintQuestion(); paintSide();
+  },
+  openNonCat(tab) { window.KemenSuite?.openNonCat(tab); },
+  openCalc(skdScore) { window.KemenSuite?.openCalc(skdScore); },
+  openVault() { window.KemenSuite?.openVault(); },
+  openKelemahanMateri,
+  clearWeakMateri(tId) {
+    resolveWeakMateri(tId);
+    toast('Materi ditandai sudah dikuasai.');
+    const d = $('#dlg-weak-materi');
+    if (d && d.open) openKelemahanMateri();
+    if (!exam) route();
+  },
+  goWeakMateri() {
+    ui.materiTab = 'SKD';
+    const w = weakMateriList('ALL');
+    const hasSkdW = w.some(x => x.group !== 'SKB');
+    const hasSkbW = w.some(x => x.group === 'SKB');
+    if (!hasSkdW && hasSkbW) { ui.materiTab = 'SKB'; ui.materiSkbGroup = 'WEAK'; }
+    else ui.materiGroup = hasSkdW ? 'WEAK' : 'ALL';
+    go('#/materi');
   },
 
   confirmStart(key) {
     const p = pendingPack;
     if (!p || p.key !== key) return;
     pendingPack = null;
-    const inst = !p.forceTimed && $('#st-instant').checked;
-    if (!p.forceTimed) store.set('cpns_instant', inst);
+    const strict = !p.forceTimed && !!$('#st-strict')?.checked;
+    const inst = !p.forceTimed && !strict && !!$('#st-instant')?.checked;
+    if (!p.forceTimed) { store.set('cpns_instant', inst); store.set('cpns_strict', strict); }
     $('#dlg-start').close();
-    startExam(p, { instant: inst });
+    startExam(p, { instant: inst, strict });
   },
   startMateriPractice(id) {
     const t = MATERI.find(x => x.id === id); if (!t) return;
@@ -2924,7 +3977,9 @@ const App = {
   },
   openResult,
   targetEditorHTML,
+  skbTargetChoicesHTML,
   targetPreference,
+  openOnboarding: () => window.Auth?.openOnboarding?.(),
   profileFieldName: bucket => bucket ? skbMeta(bucket).name : '',
   profileProgressHTML,
   showProfileProgress(scope) {
@@ -2940,9 +3995,15 @@ const App = {
     event.preventDefault();
     const form = event.currentTarget;
     saveStudyTarget(form.elements.targetRole.value, form.elements.targetBucket.value, form.elements.targetName?.value);
-    const dialog = form.closest?.('#dlg-profile');
+    store.del('cpns_onboard_skip_v1');
+    const dialog = form.closest?.('#dlg-profile') || $('#dlg-profile');
     if (!exam || exam.finished) route();
-    if (dialog?.open) window.Auth?.openProfile(dialog.dataset.scope, 'Profil tersimpan.');
+    if (form.dataset && form.dataset.onboard === '1') {
+      if (dialog?.open) dialog.close();
+      toast('Profil belajar disimpan!');
+    } else if (dialog?.open) {
+      window.Auth?.openProfile(dialog.dataset.scope, 'Profil tersimpan.');
+    }
     return false;
   },
   openReview,
@@ -3042,6 +4103,19 @@ window.registerCPNSQuestions({
   }
 };
 window.App = App;
+window.GocpnsBridge = {
+  store, BANK, questions, planDlg, planQIndex, toast, ask, esc, icon, fmtNum,
+  getResults: () => results,
+  getHistory: () => examHistory,
+  getBookmarks: () => bookmarks,
+  setBookmarkNote: (id, note) => toggleBookmarkById(id, note),
+  removeBookmark: id => { delete bookmarks[questions.resolve(id)]; store.set(BOOKMARK_KEY, bookmarks); },
+  getWrongMap: () => wrongMap,
+  removeWrong: id => { delete wrongMap[questions.resolve(id)]; store.set(WRONG_KEY, wrongMap); },
+  clearWrong: () => { wrongMap = {}; store.set(WRONG_KEY, wrongMap); },
+  startCustomExam: (pack, opts) => startExam(pack, opts),
+  rerender: () => { if (!exam && location.hash !== '#/ujian') route(); }
+};
 
 /* ---------- pengaman: jangan sampai sesi ujian hilang karena refresh/tutup tab tak sengaja ---------- */
 window.addEventListener('beforeunload', e => {
@@ -3098,5 +4172,12 @@ function init() {
     if (!exam && location.hash !== '#/ujian') route();
   };
   route();
+  const skipOb = store.get('cpns_onboard_skip_v1', false);
+  const hasPref = !!(studyTarget && (studyTarget.name || studyTarget.bucket || studyTarget.role));
+  const hasProg = Object.keys(results).length > 0 || Object.keys(lessonStore).length > 0 || Object.keys(weakMateri).length > 0 || Object.keys(rkRead).length > 0 || !!planCfg || examHistory.length > 0 || seen.size > 0;
+  const hasUser = !!(window.Auth && window.Auth.user && window.Auth.user());
+  if (!skipOb && !hasPref && !hasProg && !hasUser && location.hash !== '#/ujian') {
+    window.Auth?.openOnboarding?.();
+  }
 }
 init();
