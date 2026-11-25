@@ -127,7 +127,31 @@
     del('cpns_onboard_skip_v1');
   }
 
-  /* ---------- kirim ke server (ditunda agar hemat) ---------- */
+  /* ---------- kirim ke server (ditunda agar hemat) & pelacakan progres offline ---------- */
+  const OFFLINE_KEY = 'cpns_offline_sync_v1';
+  const TRACKED_KEYS = KEYS.concat(EXTRA_KEYS);
+  const readOfflineMeta = () => {
+    const raw = rd(OFFLINE_KEY);
+    return dict(raw) ? { pending: Number(raw.pending) || 0, lastLocalAt: Number(raw.lastLocalAt) || 0, lastSyncAt: Number(raw.lastSyncAt) || 0 } : { pending: 0, lastLocalAt: 0, lastSyncAt: 0 };
+  };
+  const writeOfflineMeta = next => wr(OFFLINE_KEY, next);
+  const notifySync = () => { try { window.GocpnsBridge?.onSyncChange?.(syncStatus()); } catch (e) { /* abaikan */ } };
+
+  function syncStatus() {
+    const online = typeof navigator === 'undefined' ? true : navigator.onLine !== false;
+    const s = sess(), meta = readOfflineMeta(), dirty = !!rd('cpns_dirty');
+    return {
+      online,
+      hasServer: HAS_SERVER,
+      loggedIn: !!s,
+      username: (s && s.u) || null,
+      dirty,
+      pending: meta.pending,
+      lastLocalAt: meta.lastLocalAt,
+      lastSyncAt: meta.lastSyncAt
+    };
+  }
+
   let timer = null, pending = null, revision = 0;
   async function push(keepalive) {
     if (pending) {
@@ -135,27 +159,55 @@
       if (keepalive || !rd('cpns_dirty')) return null;
       return push(false);
     }
-    const s = sess(); if (!s) return null;
+    const s = sess(); if (!s || !HAS_SERVER) return null;
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) { wr('cpns_dirty', 1); notifySync(); return false; }
     const sent = revision;
     pending = (async () => {
       try {
         const r = await fetch(API, { method: 'POST', keepalive: !!keepalive, headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'push', username: s.u, token: s.t, data: snapshot() }) });
-        if (r.ok && sent === revision) del('cpns_dirty');
-        else if (!r.ok) wr('cpns_dirty', 1);
+        if (r.ok && sent === revision) {
+          del('cpns_dirty');
+          const m = readOfflineMeta();
+          writeOfflineMeta({ pending: 0, lastLocalAt: m.lastLocalAt, lastSyncAt: Date.now() });
+        } else if (!r.ok) { wr('cpns_dirty', 1); }
+        notifySync();
         return r.ok;
-      } catch (e) { wr('cpns_dirty', 1); return false; }
+      } catch (e) { wr('cpns_dirty', 1); notifySync(); return false; }
     })();
     try { return await pending; } finally { pending = null; }
   }
   function touch(k) {
-    if (!sess() || KEYS.indexOf(k) < 0) return;
-    revision++;
-    wr('cpns_dirty', 1); clearTimeout(timer); timer = setTimeout(() => push(false), 1500);
+    if (TRACKED_KEYS.indexOf(k) < 0) return;
+    const now = Date.now(), meta = readOfflineMeta();
+    const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+    const hasCloud = !!(sess() && HAS_SERVER);
+    writeOfflineMeta({ pending: (isOffline || hasCloud) ? (meta.pending + 1) : 0, lastLocalAt: now, lastSyncAt: meta.lastSyncAt });
+    if (hasCloud) {
+      revision++;
+      wr('cpns_dirty', 1);
+      clearTimeout(timer);
+      if (!isOffline) timer = setTimeout(() => push(false), 1200);
+    } else if (isOffline) {
+      wr('cpns_dirty', 1);
+    }
+    notifySync();
+  }
+  async function syncNow() {
+    if (sess() && HAS_SERVER) return push(false);
+    const meta = readOfflineMeta();
+    if (typeof navigator === 'undefined' || navigator.onLine !== false) {
+      del('cpns_dirty');
+      writeOfflineMeta({ pending: 0, lastLocalAt: meta.lastLocalAt, lastSyncAt: Date.now() });
+      notifySync();
+      return true;
+    }
+    return false;
   }
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && rd('cpns_dirty')) push(true); });
-  window.addEventListener('online', () => { if (rd('cpns_dirty')) push(false); });
-  if (rd('cpns_dirty')) setTimeout(() => push(false), 2000);
+  window.addEventListener('online', () => { syncNow(); });
+  window.addEventListener('offline', () => { notifySync(); });
+  if (rd('cpns_dirty')) setTimeout(() => syncNow(), 1500);
 
 
   /* ---------- mode TANPA server: pindah perangkat lewat kode progres ---------- */
@@ -408,12 +460,18 @@
             <label class="block text-xs font-bold" for="ob-name">Nama tampilan</label>
             <input id="ob-name" name="targetName" class="input input-bordered input-sm mt-1 w-full"
               maxlength="80" value="${esc(preferred.name || '')}" placeholder="Masukkan nama panggilan atau nama lengkap">
-            <label class="mt-3 block text-xs font-bold" for="ob-role">Target jabatan CPNS (opsional)</label>
+            <label class="mt-3 block text-xs font-bold" for="ob-role">Target jabatan / instansi CPNS (opsional)</label>
             <input id="ob-role" name="targetRole" class="input input-bordered input-sm mt-1 w-full"
-              maxlength="100" value="${esc(preferred.role || '')}" placeholder="Misalnya Pranata Komputer Ahli Pertama">
+              maxlength="100" value="${esc(preferred.role || '')}" placeholder="Misal: Analis Kebijakan Pemda / Prakom Kementerian">
             <label class="mt-3 block text-xs font-bold" for="ob-bucket">Bidang latihan SKB</label>
             <select id="ob-bucket" name="targetBucket" class="select select-bordered select-sm mt-1 w-full">
               <option value="">Belum dipilih</option>${choices}</select>
+            <label class="mt-3 block text-xs font-bold" for="ob-jalur">Jalur &amp; target passing grade</label>
+            <select id="ob-jalur" name="targetJalur" class="select select-bordered select-sm mt-1 w-full">
+              <option value="UMUM">Umum · Target Nilai Tertinggi 500++ (Kemen &amp; Pemda)</option>
+              <option value="CUMLAUDE">Cumlaude · TIU min 85 · Target 500++</option>
+              <option value="KHUSUS">Khusus (Disabilitas / Papua / 3T)</option>
+            </select>
             <p class="mt-2 text-xs opacity-75">Nama &amp; bidang SKB menentukan tampilan Beranda, rekomendasi SKB, dan target Planning Anda.</p>
             <div class="mt-4 flex flex-wrap gap-2">
               <button class="btn btn-primary flex-1" type="submit">✓ Simpan Profil &amp; Mulai</button>
@@ -468,16 +526,32 @@
         ${notice ? `<p class="pf-notice" role="status">${esc(notice)}</p>` : ''}
         <section id="profile-progress" class="pf-content" aria-label="Grafik dan kelemahan">${window.App?.profileProgressHTML(scope) || ''}</section>
         <footer class="pf-footer">
+          <div id="pf-sync-box" class="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-base-300 bg-base-200/60 px-3 py-2 text-xs">
+            ${(() => {
+              const st = syncStatus();
+              const tone = !st.online ? 'text-amber-700' : (st.dirty ? 'text-sky-700' : 'text-emerald-700');
+              const msg = !st.online
+                ? `Mode Offline aktif · progres otomatis disimpan lokal${st.pending ? ` (${st.pending} perubahan menunggu sinkron saat online)` : ''}.`
+                : (st.hasServer && st.loggedIn
+                  ? (st.dirty ? 'Online · menunggu sinkronisasi ke akun...' : 'Online · seluruh progres tersinkronisasi aman.')
+                  : 'Online · penyimpanan lokal aktif otomatis (siap dipulihkan/dipindah lewat Kode Progres kapan saja).');
+              return `<span class="font-semibold ${tone}">${esc(msg)}</span>${st.dirty && st.online && st.hasServer && st.loggedIn ? '<button type="button" id="pf-sync-now" class="btn btn-xs btn-primary">Sinkronkan sekarang</button>' : ''}`;
+            })()}
+          </div>
           <button type="button" id="pf-backup" class="btn btn-outline btn-sm">Pindahkan progres</button>
           ${HAS_SERVER ? (u
             ? '<button id="pf-out" class="btn btn-ghost btn-sm">Keluar dari akun</button>'
             : '<button id="pf-in" class="btn btn-ghost btn-sm">Masuk</button><button id="pf-reg" class="btn btn-ghost btn-sm">Daftar</button>') : ''}
-          ${HAS_SERVER && u ? `<p>${dirty ? 'Progres menunggu sinkronisasi.' : 'Progres tersimpan di akun ini.'}</p>` : ''}
+          ${HAS_SERVER && u ? `<p>${dirty ? 'Progres tersimpan di perangkat ini & otomatis tersinkron saat online.' : 'Progres tersimpan aman di perangkat dan akun ini.'}</p>` : ''}
         </footer>
       </div>
       <form method="dialog" class="modal-backdrop"><button aria-label="Tutup">tutup</button></form>`;
     const q = s => d.querySelector(s);
     q('#pf-close').onclick = () => d.close();
+    if (q('#pf-sync-now')) q('#pf-sync-now').onclick = async () => {
+      const ok = await syncNow();
+      openProfile(d.dataset.scope, ok ? 'Progres offline berhasil disinkronkan.' : 'Sinkronisasi tertunda — progres tetap aman di perangkat.');
+    };
     q('#pf-edit').onclick = () => {
       d.setAttribute('aria-labelledby', 'profile-edit-title');
       d.innerHTML = `<div class="modal-box pf-edit-modal"><h2 id="profile-edit-title">Edit profil</h2>
@@ -492,7 +566,7 @@
     if (!d.open) d.showModal();
   }
 
-  window.Auth = { hasServer: HAS_SERVER, _toCode: toCode, _fromCode: fromCode, touch, open, openProfile, openOnboarding, openRestore: () => openBackup(ensureProfileDlg(), { returnToOnboarding: false }), logout, menuHTML, user: () => (sess() || {}).u || null };
+  window.Auth = { hasServer: HAS_SERVER, _toCode: toCode, _fromCode: fromCode, touch, syncStatus, syncNow, open, openProfile, openOnboarding, openRestore: () => openBackup(ensureProfileDlg(), { returnToOnboarding: false }), logout, menuHTML, user: () => (sess() || {}).u || null };
 
   /* gerbang awal: tampil bila belum login dan belum memilih "tanpa akun" */
   if (HAS_SERVER && !sess() && !rd(GUEST)) {

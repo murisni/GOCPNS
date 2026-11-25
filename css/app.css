@@ -383,3 +383,6 @@ html.dark .materi-body blockquote { background: #1e293b !important; border-color
 html.dark .rk-opt, html.dark .rk-k { background: #0f172a !important; border-color: #334155 !important; color: #cbd5e1 !important; }
 html.dark .q-svg { background: #ffffff !important; color: #0f172a !important; }
 html.dark .input, html.dark .textarea, html.dark .select { background: #0f172a !important; border-color: #475569 !important; color: #f1f5f9 !important; }
+html.dark .text-emerald-700, html.dark #home-sync-status.text-emerald-700 { color: #6ee7b7 !important; }
+html.dark .text-sky-900 { color: #bae6fd !important; }
+html.dark .badge-ghost { background: #0f172a !important; color: #cbd5e1 !important; border-color: #334155 !important; }

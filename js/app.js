@@ -248,37 +248,54 @@ const tiuType = q => q.category === 'TIU' && /^(Verbal|Numerik|Figural)\b/.exec(
 const PASSING = { TWK: 65, TIU: 80, TKP: 166 };
 const SKD_TARGET = 505;
 const SKB_TARGET = 0.9;
+const JALUR_KEY = 'cpns_jalur_v1';
+const JALUR_META = {
+  UMUM: { id: 'UMUM', label: 'Umum / Target Tertinggi 500++', pg: { TWK: 65, TIU: 80, TKP: 166 }, minTotal: 311, targetSkd: 505, note: 'Ambang batas BKN Umum 311 (TWK 65 · TIU 80 · TKP 166). Kejar Target 500++ agar menjuarai perangkingan Kementerian & Pemda.' },
+  CUMLAUDE: { id: 'CUMLAUDE', label: 'Cumlaude (Lulusan Terbaik)', pg: { TWK: 0, TIU: 85, TKP: 0 }, minTotal: 311, targetSkd: 505, note: 'Jalur Cumlaude BKN: TIU min 85 & total SKD min 311. Target 500++ membuat peluang lolos Kementerian sangat aman.' },
+  KHUSUS: { id: 'KHUSUS', label: 'Khusus (Disabilitas / Papua / 3T)', pg: { TWK: 0, TIU: 60, TKP: 0 }, minTotal: 286, targetSkd: 450, note: 'Jalur Khusus BKN: TIU min 60 & total SKD min 286. Target kompetitif 450–500++ mengamankan posisi teratas.' }
+};
+let studyJalur = store.get(JALUR_KEY, 'UMUM');
+if (!JALUR_META[studyJalur]) studyJalur = 'UMUM';
+const activeJalur = () => JALUR_META[studyJalur] || JALUR_META.UMUM;
 
 const SKD_GROUPS = {
-  SKD_FULL: { label: 'Tryout Lengkap', short: 'Tryout', desc: '30 TWK + 35 TIU + 45 TKP • 100 menit — acuan format CPNS 2024.' },
+  SKD_FULL: { label: 'Tryout Lengkap', short: 'Tryout', desc: '30 TWK + 35 TIU + 45 TKP • 100 menit — acuan format CPNS BKN dengan benchmark skor 500++.' },
   SKD_TWK: { label: 'TWK', short: 'TWK', desc: 'Tes Wawasan Kebangsaan: pilar negara, nasionalisme, integritas, bahasa Indonesia.' },
   SKD_TIU: { label: 'TIU', short: 'TIU', desc: 'Tes Intelegensia Umum: verbal, numerik, dan figural.' },
   SKD_TKP: { label: 'TKP', short: 'TKP', desc: 'Tes Karakteristik Pribadi: skor 1–5 pada tiap opsi.' }
 };
 const SKB_META = {
   SKB_PRAKOM: { name: 'Pranata Komputer', short: 'Prakom', desc: 'Tata kelola TI & SPBE/GovTech, UU PDP, OWASP, jaringan, SQL/Data Lakehouse, DevSecOps & cloud.' },
-  SKB_INGGRIS: { name: 'Bahasa Inggris Kementerian & TI', short: 'Inggris Kemen', desc: 'Grammar/Structure, Written Expression, Reading kebijakan digital & kosakata TI untuk SKB tambahan Kementerian.' },
-  SKB_KESEHATAN: { name: 'Kesehatan', short: 'Kesehatan', desc: 'UU Kesehatan 17/2023, transformasi kesehatan, PPI, triase, KIA/imunisasi, keselamatan pasien.' },
-  SKB_HUKUM: { name: 'Hukum, Pemerintahan & Kebijakan', short: 'Hukum', desc: 'UU ASN, kebijakan publik, pengadaan barang/jasa, hierarki peraturan, hukum administrasi.' },
-  SKB_KEUANGAN: { name: 'Keuangan, Akuntansi & Pajak', short: 'Keuangan', desc: 'SAP akrual, keuangan & perbendaharaan negara, opini audit BPK, perpajakan.' },
-  SKB_PENDIDIKAN: { name: 'Pendidikan, Guru & Dosen', short: 'Pendidikan', desc: 'Kompetensi pendidik, asesmen, taksonomi Bloom (HOTS), teori belajar konstruktivistik.' }
+  SKB_HUKUM: { name: 'Hukum, Pemerintahan & Peraturan', short: 'Hukum', desc: 'UU Pemda 23/2014, UU ASN 20/2023, Legal Drafting UU 13/2022, PTUN, PBJ, Tipikor & administrasi.' },
+  SKB_KEUANGAN: { name: 'Keuangan, APBN/APBD & Pajak', short: 'Keuangan', desc: 'SAP akrual PP 71/2010, APBN & perbendaharaan, UU HKPD 1/2022 Pemda, audit BPK & perpajakan.' },
+  SKB_KESEHATAN: { name: 'Kesehatan & Layanan Primer', short: 'Kesehatan', desc: 'UU Kesehatan 17/2023, 6 Pilar Kemenkes, 12 SPM Pemda, ILP Puskesmas, PPI, triase & KIA.' },
+  SKB_PENDIDIKAN: { name: 'Pendidikan, Guru, Dosen & Dinas', short: 'Pendidikan', desc: 'Kurikulum Merdeka, Deep Learning, asesmen HOTS/SOLO, SPM Pendidikan Pemda, PPKSP & pedagogik.' },
+  SKB_KEBIJAKAN: { name: 'Analis Kebijakan, Perencana & Tata Kelola', short: 'Kebijakan', desc: 'SPPN UU 25/2004, RPJMN/RPJMD Pemda, RIA, Policy Brief, SAKIP, RB, Zona Integritas & OSS-RBA.' },
+  SKB_SDMA: { name: 'Analis SDMA, Kepegawaian, Arsiparis & Humas', short: 'SDMA & Arsip', desc: 'UU ASN 20/2023, Sistem Merit, Anjab-ABK, e-Kinerja SKP, SRIKANDI Arsiparis, PPID & Protokol.' },
+  SKB_AUDITOR: { name: 'Auditor APIP, PPUPD & Pengadaan (PBJ)', short: 'Auditor & PBJ', desc: 'SAIPI-AAIPI, SPIP PP 60/2008, Probity Audit, Vouching/Tracing, Perpres PBJ 16/2018 & Siswaskeudes.' },
+  SKB_INGGRIS: { name: 'Bahasa Inggris Kementerian & TI', short: 'Inggris Kemen', desc: 'Grammar/Structure, Written Expression, Reading kebijakan digital & kosakata pemerintahan.' }
 };
 const skbKeys = () => Object.keys(BANK).filter(k => k.startsWith('SKB_') && BANK[k].length);
 const TARGET_KEY = 'cpns_target_v1';
-const skbMeta = k => SKB_META[k] || { name: k.replace('SKB_', '').replace(/_/g, ' '), short: k.replace('SKB_', ''), desc: 'Bank soal tambahan.' };
+const skbMeta = k => SKB_META[k] || { name: k.replace('SKB_', '').replace(/_/g, ' '), short: k.replace('SKB_', ''), desc: 'Bank soal bidang formasi CPNS.' };
 
 const targetSkbKeys = () => skbKeys().filter(key => key !== 'SKB_SKD' && /^SKB_[A-Z0-9_]+$/.test(key));
 let studyTarget = store.get(TARGET_KEY, null);
+if (studyTarget && studyTarget.jalur && JALUR_META[studyTarget.jalur] && !store.get(JALUR_KEY, null)) {
+  studyJalur = studyTarget.jalur;
+}
 function targetPreference() {
   if (studyTarget) return { name: String(studyTarget.name || ''), role: String(studyTarget.role || ''), bucket: String(studyTarget.bucket || '') };
   return { name: '', role: '', bucket: planCfg?.cat ? 'SKB_' + planCfg.cat : '' };
 }
-function saveStudyTarget(role, bucket, name = targetPreference().name) {
+function saveStudyTarget(role, bucket, name = targetPreference().name, jalur = studyJalur) {
   const previous = targetPreference();
+  const prevJalur = studyJalur;
+  if (jalur && JALUR_META[jalur]) { studyJalur = jalur; store.set(JALUR_KEY, jalur); }
   const next = { name: String(name || '').trim().slice(0, 80), role: String(role || '').trim().slice(0, 100),
     bucket: targetSkbKeys().includes(bucket) ? bucket : '' };
-  if (previous.name !== next.name || previous.role !== next.role || previous.bucket !== next.bucket || !studyTarget) {
-    studyTarget = { ...next, at: Date.now() };
+  if (previous.name !== next.name || previous.role !== next.role || previous.bucket !== next.bucket || prevJalur !== studyJalur || !studyTarget) {
+    studyTarget = { ...next, jalur: studyJalur, at: Date.now() };
     store.set(TARGET_KEY, studyTarget);
   }
   return next;
@@ -291,18 +308,21 @@ function skbTargetChoicesHTML(selectedBucket = targetPreference().bucket) {
 function targetEditorHTML() {
   const current = targetPreference();
   const choices = skbTargetChoicesHTML(current.bucket);
+  const jalurChoices = Object.values(JALUR_META).map(j => `<option value="${j.id}"${j.id === studyJalur ? ' selected' : ''}>${esc(j.label)}</option>`).join('');
   const activePlan = planCfg?.cat ? ' Planning yang sudah dibuat bisa disesuaikan lewat Atur planning.' : '';
   return `<form class="pf-editor" onsubmit="return App.saveTarget(event)">
     <label class="mt-2 block text-xs font-bold" for="target-name">Nama tampilan</label>
     <input id="target-name" name="targetName" class="input input-bordered input-sm mt-1 w-full"
       maxlength="80" value="${esc(current.name)}" placeholder="Nama yang ingin ditampilkan">
-    <label class="mt-2 block text-xs font-bold" for="target-role">Nama jabatan (opsional)</label>
+    <label class="mt-2 block text-xs font-bold" for="target-role">Nama jabatan / instansi tujuan (opsional)</label>
     <input id="target-role" name="targetRole" class="input input-bordered input-sm mt-1 w-full"
-      maxlength="100" value="${esc(current.role)}" placeholder="Misalnya Auditor Ahli Pertama">
+      maxlength="100" value="${esc(current.role)}" placeholder="Misal: Analis Kebijakan Pemda / Auditor Kementerian">
     <label class="mt-2 block text-xs font-bold" for="target-bucket">Bidang latihan SKB</label>
     <select id="target-bucket" name="targetBucket" class="select select-bordered select-sm mt-1 w-full">
       <option value="">Belum dipilih</option>${choices}</select>
-    <p class="mt-2 text-xs text-base-content/70">Pilih bidang yang paling sesuai. Cakupan latihan mengikuti bank bidang yang dipilih.${activePlan}</p>
+    <label class="mt-2 block text-xs font-bold" for="target-jalur">Jalur formasi &amp; acuan passing grade</label>
+    <select id="target-jalur" name="targetJalur" class="select select-bordered select-sm mt-1 w-full">${jalurChoices}</select>
+    <p class="mt-2 text-xs text-base-content/70">Mendukung persiapan formasi <b>Kementerian</b> &amp; <b>Pemda</b> dengan standar target skor elit 500++.${activePlan}</p>
     <div class="pf-editor-actions">
       <button class="btn btn-ghost" type="button" onclick="Auth.openProfile($('#dlg-profile').dataset.scope)">Batal</button>
       <button class="btn btn-primary" type="submit">Simpan profil</button>
@@ -312,6 +332,20 @@ function targetEditorHTML() {
 }
 
 function chunk(arr, size) { const out = []; for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size)); return out; }
+
+function skbFullPack(group) {
+  if (!group || !group.startsWith('SKB_') || !BANK[group] || !BANK[group].length) return null;
+  const m = skbMeta(group), pool = ordered(group);
+  const count = Math.min(100, pool.length);
+  const qs = typeof planPickStratified === 'function' ? planPickStratified(pool, count, 'skbfull:' + group, []) : selectQuestions(pool, count);
+  const mins = Math.min(90, Math.max(25, Math.round(qs.length * 0.9)));
+  return {
+    key: `SKBFULL-${group}`, group, no: 'CAT', kind: 'SKB', mode: 'SKB', skbBucket: group,
+    title: `Simulasi SKB CAT BKN · ${m.short} (${qs.length} Soal)`,
+    compose: `${qs.length} soal proporsional seluruh materi ${m.name}`,
+    questions: qs, minutes: mins
+  };
+}
 
 function packsFor(group) {
   if (group === 'SKD_FULL') {
@@ -364,6 +398,7 @@ function preparePack(pack) {
 
 function findPack(key) {
   if (key.indexOf('PLAN-') === 0) return planPackByKey(key);   // v34: Try Out / latihan harian dari Planning
+  if (key.indexOf('SKBFULL-') === 0) return skbFullPack(key.slice(8));
   const i = key.lastIndexOf('-');
   const group = key.slice(0, i);
   return packsFor(group).find(p => p.key === key) || null;
@@ -394,27 +429,47 @@ const RK_GLOBAL_META = {
     desc: 'Gabungan seluruh pecahan materi TKP: Strategi Skor 5, Pelayanan Publik, Jejaring Kerja, Sosial Budaya, TIK/AI/UU PDP, Profesionalisme & Anti Radikalisme.'
   }
 };
-const rkGlobalTopics = grp => MATERI.filter(t => t.group === grp);
+function rkGlobalMetaFor(grp) {
+  if (RK_GLOBAL_META[grp]) return RK_GLOBAL_META[grp];
+  if (grp === 'SKB') {
+    return { id: 'SKB', title: 'Rangkuman Global Semua SKB', subtitle: 'Seluruh Formasi Kementerian & Pemda', icon: 'briefcase', tone: 'tkp', desc: 'Gabungan seluruh ringkasan materi SKB di semua bidang formasi Kementerian maupun Pemerintah Daerah.' };
+  }
+  if (String(grp || '').startsWith('SKB_')) {
+    const m = skbMeta(grp);
+    return { id: grp, title: `Rangkuman Global SKB ${m.short}`, subtitle: m.name, icon: 'briefcase', tone: 'tkp', desc: `Gabungan lengkap seluruh topik dan rumus inti SKB ${m.name} (${m.desc}).` };
+  }
+  return null;
+}
+function rkGlobalTopics(grp) {
+  if (grp === 'SKB') return MATERI.filter(t => t.group === 'SKB');
+  if (String(grp || '').startsWith('SKB_')) {
+    const cat = grp.slice(4);
+    return MATERI.filter(t => t.group === 'SKB' && (t.skbCategory === cat || (t.buckets && t.buckets.includes(grp))));
+  }
+  return MATERI.filter(t => t.group === grp);
+}
 function rkGlobalStats(grp) {
   const topics = rkGlobalTopics(grp);
   const parts = topics.reduce((sum, t) => sum + lessonSteps(t).length, 0);
   return { topics, count: topics.length, parts };
 }
 function rkGlobalPanel(activeGroup) {
-  if (RK_GLOBAL_META[activeGroup]) {
-    const m = RK_GLOBAL_META[activeGroup], st = rkGlobalStats(activeGroup);
+  const m = rkGlobalMetaFor(activeGroup);
+  if (m) {
+    const st = rkGlobalStats(m.id);
+    if (!st.count) return '';
     return `
-      <button type="button" class="rkg-bar-btn ${m.tone}" onclick="App.rangkumanGlobal('${activeGroup}')" aria-label="Buka rangkuman global ${activeGroup}">
+      <button type="button" class="rkg-bar-btn ${m.tone}" onclick="App.rangkumanGlobal('${m.id}')" aria-label="Buka ${esc(m.title)}">
         <span class="rkg-bar-ic">${icon(m.icon, 'h-4 w-4')}</span>
-        <span class="rkg-bar-txt"><b>Rangkuman Global ${activeGroup}</b> · ${st.count} materi (${st.parts} bagian)</span>
-        <span class="rkg-bar-cta">Buka ${activeGroup} →</span>
+        <span class="rkg-bar-txt"><b>${esc(m.title)}</b> · ${st.count} materi (${st.parts} bagian)</span>
+        <span class="rkg-bar-cta">Buka →</span>
       </button>`;
   }
   const btns = ['TWK', 'TIU', 'TKP'].map(k => {
-    const m = RK_GLOBAL_META[k], st = rkGlobalStats(k);
+    const gm = RK_GLOBAL_META[k], st = rkGlobalStats(k);
     return `
-      <button type="button" class="rkg-mini-btn ${m.tone}" onclick="App.rangkumanGlobal('${k}')" aria-label="Buka rangkuman global ${k}">
-        ${icon(m.icon, 'h-3.5 w-3.5 shrink-0')}
+      <button type="button" class="rkg-mini-btn ${gm.tone}" onclick="App.rangkumanGlobal('${k}')" aria-label="Buka rangkuman global ${k}">
+        ${icon(gm.icon, 'h-3.5 w-3.5 shrink-0')}
         <span><b>Global ${k}</b> (${st.count})</span>
       </button>`;
   }).join('');
@@ -874,12 +929,26 @@ function renderHome() {
       ${icon('arrowR', 'h-5 w-5 shrink-0 text-slate-400')}
     </a>`;
 
+  const syncHomePill = (() => {
+    const st = window.Auth?.syncStatus?.();
+    if (!st) return '';
+    if (!st.online) {
+      return `<div id="home-sync-status" class="mt-2 flex flex-wrap items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900"><b>Offline Mode Aktif</b> · Seluruh materi &amp; CAT berjalan tanpa internet. Progres otomatis disimpan lokal${st.pending ? ` (${st.pending} perubahan)` : ''} &amp; siap disinkron saat online.</div>`;
+    }
+    if (st.dirty) {
+      return `<div id="home-sync-status" class="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-sky-200 bg-sky-50 px-3 py-2 text-xs text-sky-900"><span><b>Online kembali</b> · Mengamankan progres yang dikerjakan saat offline...</span><button type="button" class="btn btn-xs btn-primary" onclick="window.Auth?.syncNow?.()">Sinkronkan</button></div>`;
+    }
+    return `<div id="home-sync-status" class="mt-1.5 text-[0.72rem] font-semibold text-emerald-700">✓ Offline PWA siap · progres otomatis tersimpan lokal${st.hasServer && st.loggedIn ? ' &amp; tersinkron ke akun' : ''}</div>`;
+  })();
+  const jMeta = activeJalur();
+
   shell('', `
     <div class="home-wrap mx-auto w-full max-w-xl pb-2 pt-1 sm:pt-8">
       <header class="mb-4 px-0.5">
         <h1 class="text-2xl font-extrabold leading-tight tracking-tight text-neutral">${sapa}${preferred.name ? `, ${esc(preferred.name)}` : ''}!</h1>
-        <p class="mt-0.5 text-sm text-slate-600"><a href="#/planning" class="link link-primary font-bold">Planning ${planCfg ? planCfg.days : 7} hari</a> · Target SKD 500+${preferred.bucket ? ` dan SKB ${esc(skbMeta(preferred.bucket).short)} 90%` : ''}</p>
-        <p class="mt-1 text-xs"><a href="#/materi/rencana-7-hari" class="link link-primary">Panduan 7 hari dan rumus cepat TIU</a></p>
+        <p class="mt-0.5 text-sm text-slate-600"><a href="#/planning" class="link link-primary font-bold">Planning ${planCfg ? planCfg.days : 7} hari</a> · Target SKD <b>500++ (${jMeta.targetSkd})</b>${preferred.bucket ? ` &amp; SKB ${esc(skbMeta(preferred.bucket).short)} 90%` : ' &amp; SKB 90%'} · Kementerian &amp; Pemda</p>
+        <p class="mt-1 text-xs"><a href="#/materi/rencana-7-hari" class="link link-primary">Panduan 7 hari dan rumus cepat TIU</a> · <button type="button" class="link link-secondary font-bold" onclick="Auth.openProfile()">Jalur: ${esc(jMeta.label)}</button></p>
+        ${syncHomePill}
       </header>
       <div class="home-grid">
       <div class="home-col home-col-left">
@@ -909,18 +978,18 @@ function renderHome() {
         <h2 class="mb-2 px-0.5 text-sm font-extrabold text-slate-800">Mau belajar apa?</h2>
         <div class="grid gap-3">
           ${go3('#/materi', 'bg-teal-500', 'book', 'Materi', 'Baca ringkasan dan trik cepat, langkah demi langkah.', `${MATERI.length} topik`)}
-          ${go3('#/skd', 'bg-sky-500', 'clipboard', 'SKD', 'Latihan soal TWK, TIU, dan TKP, atau tryout lengkap.', `${fmtNum(skdTot)} soal · ${packsFor('SKD_FULL').length} tryout`)}
-          ${go3('#/skb', 'bg-indigo-500', 'briefcase', 'SKB', 'Latihan soal sesuai bidang formasi yang kamu pilih.', `${fmtNum(skbKeys().reduce((a, k) => a + bankLen(k), 0))} soal · ${skbKeys().length} bidang`)}
+          ${go3('#/skd', 'bg-sky-500', 'clipboard', 'SKD', 'Latihan soal TWK, TIU, TKP & tryout target 500++.', `${fmtNum(skdTot)} soal · ${packsFor('SKD_FULL').length} tryout`)}
+          ${go3('#/skb', 'bg-indigo-500', 'briefcase', 'SKB', 'Simulasi SKB CAT & materi seluruh formasi Kemen & Pemda.', `${fmtNum(skbKeys().reduce((a, k) => a + bankLen(k), 0))} soal · ${skbKeys().length} bidang`)}
         </div>
         <div class="km-home-tools mt-3">
           ${(() => {
             const prepLabel = preferred.bucket ? ` (${esc(skbMeta(preferred.bucket).short)})` : (preferred.role ? ` (${esc(preferred.role)})` : '');
             const setLink = !preferred.bucket ? ' <button type="button" class="link link-primary text-[0.7rem] font-bold ml-1" onclick="App.openOnboarding()">Pilih bidang SKB →</button>' : '';
-            return `<div class="km-home-tools-h">Persiapan Khusus CPNS Kementerian${prepLabel}${setLink}</div>`;
+            return `<div class="km-home-tools-h">Persiapan CPNS Kementerian &amp; Pemda${prepLabel}${setLink}</div>`;
           })()}
           <div class="km-home-grid">
-            <button type="button" class="km-tool-btn" onclick="App.openNonCat('wawancara')"><span>🎙️</span><b>Lab Non-CAT</b><small>Wawancara, Pauli, Praktik</small></button>
-            <button type="button" class="km-tool-btn" onclick="App.openCalc()"><span>📊</span><b>Kalkulator 40:60</b><small>Simulasi skor &amp; peringkat</small></button>
+            <button type="button" class="km-tool-btn" onclick="App.openNonCat('wawancara')"><span>🎙️</span><b>Lab Non-CAT</b><small>Wawancara, Pauli, Kasus</small></button>
+            <button type="button" class="km-tool-btn" onclick="App.openCalc()"><span>📊</span><b>Kalkulator 40:60</b><small>Kemen &amp; 100% CAT Pemda</small></button>
             <button type="button" class="km-tool-btn" onclick="App.openVault()"><span>🔖</span><b>Soal Salah &amp; Simpan</b><small>${Object.keys(wrongMap).length} salah · ${Object.keys(bookmarks).length} bookmark</small></button>
           </div>
         </div>
@@ -1032,37 +1101,39 @@ function renderSkd() {
 /* ---------- SKB ---------- */
 function renderSkb(key) {
   if (!key || !BANK[key]) {
-    const icons = { SKB_PRAKOM: 'db', SKB_INGGRIS: 'book', SKB_KESEHATAN: 'check', SKB_HUKUM: 'clipboard', SKB_KEUANGAN: 'trophy', SKB_PENDIDIKAN: 'book' };
+    const icons = { SKB_PRAKOM: 'db', SKB_HUKUM: 'clipboard', SKB_KEUANGAN: 'trophy', SKB_KESEHATAN: 'check', SKB_PENDIDIKAN: 'book', SKB_KEBIJAKAN: 'sliders', SKB_SDMA: 'user', SKB_AUDITOR: 'check', SKB_INGGRIS: 'book' };
     const preferred = targetPreference().bucket;
     const cards = skbKeys().sort((a, b) => Number(b === preferred) - Number(a === preferred)).map(k => {
       const m = skbMeta(k), n = bankLen(k), ps = packsFor(k), np = ps.length;
-      const done = ps.filter(p => results[p.key]).length;
-      const all = np > 0 && done === np;
-      const pct = np ? Math.round(done / np * 100) : 0;
+      const done = ps.filter(p => results[p.key]).length + (results['SKBFULL-' + k] ? 1 : 0);
+      const totPack = np + 1;
+      const all = np > 0 && done >= totPack;
+      const pct = totPack ? Math.min(100, Math.round(done / totPack * 100)) : 0;
+      const matN = rkGlobalTopics(k).length;
       return `
       <a href="#/skb/${k}" class="flex min-w-0 items-center gap-3.5 rounded-3xl border-2 border-b-4 ${all ? 'border-green-300 bg-green-50/60' : 'border-slate-200 bg-white'} p-4 transition active:translate-y-[2px] active:border-b-2 sm:hover:border-indigo-300">
         <span class="relative grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-indigo-500 text-white">${icon(icons[k] || 'briefcase', 'h-8 w-8')}${all ? `<span class="absolute -right-1.5 -top-1.5 grid h-6 w-6 place-items-center rounded-full bg-green-500 ring-2 ring-white">${icon('tick', 'h-3.5 w-3.5')}</span>` : ''}</span>
         <span class="min-w-0 flex-1">
           <span class="block text-base font-extrabold leading-snug text-slate-900">${esc(m.name)}${k === preferred ? ' · Targetmu' : ''}</span>
           <span class="mt-0.5 line-clamp-2 block text-xs leading-snug text-slate-500">${esc(m.desc)}</span>
-          <span class="mt-2 flex items-center gap-2.5"><span class="lx-track !h-2.5"><span class="lx-fill block" style="width:${pct}%"></span></span><span class="shrink-0 text-[0.7rem] font-bold text-slate-600">${done}/${np} paket</span></span>
-          <span class="mt-1 block text-[0.7rem] font-semibold text-indigo-600">${fmtNum(n)} soal</span>
+          <span class="mt-2 flex items-center gap-2.5"><span class="lx-track !h-2.5"><span class="lx-fill block" style="width:${pct}%"></span></span><span class="shrink-0 text-[0.7rem] font-bold text-slate-600">${Math.min(done, totPack)}/${totPack} tes</span></span>
+          <span class="mt-1 block text-[0.7rem] font-semibold text-indigo-600">${fmtNum(n)} soal · ${matN} modul materi</span>
         </span>
         ${icon('arrowR', 'h-5 w-5 shrink-0 text-slate-400')}
       </a>`;
     }).join('');
     shell('skb', `
       ${breadcrumb([['#/', 'Beranda'], [null, 'SKB']])}
-      ${pageHead('Seleksi Kompetensi Bidang (SKB)', 'Pilih bidang formasimu, lalu pilih paket latihan di dalamnya.')}
+      ${pageHead('Seleksi Kompetensi Bidang (SKB)', 'Formasi lengkap Kementerian & Pemerintah Daerah (Pemda). Target kompetitif >= 90% menyempurnakan nilai SKD 500++.')}
       <div class="rkg-panel mb-4">
         <div class="rkg-panel-head">
-          <div><div class="rkg-panel-title">🏛️ Pusat Persiapan SKB Kementerian (Prakom &amp; Non-CAT)</div>
-          <p class="rkg-panel-sub">Selain SKB CAT BKN, hampir semua kementerian menguji Wawancara, Psikotes/Kraepelin, Bahasa Inggris, &amp; Praktik Kerja.</p></div>
+          <div><div class="rkg-panel-title">🏛️ Pusat Persiapan SKB Kementerian &amp; Pemda (CAT &amp; Non-CAT)</div>
+          <p class="rkg-panel-sub">Kuasi SKB CAT BKN 100% (Pemda/Standar BKN) maupun Wawancara STAR, Kraepelin/Pauli &amp; Studi Kasus semua formasi Kementerian.</p></div>
         </div>
         <div class="rkg-grid">
-          <button type="button" class="rkg-btn twk on" onclick="App.openNonCat('wawancara')"><span class="rkg-ic">🎙️</span><span class="rkg-meta"><span class="rkg-btn-t">Wawancara &amp; Praktik STAR</span><span class="rkg-btn-s">8 skenario + 4 studi kasus Prakom</span></span></button>
+          <button type="button" class="rkg-btn twk on" onclick="App.openNonCat('wawancara')"><span class="rkg-ic">🎙️</span><span class="rkg-meta"><span class="rkg-btn-t">Wawancara &amp; Studi Kasus STAR</span><span class="rkg-btn-s">15 skenario + 11 studi kasus semua formasi</span></span></button>
           <button type="button" class="rkg-btn tiu" onclick="App.openNonCat('pauli')"><span class="rkg-ic">⚡</span><span class="rkg-meta"><span class="rkg-btn-t">Tes Konsentrasi Kraepelin</span><span class="rkg-btn-s">Simulasi kecepatan &amp; akurasi berhitung</span></span></button>
-          <button type="button" class="rkg-btn tkp" onclick="App.openCalc()"><span class="rkg-ic">📊</span><span class="rkg-meta"><span class="rkg-btn-t">Kalkulator 40% SKD + 60% SKB</span><span class="rkg-btn-s">Hitung nilai akhir &amp; kejar pesaing</span></span></button>
+          <button type="button" class="rkg-btn tkp" onclick="App.openCalc()"><span class="rkg-ic">📊</span><span class="rkg-meta"><span class="rkg-btn-t">Kalkulator 40% SKD + 60% SKB</span><span class="rkg-btn-s">Preset 100% CAT Pemda &amp; Kemen 500++</span></span></button>
         </div>
       </div>
       ${cards ? `<div class="grid grid-cols-[minmax(0,1fr)] gap-3.5 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>`
@@ -1070,8 +1141,27 @@ function renderSkb(key) {
     return;
   }
   const m = skbMeta(key), packs = packsFor(key);
+  const fullPack = skbFullPack(key), fullRes = fullPack ? results[fullPack.key] : null;
   const nDone = packs.filter(p => results[p.key]).length;
   const pct = packs.length ? Math.round(nDone / packs.length * 100) : 0;
+  const fullCard = fullPack ? (() => {
+    const fMax = fullRes ? (fullRes.best.max || fullPack.questions.length * 5) : fullPack.questions.length * 5;
+    const fPct = fullRes ? Math.round((fullRes.best.score / fMax) * 100) : 0;
+    return `
+      <div class="mb-4 rounded-3xl border-2 border-b-4 border-indigo-300 bg-gradient-to-br from-primary to-secondary p-4 text-white">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="min-w-0 flex-1">
+            <span class="inline-flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-0.5 text-[0.7rem] font-extrabold uppercase">Simulasi Standar CAT BKN · ${fullPack.questions.length} Soal</span>
+            <h2 class="mt-1.5 text-lg font-extrabold leading-snug">${esc(fullPack.title)}</h2>
+            <p class="mt-0.5 text-xs text-white/85">Durasi ${fullPack.minutes} menit · soal proporsional seluruh subtopik ${esc(m.name)} (target >= 90% untuk mengamankan ranking Kementerian &amp; Pemda).</p>
+            ${fullRes ? `<div class="mt-2 inline-flex items-center gap-2 rounded-xl bg-white/15 px-3 py-1 text-xs font-bold">Skor terbaik: ${fullRes.best.score}/${fMax} (${fPct}%)</div>` : ''}
+          </div>
+          <button type="button" class="lx-btn lx-gold sm:w-auto shrink-0 px-4" onclick="App.openStart('${esc(fullPack.key)}')">${icon('play', 'h-5 w-5')} ${fullRes ? 'Ulangi Simulasi Penuh' : 'Mulai Simulasi CAT'}</button>
+        </div>
+      </div>`;
+  })() : '';
+  const skbRkRow = rkGlobalPanel(key);
+  const firstTopic = rkGlobalTopics(key)[0] || MATERI.find(x => x.buckets && x.buckets.length === 1 && x.buckets[0] === key);
   shell('skb', `
     ${breadcrumb([['#/', 'Beranda'], ['#/skb', 'SKB'], [null, esc(m.short)]])}
 
@@ -1084,13 +1174,15 @@ function renderSkb(key) {
       <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-extrabold text-indigo-800">${esc(m.short)}</span>
     </div>
 
-    ${pageHead('SKB ' + esc(m.name), esc(m.desc) + ` Setiap paket berisi ${SKB_SIZE} soal.`,
+    ${pageHead('SKB ' + esc(m.name), esc(m.desc) + ` Tersedia ${fmtNum(bankLen(key))} soal (Simulasi Penuh + paket ${SKB_SIZE} soal).`,
       `<a href="#/skb" class="hidden sm:inline-flex btn btn-ghost btn-sm gap-2 text-slate-700 hover:bg-slate-100 rounded-xl">${icon('back', 'h-4 w-4 text-primary')} Ganti bidang</a>`)}
-    ${key === 'SKB_PRAKOM' ? '<p class="mb-3 text-xs text-slate-600">Target latihan 90% · Kisi-kisi Ahli Pertama. <a class="link link-primary" href="#/materi/rencana-7-hari">Panduan 7 hari</a></p>' : ''}
-    ${packs.length ? `<div class="mb-4 flex items-center gap-3 rounded-2xl bg-white/80 p-3.5 ring-1 ring-slate-200"><div class="lx-track !h-2.5"><div class="lx-fill" style="width:${pct}%"></div></div><span class="shrink-0 text-xs font-bold text-slate-600">${nDone} dari ${packs.length} paket</span></div>` : ''}
+    ${key === 'SKB_PRAKOM' ? '<p class="mb-3 text-xs text-slate-600">Target latihan 90% · Kisi-kisi Ahli Pertama. <a class="link link-primary" href="#/materi/rencana-7-hari">Panduan 7 hari</a></p>' : '<p class="mb-3 text-xs text-slate-600">Target latihan 90% · Berlaku untuk formasi Kementerian maupun Pemerintah Daerah (Pemda).</p>'}
+    ${fullCard}
+    ${skbRkRow ? `<div class="mb-3">${skbRkRow}</div>` : ''}
+    ${packs.length ? `<div class="mb-4 flex items-center gap-3 rounded-2xl bg-white/80 p-3.5 ring-1 ring-slate-200"><div class="lx-track !h-2.5"><div class="lx-fill" style="width:${pct}%"></div></div><span class="shrink-0 text-xs font-bold text-slate-600">${nDone} dari ${packs.length} paket reguler</span></div>` : ''}
     <div class="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">${packs.map(packCard).join('')}</div>
-    ${(() => { const t = MATERI.find(x => x.buckets && x.buckets.length === 1 && x.buckets[0] === key && !x.subs); return t
-      ? `<div class="mt-6 flex items-center gap-3 rounded-3xl border-2 border-b-4 border-teal-200 bg-teal-50 p-4"><span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-teal-500 text-white">${icon('book', 'h-6 w-6')}</span><div class="min-w-0 flex-1"><div class="text-sm font-extrabold text-slate-900">Belum hafal kisi-kisinya?</div><div class="mt-0.5 text-xs text-slate-600">Baca ringkasan materi ${esc(m.short)} dulu sebelum mulai paket.</div></div><a class="btn btn-accent btn-sm shrink-0 rounded-xl font-bold text-white" href="#/materi/${t.id}">Buka</a></div>` : ''; })()}
+    ${firstTopic
+      ? `<div class="mt-6 flex flex-wrap items-center gap-3 rounded-3xl border-2 border-b-4 border-teal-200 bg-teal-50 p-4"><span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-teal-500 text-white">${icon('book', 'h-6 w-6')}</span><div class="min-w-0 flex-1"><div class="text-sm font-extrabold text-slate-900">Belum hafal kisi-kisi ${esc(m.short)}?</div><div class="mt-0.5 text-xs text-slate-600">Baca Rangkuman Global SKB ${esc(m.short)} atau mulai langkah belajar materinya.</div></div><div class="flex flex-wrap gap-2"><button type="button" class="btn btn-outline btn-sm rounded-xl font-bold" onclick="App.rangkumanGlobal('${esc(key)}')">Rangkuman Global</button><a class="btn btn-accent btn-sm shrink-0 rounded-xl font-bold text-white" href="#/materi/${firstTopic.id}">Belajar Materi</a></div></div>` : ''}
   `);
 }
 
@@ -1117,11 +1209,14 @@ function renderMateri(id) {
   const skbChipsData = [
     { id: 'ALL', name: 'Semua Bidang SKB' },
     { id: 'PRAKOM', name: 'Pranata Komputer' },
-    { id: 'INGGRIS', name: 'Bahasa Inggris Kemen' },
-    { id: 'KESEHATAN', name: 'Tenaga Kesehatan' },
-    { id: 'HUKUM', name: 'Hukum & Kebijakan' },
+    { id: 'HUKUM', name: 'Hukum & Pemda' },
     { id: 'KEUANGAN', name: 'Keuangan & Pajak' },
-    { id: 'PENDIDIKAN', name: 'Pendidikan & Guru' }
+    { id: 'KESEHATAN', name: 'Kesehatan & SPM' },
+    { id: 'PENDIDIKAN', name: 'Pendidikan & Guru' },
+    { id: 'KEBIJAKAN', name: 'Analis Kebijakan' },
+    { id: 'SDMA', name: 'SDMA & Arsip' },
+    { id: 'AUDITOR', name: 'Auditor & PBJ' },
+    { id: 'INGGRIS', name: 'Bahasa Inggris Kemen' }
   ].concat(weakSkbN ? [{ id: 'WEAK', name: `⚠ Kelemahan (${weakSkbN})` }] : []);
 
   if (isSkd && ui.materiGroup === 'WEAK' && !weakSkdN) ui.materiGroup = 'ALL';
@@ -1143,7 +1238,7 @@ function renderMateri(id) {
       : skbAll.filter(t => ui.materiSkbGroup === 'ALL' || t.skbCategory === ui.materiSkbGroup || (!t.skbCategory && ui.materiSkbGroup === 'ALL'));
   }
 
-  const skbIcons = { PRAKOM: 'db', INGGRIS: 'book', KESEHATAN: 'check', HUKUM: 'clipboard', KEUANGAN: 'trophy', PENDIDIKAN: 'book' };
+  const skbIcons = { PRAKOM: 'db', INGGRIS: 'book', KESEHATAN: 'check', HUKUM: 'clipboard', KEUANGAN: 'trophy', PENDIDIKAN: 'book', KEBIJAKAN: 'sliders', SDMA: 'user', AUDITOR: 'check' };
   const groupIcons = { TWK: 'flag', TIU: 'puzzle', TKP: 'bulb' };
   let nDone = 0;
   const cards = list.map(t => {
@@ -1176,9 +1271,11 @@ function renderMateri(id) {
     ? `<div class="mb-3.5 flex items-center gap-3 rounded-2xl bg-white/80 p-3.5 ring-1 ring-slate-200"><div class="min-w-0 flex-1"><div class="text-xs font-bold text-slate-800">${nDone} dari ${list.length} topik selesai</div><div class="lx-track mt-1.5 !h-2.5"><div class="lx-fill" style="width:${Math.round(nDone / list.length * 100)}%"></div></div></div></div>`
     : '';
 
+  const skbGlobalScope = ui.materiSkbGroup === 'ALL' || ui.materiSkbGroup === 'WEAK' ? 'SKB' : ('SKB_' + ui.materiSkbGroup);
+
   shell('materi', `
     ${breadcrumb([['#/', 'Beranda'], [null, isSkd ? 'Materi SKD' : 'Materi SKB']])}
-    ${pageHead('Materi & Trik Cepat CPNS', isSkd ? 'Ringkasan inti TWK, TIU, dan TKP, lengkap dengan trik cepat.' : 'Ringkasan inti materi per bidang formasi teknis.')}
+    ${pageHead('Materi & Trik Cepat CPNS', isSkd ? 'Ringkasan inti TWK, TIU, dan TKP, lengkap dengan trik cepat.' : 'Ringkasan inti seluruh bidang formasi Kementerian & Pemda.')}
 
     <!-- 2 Pilihan Utama: MATERI SKD vs MATERI SKB (Segmented Switcher Modern) -->
     <div class="mb-3.5 grid grid-cols-2 gap-2">
@@ -1188,13 +1285,13 @@ function renderMateri(id) {
       </button>
       <button type="button" onclick="App.setMateriTab('SKB')" class="flex min-h-14 items-center justify-center gap-2 rounded-2xl border-2 border-b-4 px-2 py-2 transition active:translate-y-[2px] active:border-b-2 ${!isSkd ? 'border-teal-500 bg-teal-50 text-teal-700' : 'border-slate-200 bg-white text-slate-600'}">
         <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg ${!isSkd ? 'bg-teal-500 text-white' : 'bg-slate-100 text-slate-500'}">${icon('briefcase', 'h-4 w-4')}</span>
-        <span class="min-w-0 text-left leading-tight"><span class="block text-sm font-extrabold">Materi SKB</span><span class="block text-[0.68rem] font-semibold opacity-75">Per bidang formasi</span></span>
+        <span class="min-w-0 text-left leading-tight"><span class="block text-sm font-extrabold">Materi SKB</span><span class="block text-[0.68rem] font-semibold opacity-75">9 bidang Kemen &amp; Pemda</span></span>
       </button>
     </div>
 
     <!-- Sub-filter Chip (bisa digeser ke samping) -->
     <div id="materi-chips" class="no-scrollbar relative -mx-3 mb-3.5 flex snap-x gap-2 overflow-x-auto px-3 pb-1.5 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">${chips}</div>
-    ${isSkd ? rkGlobalPanel(ui.materiGroup) : ''}
+    ${rkGlobalPanel(isSkd ? ui.materiGroup : skbGlobalScope)}
     ${sum}
     ${cards
       ? `<div class="grid grid-cols-[minmax(0,1fr)] gap-3.5 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>`
@@ -1442,10 +1539,13 @@ function renderMateriDetail(t) {
         <div class="lx-track mt-3" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${prog.live}"><div class="lx-fill" style="width:${Math.max(prog.live, 4)}%"></div></div>
         ${cta}
       </div>
-      ${RK_GLOBAL_META[t.group] ? (() => {
-        const st = rkGlobalStats(t.group);
-        return `<div class="rkg-detail-bar"><div class="min-w-0 flex-1 text-xs text-slate-600"><b class="block text-sm text-slate-900">Ingin baca semua materi ${t.group} sekaligus?</b>Gabungan ${st.count} pecahan materi (${st.parts} bagian).</div><button type="button" class="lx-sum" onclick="App.rangkumanGlobal('${t.group}')" aria-label="Buka rangkuman global ${t.group}">${icon('book', 'h-4 w-4')} GLOBAL ${t.group}</button></div>`;
-      })() : ''}
+      ${(() => {
+        const rkGrp = t.group === 'SKB' ? (t.skbCategory ? 'SKB_' + t.skbCategory : (t.buckets && t.buckets[0]) || 'SKB') : t.group;
+        const m = rkGlobalMetaFor(rkGrp);
+        if (!m) return '';
+        const st = rkGlobalStats(m.id);
+        return `<div class="rkg-detail-bar"><div class="min-w-0 flex-1 text-xs text-slate-600"><b class="block text-sm text-slate-900">Ingin baca semua materi ${esc(m.subtitle || rkGrp)} sekaligus?</b>Gabungan ${st.count} pecahan materi (${st.parts} bagian).</div><button type="button" class="lx-sum" onclick="App.rangkumanGlobal('${esc(m.id)}')" aria-label="Buka ${esc(m.title)}">${icon('book', 'h-4 w-4')} GLOBAL ${esc(rkGrp.replace('SKB_', ''))}</button></div>`;
+      })()}
       <div class="lx-path" aria-label="Jalur belajar">${nodes}${finalNode}</div>
       <div class="mt-2 grid grid-cols-1 gap-2.5 sm:grid-cols-2">${navBtn(prev, 'p')}${navBtn(next, 'n')}</div>
     </div>
@@ -1660,10 +1760,12 @@ function rkOpen(id, chapter) {
   const el = rkEnsureOverlay();
   const n = lessonSteps(t).length;
   const readN = lessonSteps(t).filter(st => isRkRead(t.id, st.title)).length;
-  const globalCta = RK_GLOBAL_META[t.group]
+  const rkGrp = t.group === 'SKB' ? (t.skbCategory ? 'SKB_' + t.skbCategory : (t.buckets && t.buckets[0]) || 'SKB') : t.group;
+  const rkMeta = rkGlobalMetaFor(rkGrp);
+  const globalCta = rkMeta
     ? (() => {
-        const st = rkGlobalStats(t.group);
-        return `<div class="rkg-hero-cta ${RK_GLOBAL_META[t.group].tone} mb-3"><span class="text-xs font-bold text-slate-700">Lihat semua ${st.count} materi ${t.group} dalam 1 rangkuman</span><button type="button" class="lx-sum lx-sum-sm" onclick="App.rangkumanGlobal('${t.group}')">${icon('book', 'h-3.5 w-3.5')} GLOBAL ${t.group}</button></div>`;
+        const st = rkGlobalStats(rkMeta.id);
+        return st.count ? `<div class="rkg-hero-cta ${rkMeta.tone} mb-3"><span class="text-xs font-bold text-slate-700">Lihat semua ${st.count} materi ${esc(rkMeta.subtitle || rkGrp)} dalam 1 rangkuman</span><button type="button" class="lx-sum lx-sum-sm" onclick="App.rangkumanGlobal('${esc(rkMeta.id)}')">${icon(rkMeta.icon, 'h-3.5 w-3.5')} GLOBAL ${esc(rkGrp.replace('SKB_', ''))}</button></div>` : '';
       })()
     : '';
   el.innerHTML = `
@@ -1683,10 +1785,10 @@ function rkOpen(id, chapter) {
   }
 }
 function rkOpenGlobal(group = 'TWK') {
-  const grp = RK_GLOBAL_META[group] ? group : 'TWK';
-  const meta = RK_GLOBAL_META[grp];
+  const meta = rkGlobalMetaFor(group) || RK_GLOBAL_META.TWK;
+  const grp = meta.id;
   const topics = rkGlobalTopics(grp);
-  if (!topics.length) { toast(`Materi ${grp} belum tersedia.`); return; }
+  if (!topics.length) { toast(`Materi ${meta.title || grp} belum tersedia.`); return; }
   rk = { mode: 'global', group: grp };
   const el = rkEnsureOverlay();
   const reserved = new Set(reservedFinalKeys());
@@ -1719,10 +1821,15 @@ function rkOpenGlobal(group = 'TWK') {
   }).join('');
 
   const allSavedN = rkSavedSummary().saved.length;
-  const tabs = ['TWK', 'TIU', 'TKP'].map(k => {
-    const m = RK_GLOBAL_META[k], st = rkGlobalStats(k);
-    return `<button type="button" class="rkg-pill ${m.tone}${k === grp ? ' on' : ''}" onclick="App.rangkumanGlobal('${k}')">${icon(m.icon, 'h-3.5 w-3.5')} ${k} (${st.count})</button>`;
-  }).join('') + `<button type="button" class="rkg-pill hafal" onclick="App.openHafalan('saved', '${grp}')">✓ Hafalan Saya (<span id="rk-hafalan-tab-n">${allSavedN}</span>)</button>`;
+  const isSkbMode = grp === 'SKB' || grp.startsWith('SKB_');
+  const tabKeys = isSkbMode
+    ? ['SKB', ...targetSkbKeys().filter(k => rkGlobalStats(k).count > 0)]
+    : ['TWK', 'TIU', 'TKP'];
+  const tabs = tabKeys.map(k => {
+    const m = rkGlobalMetaFor(k), st = rkGlobalStats(k);
+    const shortLbl = k === 'SKB' ? 'Semua SKB' : k.replace('SKB_', '');
+    return `<button type="button" class="rkg-pill ${m.tone}${k === grp ? ' on' : ''}" onclick="App.rangkumanGlobal('${k}')">${icon(m.icon, 'h-3.5 w-3.5')} ${esc(shortLbl)} (${st.count})</button>`;
+  }).join('') + `<button type="button" class="rkg-pill hafal" onclick="App.openHafalan('saved', '${isSkbMode ? 'SKB' : grp}')">✓ Hafalan Saya (<span id="rk-hafalan-tab-n">${allSavedN}</span>)</button>`;
 
   const toc = topics.map((t, ti) =>
     `<button type="button" class="rkg-toc-chip" onclick="App.rangkumanJump('rk-chap-${t.id}')">${ti + 1}. ${esc(t.title)}</button>`
@@ -1730,16 +1837,16 @@ function rkOpenGlobal(group = 'TWK') {
 
   el.innerHTML = `
     <div class="lx-top"><button type="button" class="lx-x" onclick="App.rangkumanClose()" aria-label="Tutup rangkuman">${icon('x', 'h-6 w-6')}</button>
-      <div class="rk-head"><div class="rk-kicker">RANGKUMAN GLOBAL SKD</div><div class="rk-title">${esc(meta.title)} · ${topics.length} Topik (${totalParts} Bagian)</div></div></div>
+      <div class="rk-head"><div class="rk-kicker">${isSkbMode ? 'RANGKUMAN GLOBAL SKB' : 'RANGKUMAN GLOBAL SKD'}</div><div class="rk-title">${esc(meta.title)} · ${topics.length} Topik (${totalParts} Bagian)</div></div></div>
     <div class="lx-body" id="rk-scroll"><div class="lx-wrap">
       <div class="rkg-tabs" role="tablist" aria-label="Pilih Rangkuman Global">${tabs}</div>
       <p class="rk-intro">${esc(meta.desc)} Klik <b>Tandai hafal</b> di kanan tiap judul sub-bab atau <b>✓ Tandai bab ini hafal</b>. Progres: <b id="rk-read-counter">${readParts}/${totalParts}</b> bagian ditandai hafal · <b>${doneParts}/${totalParts}</b> langkah kuis selesai.</p>
       <div class="rkg-search-wrap">
         <span class="rkg-search-ic">${icon('search', 'h-4 w-4')}</span>
-        <input id="rk-search" type="search" class="rkg-search" placeholder="Cari sub-bab, rumus, UU, atau kata kunci di semua ${grp}..." oninput="App.rangkumanFilter(this.value)" aria-label="Cari di rangkuman global ${grp}">
+        <input id="rk-search" type="search" class="rkg-search" placeholder="Cari sub-bab, rumus, UU, atau kata kunci..." oninput="App.rangkumanFilter(this.value)" aria-label="Cari di ${esc(meta.title)}">
         <div id="rk-search-stat" class="rkg-search-stat">Menampilkan semua ${totalParts} bagian dari ${topics.length} topik.</div>
       </div>
-      <div class="rkg-toc" aria-label="Daftar isi topik ${grp}">${toc}</div>
+      <div class="rkg-toc" aria-label="Daftar isi topik">${toc}</div>
       <div class="rk-tools"><button type="button" class="rk-tool" onclick="App.rangkumanToggle(true)">Buka semua</button><button type="button" class="rk-tool" onclick="App.rangkumanToggle(false)">Tutup semua</button><button type="button" class="rk-tool" id="rk-read-btn" aria-pressed="false" onclick="App.rangkumanToggleReadOnly(this)">✓ Sudah hafal (<span id="rk-read-pill-n">${readParts}</span>)</button><button type="button" class="rk-tool" id="rk-unread-btn" aria-pressed="false" onclick="App.rangkumanToggleUnread(this)">Belum hafal saja</button><button type="button" class="rk-tool" onclick="App.rangkumanPrint()">🖨️ Cetak / PDF</button></div>
       <div id="rk-chapters">${chapters}</div>
       <div id="rk-empty" class="rkg-empty" hidden>Tidak ada materi atau sub-bab yang cocok dengan kata kunci tersebut.</div>
@@ -2367,13 +2474,14 @@ function reservedFinalKeys() {
   const idx = planQIndex();
   return saved.map(id => idx.get(questions.resolve(id))).filter(Boolean).map(questions.key);
 }
+function finalSkbCount(len) { return len >= 100 ? 50 : Math.min(30, Math.max(15, Math.floor(len / 2))); }
 function reserveFinalSkb(cfg) {
   const field = 'SKB_' + cfg.cat;
   const pool = BANK[field] || [];
   const slot = finalSetName(field);
   if (planQ?.at !== cfg.at || !planQ.sets) planQ = { at: cfg.at, sets: {} };
   if (!planQ.sets[slot]) {
-    const count = Math.min(SKB_SIZE, pool.length);
+    const count = finalSkbCount(pool.length);
     const fresh = selectQuestions(shuffle(pool, slot + cfg.at).filter(q => !seenBefore(q)), count, new Set(), true);
     planQ.sets[slot] = fresh.map(q => q.id);
     store.set(PLANQ_KEY, planQ);
@@ -2447,7 +2555,7 @@ function planPackByKey(key) {
     const pool = BANK[field] || [], short = skbMeta(field).short;
     if (phase === 'final') {
       const reserved = reserveFinalSkb(cfg);
-      const count = Math.min(SKB_SIZE, pool.length);
+      const count = finalSkbCount(pool.length);
       const qs = reserved.length >= count ? reserved.slice(0, count) : reserved.concat(planPickStratified(pool, count - reserved.length, cfg.at + 'fskb' + dayNo, preferSubs, new Set(reserved.map(questions.key))));
       return { key, group: field, kind: 'CAT', mode: 'SKB', skbBucket: field, plan: true, planDay: dayNo, planPhase: 'final', planRole: 'SKB', forceTimed: true, title: `Final Try Out SKB ${short} · Hari ${dayNo}`, compose: `${qs.length} soal SKB ${short}`, questions: qs, minutes: Math.max(20, qs.length) };
     }
@@ -3567,36 +3675,48 @@ function openResult() {
   const tiu = Object.entries(tiuScores());
   const pct = Math.round((r.total / r.max) * 100);
   const full = exam.pack.kind === 'FULL';
+  const jl = activeJalur();
   const bars = Object.entries(r.sum).map(([c, o]) => {
-    const pg = full ? PASSING[c] : null;
+    const rawPg = full ? jl.pg[c] : null;
+    const pg = rawPg != null && rawPg > 0 ? rawPg : null;
     const p = Math.round((o.score / o.max) * 100);
     const ok = pg != null ? o.score >= pg : p >= 70;
     const lbl = c === 'ALL' ? 'Skor' : c;
     return `<div class="rounded-xl border ${ok ? 'border-success/50 bg-success/5' : 'border-base-300 bg-base-100'} p-3">
       <div class="flex items-baseline justify-between gap-2"><span class="font-bold text-neutral">${lbl}</span>
         <span class="text-xl font-extrabold text-neutral">${o.score}</span></div>
-      <div class="text-xs text-base-content/60">${pg != null ? 'Passing grade ' + pg + ' • maks ' + o.max : 'Maks ' + o.max}</div>
+      <div class="text-xs text-base-content/60">${pg != null ? `Ambang ${jl.id} ${pg}` : (full ? `Khusus ${jl.id} (tanpa PG subtes)` : 'Maks ' + o.max)} • maks ${o.max}</div>
       <progress class="progress ${ok ? 'progress-success' : 'progress-primary'} mt-2 h-2 w-full" value="${p}" max="100"></progress>
       ${pg != null ? `<div class="mt-1 text-xs ${ok ? 'text-success' : 'text-error'} font-semibold">${ok ? 'Memenuhi passing grade' : `Kurang ${pg - o.score} poin dari passing grade`}</div>` : ''}
     </div>`;
   }).join('');
 
+  const jalurPills = full ? `<div class="flex flex-wrap items-center gap-1.5 text-xs"><span class="font-bold text-slate-600">Jalur acuan:</span>${Object.values(JALUR_META).map(j => `<button type="button" class="pl-chip ${j.id === jl.id ? 'on' : ''}" onclick="App.setJalur('${j.id}')">${j.id === 'UMUM' ? 'Umum (500++)' : esc(j.id)}</button>`).join('')}</div>` : '';
+
   let verdict = '';
   if (full) {
-    const fails = ['TWK', 'TIU', 'TKP'].filter(c => r.sum[c].score < PASSING[c]);
-    verdict = fails.length
-      ? `<div role="alert" class="alert border-warning/50 bg-warning/15 text-sm"><span><b>Belum memenuhi passing grade</b> pada ${fails.join(', ')}. Fokuskan latihan dan materi pada bagian tersebut.</span></div>`
-      : `<div role="alert" class="alert border-success/40 bg-success/10 text-sm">${icon('trophy', 'h-5 w-5 text-success')}<span><b>Selamat!</b> Skor kamu memenuhi passing grade di ketiga bagian.</span></div>`;
+    const fails = ['TWK', 'TIU', 'TKP'].filter(c => jl.pg[c] > 0 && r.sum[c].score < jl.pg[c]);
+    const lowTot = r.total < jl.minTotal;
+    if (fails.length || lowTot) {
+      const reasons = [];
+      if (fails.length) reasons.push(`subtes ${fails.join(', ')}`);
+      if (lowTot) reasons.push(`total minimal ${jl.minTotal} (kurang ${jl.minTotal - r.total} poin)`);
+      verdict = `<div role="alert" class="alert border-warning/50 bg-warning/15 text-sm"><span><b>Belum memenuhi passing grade jalur ${esc(jl.id)}</b> pada ${reasons.join(' dan ')}. Fokuskan latihan dan materi pada bagian tersebut.</span></div>`;
+    } else if (r.total >= 500) {
+      verdict = `<div role="alert" class="alert border-success/40 bg-success/10 text-sm">${icon('trophy', 'h-5 w-5 text-success')}<span><b>Luar Biasa (Skor Elit 500++ · Jalur ${esc(jl.id)})!</b> Skor <b>${r.total}/550</b> melampaui passing grade dan menempatkanmu di jajaran teratas Kemen &amp; Pemda.</span></div>`;
+    } else {
+      verdict = `<div role="alert" class="alert border-success/40 bg-success/10 text-sm">${icon('trophy', 'h-5 w-5 text-success')}<span><b>Memenuhi passing grade ${esc(jl.id)}!</b> Kejar <b>+${Math.max(0, 500 - r.total)} poin</b> lagi menuju target elit <b>500++</b> agar aman peringkat Kementerian &amp; Pemda.</span></div>`;
+    }
   } else {
-    const msg = pct >= 80 ? 'Sangat baik — pertahankan dan coba paket berikutnya.' : pct >= 60 ? 'Cukup baik — pelajari pembahasan soal yang kurang tepat.' : 'Masih perlu latihan — baca materi terkait lalu ulangi paket ini.';
+    const msg = pct >= 90 ? 'Sangat unggul (>=90%) — siap amankan bobot 60% SKB!' : pct >= 80 ? 'Baik — dorong ke >=90% untuk mendominasi perangkingan.' : pct >= 60 ? 'Cukup baik — pelajari pembahasan soal yang kurang tepat.' : 'Masih perlu latihan — baca materi terkait lalu ulangi paket ini.';
     verdict = `<div role="alert" class="alert border-primary/30 bg-primary/10 text-sm"><span>${msg}</span></div>`;
   }
 
   const field = exam.pack.skbBucket || exam.pack.group;
-  const target = full ? SKD_TARGET : (field.startsWith('SKB_') ? Math.ceil(r.max * SKB_TARGET) : null);
+  const target = full ? jl.targetSkd : (field.startsWith('SKB_') ? Math.ceil(r.max * SKB_TARGET) : null);
   if (target) {
-    const msg = r.total >= target ? 'Target latihan tercapai.' : `Perlu tambahan ${target - r.total} poin untuk mencapai target latihan.`;
-    verdict += `<p class="text-sm text-base-content/80"><b>Target ${full ? 'SKD ' + SKD_TARGET + '/550' : 'SKB ' + esc(skbMeta(field).short) + ' 90%'}.</b> ${msg}</p>`;
+    const msg = r.total >= target ? 'Target latihan tertinggi tercapai!' : `Perlu tambahan ${target - r.total} poin untuk mencapai target kompetitif.`;
+    verdict += `<p class="text-sm text-base-content/80"><b>Target ${full ? `SKD ${target}/550 (Jalur ${esc(jl.id)} · acuan 500++)` : 'SKB ' + esc(skbMeta(field).short) + ' 90%'}.</b> ${msg}</p>`;
   }
 
   const weak = Object.values(r.bySub).filter(o => o.score / o.max < 0.8)
@@ -3621,6 +3741,7 @@ function openResult() {
       </div>
     </div>
     <div class="safe-pad space-y-4">
+      ${jalurPills}
       ${verdict}
       <div class="grid gap-3 ${Object.keys(r.sum).length > 1 ? 'sm:grid-cols-3' : ''}">${bars}</div>
       <div class="grid grid-cols-3 divide-x divide-base-300 rounded-2xl border border-base-300 bg-base-100 text-center">
@@ -3658,7 +3779,7 @@ function openResult() {
       ${weakHtml}
       ${reviewSummary('sesi')}
       <div class="flex flex-wrap gap-2">
-        ${full ? `<button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openCalc(${r.total})">📊 Hitung Nilai Akhir 40:60</button>` : ''}
+        ${(full || exam.pack.mode === 'SKB') ? `<button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openCalc(${full ? r.total : ''})">📊 Hitung Nilai Akhir 40:60</button>` : ''}
         <button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openVault()">🔖 Soal Salah &amp; Bookmark</button>
       </div>
       <div class="modal-action act-stack mt-2">
@@ -3994,7 +4115,7 @@ const App = {
   saveTarget(event) {
     event.preventDefault();
     const form = event.currentTarget;
-    saveStudyTarget(form.elements.targetRole.value, form.elements.targetBucket.value, form.elements.targetName?.value);
+    saveStudyTarget(form.elements.targetRole.value, form.elements.targetBucket.value, form.elements.targetName?.value, form.elements.targetJalur?.value);
     store.del('cpns_onboard_skip_v1');
     const dialog = form.closest?.('#dlg-profile') || $('#dlg-profile');
     if (!exam || exam.finished) route();
@@ -4005,6 +4126,13 @@ const App = {
       window.Auth?.openProfile(dialog.dataset.scope, 'Profil tersimpan.');
     }
     return false;
+  },
+  setJalur(id) {
+    if (!JALUR_META[id]) return;
+    studyJalur = id;
+    store.set(JALUR_KEY, id);
+    if (exam && $('#dlg-result')?.open) openResult();
+    else if (!exam && location.hash !== '#/ujian') route();
   },
   openReview,
   startWeakness,
@@ -4105,6 +4233,8 @@ window.registerCPNSQuestions({
 window.App = App;
 window.GocpnsBridge = {
   store, BANK, questions, planDlg, planQIndex, toast, ask, esc, icon, fmtNum,
+  getTargetBucket: () => targetPreference().bucket,
+  skbMeta,
   getResults: () => results,
   getHistory: () => examHistory,
   getBookmarks: () => bookmarks,
@@ -4114,7 +4244,21 @@ window.GocpnsBridge = {
   removeWrong: id => { delete wrongMap[questions.resolve(id)]; store.set(WRONG_KEY, wrongMap); },
   clearWrong: () => { wrongMap = {}; store.set(WRONG_KEY, wrongMap); },
   startCustomExam: (pack, opts) => startExam(pack, opts),
-  rerender: () => { if (!exam && location.hash !== '#/ujian') route(); }
+  rerender: () => { if (!exam && location.hash !== '#/ujian') route(); },
+  onSyncChange(st) {
+    const el = $('#home-sync-status');
+    if (!el || !st) return;
+    if (!st.online) {
+      el.className = 'mt-2 flex flex-wrap items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900';
+      el.innerHTML = `<b>Offline Mode Aktif</b> · Seluruh materi &amp; CAT berjalan tanpa internet. Progres otomatis disimpan lokal${st.pending ? ` (${st.pending} perubahan)` : ''} &amp; siap disinkron saat online.`;
+    } else if (st.dirty) {
+      el.className = 'mt-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-sky-200 bg-sky-50 px-3 py-2 text-xs text-sky-900';
+      el.innerHTML = '<span><b>Online kembali</b> · Mengamankan progres yang dikerjakan saat offline...</span><button type="button" class="btn btn-xs btn-primary" onclick="window.Auth?.syncNow?.()">Sinkronkan</button>';
+    } else {
+      el.className = 'mt-1.5 text-[0.72rem] font-semibold text-emerald-700';
+      el.innerHTML = `✓ Offline PWA siap · progres otomatis tersimpan lokal${st.hasServer && st.loggedIn ? ' &amp; tersinkron ke akun' : ''}`;
+    }
+  }
 };
 
 /* ---------- pengaman: jangan sampai sesi ujian hilang karena refresh/tutup tab tak sengaja ---------- */
@@ -4148,8 +4292,9 @@ document.addEventListener('keydown', e => {
 /* ---------- mulai ---------- */
 function init() {
   try { (store.get('cpns_custom_packs_v2', [])).forEach(p => window.registerCPNSQuestions(p)); } catch (e) { /* abaikan */ }
-  // file tambahan opsional (tidak error bila tidak ada)
-  ['./db/skd/db_skd_extra.js', './db/skb/db_skb_extra.js'].forEach(src => {
+  // db_skd_extra.js kini dimuat sinkron dari index.html agar langsung siap offline;
+  // db_skb_extra.js tetap opsional bila pengguna menambahkan bank soal tambahan lokal.
+  ['./db/skb/db_skb_extra.js'].forEach(src => {
     const s = document.createElement('script'); s.src = src; s.async = true; s.onerror = () => {};
     document.head.appendChild(s);
   });
