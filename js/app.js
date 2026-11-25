@@ -53,7 +53,8 @@ const ICON = {
   upload: 'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5',
   trophy: 'M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0',
   calendar: 'M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5',
-  sliders: 'M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75'
+  sliders: 'M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75',
+  search: 'M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z'
 };
 const icon = (n, cls = 'h-5 w-5') =>
   `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor" class="${cls}" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="${ICON[n] || ''}"/></svg>`;
@@ -289,6 +290,57 @@ const GROUP_STYLE = {
   SKB: { badge: 'bg-amber-100 text-amber-900', bar: 'bg-amber-500', ring: 'ring-amber-200' }
 };
 const catStyle = c => GROUP_STYLE[['TWK', 'TIU', 'TKP'].includes(c) ? c : 'SKB'];
+
+const RK_GLOBAL_META = {
+  TWK: {
+    id: 'TWK', title: 'Rangkuman Global TWK', subtitle: 'Tes Wawasan Kebangsaan', icon: 'flag', tone: 'twk',
+    desc: 'Gabungan seluruh pecahan materi TWK: Pancasila, UUD 1945, NKRI, Sejarah, Bela Negara, Integritas, Otda, Bahasa Indonesia & EYD V.'
+  },
+  TIU: {
+    id: 'TIU', title: 'Rangkuman Global TIU', subtitle: 'Tes Intelegensia Umum', icon: 'puzzle', tone: 'tiu',
+    desc: 'Gabungan seluruh pecahan materi TIU: Strategi TIU, Pecahan, Perbandingan, Soal Cerita, Peluang, Silogisme, Deret, Analogi, Figural & Kecukupan Data.'
+  },
+  TKP: {
+    id: 'TKP', title: 'Rangkuman Global TKP', subtitle: 'Tes Karakteristik Pribadi', icon: 'bulb', tone: 'tkp',
+    desc: 'Gabungan seluruh pecahan materi TKP: Strategi Skor 5, Pelayanan Publik, Jejaring Kerja, Sosial Budaya, TIK/AI/UU PDP, Profesionalisme & Anti Radikalisme.'
+  }
+};
+const rkGlobalTopics = grp => MATERI.filter(t => t.group === grp);
+function rkGlobalStats(grp) {
+  const topics = rkGlobalTopics(grp);
+  const parts = topics.reduce((sum, t) => sum + lessonSteps(t).length, 0);
+  return { topics, count: topics.length, parts };
+}
+function rkGlobalPanel(activeGroup) {
+  const keys = ['TWK', 'TIU', 'TKP'];
+  const focused = RK_GLOBAL_META[activeGroup] ? rkGlobalStats(activeGroup) : null;
+  const cta = focused
+    ? `<button type="button" class="lx-sum" onclick="App.rangkumanGlobal('${activeGroup}')" aria-label="Buka rangkuman global ${activeGroup}">${icon('book', 'h-4 w-4')} RANGKUMAN GLOBAL ${activeGroup}</button>`
+    : '';
+  const btns = keys.map(k => {
+    const m = RK_GLOBAL_META[k], st = rkGlobalStats(k);
+    return `
+      <button type="button" class="rkg-btn ${m.tone}${activeGroup === k ? ' on' : ''}" onclick="App.rangkumanGlobal('${k}')" aria-label="Buka rangkuman global ${k}">
+        <span class="rkg-ic">${icon(m.icon, 'h-5 w-5')}</span>
+        <span class="rkg-meta">
+          <span class="rkg-btn-t">Rangkuman Global ${k}</span>
+          <span class="rkg-btn-s">${st.count} materi · ${st.parts} bagian</span>
+        </span>
+        ${icon('arrowR', 'h-4 w-4 shrink-0 text-slate-400')}
+      </button>`;
+  }).join('');
+  return `
+    <section class="rkg-panel" aria-label="Rangkuman Global SKD">
+      <div class="rkg-panel-head">
+        <div>
+          <div class="rkg-panel-title">${icon('book', 'h-4 w-4 text-primary')} <span>Rangkuman Global (Semua Pecahan Jadi 1)</span></div>
+          <p class="rkg-panel-sub">Baca gabungan seluruh materi TWK, TIU, atau TKP lengkap dalam satu halaman.</p>
+        </div>
+        ${cta}
+      </div>
+      <div class="rkg-grid">${btns}</div>
+    </section>`;
+}
 
 function customQuestions(t) {
   return (t.questions || []).map((q, i) => {
@@ -647,6 +699,16 @@ function renderSkd() {
   const packs = packsFor(ui.skdTab);
   const nDone = packs.filter(p => results[p.key]).length;
   const pct = packs.length ? Math.round(nDone / packs.length * 100) : 0;
+  const skdCat = ui.skdTab === 'SKD_FULL' ? 'FULL' : ui.skdTab.replace('SKD_', '');
+  const skdRkRow = RK_GLOBAL_META[skdCat]
+    ? (() => {
+        const st = rkGlobalStats(skdCat);
+        return `<div class="rkg-skd-row"><div class="min-w-0 text-xs text-slate-600"><b class="text-slate-800">Rangkuman Global ${skdCat}:</b> Gabungan seluruh ${st.count} materi (${st.parts} bagian).</div><button type="button" class="lx-sum" onclick="App.rangkumanGlobal('${skdCat}')" aria-label="Buka rangkuman global ${skdCat}">${icon('book', 'h-4 w-4')} RANGKUMAN GLOBAL ${skdCat}</button></div>`;
+      })()
+    : `<div class="rkg-skd-row"><span class="text-xs font-bold text-slate-700">Rangkuman Global SKD:</span><div class="rkg-skd-acts">${['TWK', 'TIU', 'TKP'].map(cat => {
+        const st = rkGlobalStats(cat), m = RK_GLOBAL_META[cat];
+        return `<button type="button" class="rkg-pill ${m.tone}" onclick="App.rangkumanGlobal('${cat}')">${icon(m.icon, 'h-3.5 w-3.5')} Global ${cat} <span class="opacity-75">(${st.count})</span></button>`;
+      }).join('')}</div></div>`;
   shell('skd', `
     ${breadcrumb([['#/', 'Beranda'], [null, 'SKD']])}
     ${pageHead('Seleksi Kompetensi Dasar (SKD)', 'Pilih jenis latihan, lalu pilih paket soal. Paket mengutamakan soal yang belum pernah kamu buka.')}
@@ -654,6 +716,7 @@ function renderSkd() {
     <div class="mb-4 rounded-2xl bg-white/80 p-3.5 ring-1 ring-slate-200">
       <p class="text-xs leading-relaxed text-slate-600 sm:text-sm">${g.desc}</p>
       ${packs.length ? `<div class="mt-2.5 flex items-center gap-3"><div class="lx-track !h-2.5"><div class="lx-fill" style="width:${pct}%"></div></div><span class="shrink-0 text-xs font-bold text-slate-600">${nDone} dari ${packs.length} paket</span></div>` : ''}
+      ${skdRkRow}
     </div>
     ${packs.length
       ? `<div class="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">${packs.map(packCard).join('')}</div>`
@@ -799,6 +862,7 @@ function renderMateri(id) {
 
     <!-- Sub-filter Chip (bisa digeser ke samping) -->
     <div id="materi-chips" class="no-scrollbar relative -mx-3 mb-3.5 flex snap-x gap-2 overflow-x-auto px-3 pb-1.5 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">${chips}</div>
+    ${isSkd ? rkGlobalPanel(ui.materiGroup) : ''}
     ${sum}
     ${cards
       ? `<div class="grid grid-cols-[minmax(0,1fr)] gap-3.5 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>`
@@ -1046,6 +1110,10 @@ function renderMateriDetail(t) {
         <div class="lx-track mt-3" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${prog.live}"><div class="lx-fill" style="width:${Math.max(prog.live, 4)}%"></div></div>
         ${cta}
       </div>
+      ${RK_GLOBAL_META[t.group] ? (() => {
+        const st = rkGlobalStats(t.group);
+        return `<div class="rkg-detail-bar"><div class="min-w-0 flex-1 text-xs text-slate-600"><b class="block text-sm text-slate-900">Ingin baca semua materi ${t.group} sekaligus?</b>Gabungan ${st.count} pecahan materi (${st.parts} bagian).</div><button type="button" class="lx-sum" onclick="App.rangkumanGlobal('${t.group}')" aria-label="Buka rangkuman global ${t.group}">${icon('book', 'h-4 w-4')} GLOBAL ${t.group}</button></div>`;
+      })() : ''}
       <div class="lx-path" aria-label="Jalur belajar">${nodes}${finalNode}</div>
       <div class="mt-2 grid grid-cols-1 gap-2.5 sm:grid-cols-2">${navBtn(prev, 'p')}${navBtn(next, 'n')}</div>
     </div>
@@ -1211,20 +1279,20 @@ const lessonApi = {
 };
 
 /* ==========================================================================
-   RANGKUMAN MATERI (v36)
-   Tombol RANGKUMAN di kanan atas tiap materi: seluruh langkah materi (rumus, studi kasus, jebakan),
-   contoh soal beserta cara mengerjakannya, dan "Cara Menjawab Cepat" dalam satu halaman yang bisa dibuka kapan saja.
+   RANGKUMAN MATERI (v36) & RANGKUMAN GLOBAL SKD
+   Tombol RANGKUMAN di tiap materi, plus Rangkuman Global TWK / TIU / TKP yang
+   menggabungkan seluruh pecahan materi menjadi satu halaman utuh lengkap dengan
+   daftar isi, pencarian, rumus, studi kasus, tips cepat, dan contoh soal.
    ========================================================================== */
-let rk = null;   // { t } saat rangkuman terbuka
+let rk = null;   // { mode: 'topic', t } | { mode: 'global', group }
 function rkQuestion(q, n) {
   const opts = (q.options || []).map((o, k) => `<li class="rk-opt${k === q.ans ? ' ok' : ''}"><span class="rk-k">${LETTERS[k]}</span><span class="rk-t">${escO(o)}</span>${k === q.ans ? '<b class="rk-tick">✓</b>' : ''}</li>`).join('');
   const why = q.explanation ? `<div class="rk-why"><b>Cara mengerjakan:</b> ${esc(q.explanation)}</div>` : '';
   const trick = q.trick && !String(q.explanation || '').includes(q.trick) ? `<div class="rk-why"><b>Trik:</b> ${esc(q.trick)}</div>` : '';
   return `<div class="rk-q"><div class="rk-qn">Contoh soal ${n}</div><div class="rk-qt">${escQ(q)}</div>${q.svg ? `<div class="q-svg my-2 overflow-auto rounded-xl bg-base-200/60 p-2">${q.svg}</div>` : ''}<ul class="rk-opts">${opts}</ul>${why}${trick}</div>`;
 }
-function rkBody(t) {
+function rkBody(t, reserved = new Set(reservedFinalKeys())) {
   const steps = lessonSteps(t), plan = lessonPlan(t), d = lessonDone(t);
-  const reserved = new Set(reservedFinalKeys());
   const items = steps.map((st, i) => {
     const content = st.kind === 'tips'
       ? `<ol class="rk-tips">${st.tips.map((x, n) => `<li><span class="rk-n">${n + 1}</span><span class="min-w-0 flex-1">${x}</span></li>`).join('')}</ol>`
@@ -1235,29 +1303,106 @@ function rkBody(t) {
   }).join('');
   return items;
 }
-function rkOpen(id, chapter) {
-  const t = MATERI.find(x => x.id === id); if (!t) return;
-  if (rk) return;
-  rk = { t };
+function rkEnsureOverlay() {
   document.documentElement.classList.add('lx-open');
   let el = $('#rangkuman');
-  if (!el) { el = document.createElement('div'); el.id = 'rangkuman'; el.className = 'lx-overlay rk-overlay'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); document.body.appendChild(el); }
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'rangkuman';
+    el.className = 'lx-overlay rk-overlay';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'true');
+    document.body.appendChild(el);
+    try { history.pushState({ rk: 1 }, ''); } catch (e) { /* abaikan */ }
+  }
+  return el;
+}
+function rkOpen(id, chapter) {
+  const t = MATERI.find(x => x.id === id); if (!t) return;
+  rk = { mode: 'topic', t };
+  const el = rkEnsureOverlay();
   const n = lessonSteps(t).length;
+  const globalCta = RK_GLOBAL_META[t.group]
+    ? (() => {
+        const st = rkGlobalStats(t.group);
+        return `<div class="rkg-hero-cta ${RK_GLOBAL_META[t.group].tone} mb-3"><span class="text-xs font-bold text-slate-700">Lihat semua ${st.count} materi ${t.group} dalam 1 rangkuman</span><button type="button" class="lx-sum lx-sum-sm" onclick="App.rangkumanGlobal('${t.group}')">${icon('book', 'h-3.5 w-3.5')} GLOBAL ${t.group}</button></div>`;
+      })()
+    : '';
   el.innerHTML = `
     <div class="lx-top"><button type="button" class="lx-x" onclick="App.rangkumanClose()" aria-label="Tutup rangkuman">${icon('x', 'h-6 w-6')}</button>
       <div class="rk-head"><div class="rk-kicker">RANGKUMAN</div><div class="rk-title">${esc(t.title)}</div></div></div>
     <div class="lx-body" id="rk-scroll"><div class="lx-wrap">
       <p class="rk-intro">Semua materi, rumus, studi kasus, dan contoh soal beserta cara mengerjakannya ada di sini. Ketuk judul untuk membuka. ${n} bagian.</p>
+      ${globalCta}
       <div class="rk-tools"><button type="button" class="rk-tool" onclick="App.rangkumanToggle(true)">Buka semua</button><button type="button" class="rk-tool" onclick="App.rangkumanToggle(false)">Tutup semua</button></div>
       ${rkBody(t)}
       <button type="button" class="lx-btn lx-ghost mt-4" onclick="App.rangkumanClose()">Tutup rangkuman</button>
     </div></div>`;
-  try { history.pushState({ rk: 1 }, ''); } catch (e) { /* abaikan */ }
   const b = $('#rk-scroll'); if (b) b.scrollTop = 0;
   if (Number.isInteger(chapter)) {
     const section = document.querySelectorAll('#rangkuman .rk-item')[chapter];
     if (section) { section.open = true; section.scrollIntoView({ block: 'start' }); }
   }
+}
+function rkOpenGlobal(group = 'TWK') {
+  const grp = RK_GLOBAL_META[group] ? group : 'TWK';
+  const meta = RK_GLOBAL_META[grp];
+  const topics = rkGlobalTopics(grp);
+  if (!topics.length) { toast(`Materi ${grp} belum tersedia.`); return; }
+  rk = { mode: 'global', group: grp };
+  const el = rkEnsureOverlay();
+  const reserved = new Set(reservedFinalKeys());
+  let totalParts = 0, doneParts = 0;
+  const chapters = topics.map((t, ti) => {
+    const steps = lessonSteps(t);
+    const pr = lessonProgress(t);
+    totalParts += steps.length;
+    doneParts += pr.done;
+    return `
+      <section id="rk-chap-${t.id}" class="rkg-chap">
+        <div class="rkg-chap-head ${meta.tone}">
+          <div class="rkg-chap-meta">
+            <span>Topik ${ti + 1} dari ${topics.length}</span>
+            <span>${pr.done}/${steps.length} langkah selesai · ${steps.length} bagian</span>
+          </div>
+          <h2 class="rkg-chap-title">${ti + 1}. ${esc(t.title)}</h2>
+          <p class="rkg-chap-sum">${esc(t.summary)}</p>
+          <div class="rkg-chap-acts">
+            <button type="button" class="rkg-chap-btn" onclick="App.rangkumanToggleChap('rk-chap-${t.id}')">Buka / tutup bab ini</button>
+            <button type="button" class="rkg-chap-btn rkg-chap-link" onclick="App.rangkumanGoTopic('${t.id}')">Buka jalur belajar →</button>
+          </div>
+        </div>
+        ${rkBody(t, reserved)}
+      </section>`;
+  }).join('');
+
+  const tabs = ['TWK', 'TIU', 'TKP'].map(k => {
+    const m = RK_GLOBAL_META[k], st = rkGlobalStats(k);
+    return `<button type="button" class="rkg-pill ${m.tone}${k === grp ? ' on' : ''}" onclick="App.rangkumanGlobal('${k}')">${icon(m.icon, 'h-3.5 w-3.5')} ${k} (${st.count})</button>`;
+  }).join('');
+
+  const toc = topics.map((t, ti) =>
+    `<button type="button" class="rkg-toc-chip" onclick="App.rangkumanJump('rk-chap-${t.id}')">${ti + 1}. ${esc(t.title)}</button>`
+  ).join('');
+
+  el.innerHTML = `
+    <div class="lx-top"><button type="button" class="lx-x" onclick="App.rangkumanClose()" aria-label="Tutup rangkuman">${icon('x', 'h-6 w-6')}</button>
+      <div class="rk-head"><div class="rk-kicker">RANGKUMAN GLOBAL SKD</div><div class="rk-title">${esc(meta.title)} · ${topics.length} Topik (${totalParts} Bagian)</div></div></div>
+    <div class="lx-body" id="rk-scroll"><div class="lx-wrap">
+      <div class="rkg-tabs" role="tablist" aria-label="Pilih Rangkuman Global">${tabs}</div>
+      <p class="rk-intro">${esc(meta.desc)} Progres saat ini: <b>${doneParts}/${totalParts}</b> langkah selesai.</p>
+      <div class="rkg-search-wrap">
+        <span class="rkg-search-ic">${icon('search', 'h-4 w-4')}</span>
+        <input id="rk-search" type="search" class="rkg-search" placeholder="Cari sub-bab, rumus, UU, atau kata kunci di semua ${grp}..." oninput="App.rangkumanFilter(this.value)" aria-label="Cari di rangkuman global ${grp}">
+        <div id="rk-search-stat" class="rkg-search-stat">Menampilkan semua ${totalParts} bagian dari ${topics.length} topik.</div>
+      </div>
+      <div class="rkg-toc" aria-label="Daftar isi topik ${grp}">${toc}</div>
+      <div class="rk-tools"><button type="button" class="rk-tool" onclick="App.rangkumanToggle(true)">Buka semua</button><button type="button" class="rk-tool" onclick="App.rangkumanToggle(false)">Tutup semua</button></div>
+      <div id="rk-chapters">${chapters}</div>
+      <div id="rk-empty" class="rkg-empty" hidden>Tidak ada materi atau sub-bab yang cocok dengan kata kunci tersebut.</div>
+      <button type="button" class="lx-btn lx-ghost mt-4" onclick="App.rangkumanClose()">Tutup rangkuman</button>
+    </div></div>`;
+  const b = $('#rk-scroll'); if (b) b.scrollTop = 0;
 }
 function rkClose(fromPop) {
   if (!rk) return;
@@ -1269,8 +1414,51 @@ function rkClose(fromPop) {
 window.addEventListener('popstate', () => { if (rk) rkClose(true); });
 const rangkumanApi = {
   rangkuman: rkOpen,
+  rangkumanGlobal: rkOpenGlobal,
   rangkumanClose: () => rkClose(false),
-  rangkumanToggle(on) { document.querySelectorAll('#rangkuman details.rk-item').forEach(d => { d.open = !!on; }); }
+  rangkumanToggle(on) { document.querySelectorAll('#rangkuman details.rk-item').forEach(d => { if (!d.hidden) d.open = !!on; }); },
+  rangkumanToggleChap(chapId) {
+    const ch = document.getElementById(chapId); if (!ch) return;
+    const items = Array.from(ch.querySelectorAll('details.rk-item')).filter(d => !d.hidden);
+    const open = items.some(d => !d.open);
+    items.forEach(d => { d.open = open; });
+  },
+  rangkumanJump(chapId) {
+    const el = document.getElementById(chapId); if (!el) return;
+    el.hidden = false;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  },
+  rangkumanGoTopic(id) {
+    rkClose(true);
+    if (lesson) lessonClose(true);
+    try { if (history.state && (history.state.rk || history.state.lx)) history.replaceState(null, ''); } catch (e) { /* abaikan */ }
+    go('#/materi/' + encodeURIComponent(id));
+  },
+  rangkumanFilter(val) {
+    const root = $('#rangkuman'); if (!root) return;
+    const terms = String(val || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+    let shown = 0, chShown = 0;
+    root.querySelectorAll('.rkg-chap').forEach(ch => {
+      const titleEl = ch.querySelector('.rkg-chap-title');
+      const chapTitle = (titleEl ? (titleEl.textContent || titleEl.innerHTML || '') : '').toLowerCase();
+      const chapMatch = terms.length > 0 && terms.every(w => chapTitle.includes(w));
+      let any = false;
+      ch.querySelectorAll('.rk-item').forEach(d => {
+        const txt = ((d.textContent || d.innerHTML || '') + ' ' + chapTitle).toLowerCase();
+        const ok = !terms.length || chapMatch || terms.every(w => txt.includes(w));
+        d.hidden = !ok;
+        if (ok) { any = true; shown++; }
+      });
+      ch.hidden = !any;
+      if (any) chShown++;
+    });
+    const st = $('#rk-search-stat');
+    if (st) st.textContent = terms.length
+      ? `Ditemukan ${shown} bagian di ${chShown} topik materi.`
+      : `Menampilkan semua ${shown} bagian dari ${chShown} topik.`;
+    const empty = $('#rk-empty');
+    if (empty) empty.hidden = shown > 0;
+  }
 };
 
 /* ==========================================================================

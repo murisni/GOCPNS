@@ -141,3 +141,58 @@
 .ntf-go, .ntf-x { min-height: 2.4rem; padding: .3rem .9rem; border: 0; border-radius: .8rem; font-size: .8rem; font-weight: 800; }
 .ntf-go { flex: 1; background: #fde047; color: #3a2400; }
 .ntf-x { background: rgba(255, 255, 255, .12); color: #fff; }
+
+/* ---------- Rangkuman Global SKD (TWK / TIU / TKP) ---------- */
+.rkg-panel { margin-bottom: .9rem; padding: .9rem; border: 2px solid #cbd5e1; border-radius: 1.35rem; background: linear-gradient(135deg, #f8fbff, #ffffff); }
+.rkg-panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .45rem; margin-bottom: .65rem; }
+.rkg-panel-title { display: inline-flex; align-items: center; gap: .45rem; font-size: .85rem; font-weight: 900; color: #0f172a; }
+.rkg-panel-sub { font-size: .74rem; font-weight: 600; color: #64748b; }
+.rkg-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: .55rem; }
+@media (min-width: 640px) { .rkg-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.rkg-btn { display: flex; align-items: center; gap: .65rem; width: 100%; text-align: left; padding: .65rem .8rem; border: 2px solid #e2e8f0; border-bottom-width: 4px; border-radius: 1rem; background: #fff; cursor: pointer; transition: transform .06s, border-color .12s, background-color .12s; }
+.rkg-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
+@media (hover: hover) { .rkg-btn:hover { border-color: #94a3b8; } }
+.rkg-ic { display: grid; place-items: center; flex: none; width: 2.35rem; height: 2.35rem; border-radius: .75rem; color: #fff; }
+.rkg-btn.twk .rkg-ic { background: #0ea5e9; }
+.rkg-btn.tiu .rkg-ic { background: #8b5cf6; }
+.rkg-btn.tkp .rkg-ic { background: #10b981; }
+.rkg-btn.twk.on { border-color: #0284c7; background: #f0f9ff; }
+.rkg-btn.tiu.on { border-color: #7c3aed; background: #f5f3ff; }
+.rkg-btn.tkp.on { border-color: #059669; background: #ecfdf5; }
+.rkg-meta { min-width: 0; flex: 1; }
+.rkg-btn-t { display: block; font-size: .84rem; font-weight: 900; line-height: 1.25; color: #0f172a; }
+.rkg-btn-s { display: block; margin-top: .12rem; font-size: .7rem; font-weight: 700; color: #64748b; }
+.rkg-hero-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .6rem; border: 2px solid #fde68a; border-radius: 1.15rem; background: #fffbeb; padding: .75rem .9rem; }
+.rkg-hero-cta.twk { border-color: #bae6fd; background: #f0f9ff; }
+.rkg-hero-cta.tiu { border-color: #ddd6fe; background: #f5f3ff; }
+.rkg-hero-cta.tkp { border-color: #a7f3d0; background: #ecfdf5; }
+.rkg-skd-row { margin-top: .75rem; padding-top: .75rem; border-top: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .55rem; }
+.rkg-skd-acts { display: flex; flex-wrap: wrap; gap: .45rem; }
+.rkg-detail-bar { margin-top: .85rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .6rem; padding: .7rem .85rem; border: 2px solid #e2e8f0; border-radius: 1.15rem; background: #fff; }
+.rkg-tabs { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .75rem; }
+.rkg-pill { display: inline-flex; align-items: center; gap: .35rem; min-height: 2.3rem; padding: .35rem .8rem; border: 2px solid #e2e8f0; border-bottom-width: 3px; border-radius: 9999px; background: #fff; font-size: .76rem; font-weight: 800; color: #334155; cursor: pointer; transition: transform .06s, border-color .12s, background-color .12s; }
+.rkg-pill:active { transform: translateY(2px); border-bottom-width: 2px; }
+.rkg-pill.on.twk { border-color: #0284c7; background: #e0f2fe; color: #0369a1; }
+.rkg-pill.on.tiu { border-color: #7c3aed; background: #ede9fe; color: #6d28d9; }
+.rkg-pill.on.tkp { border-color: #059669; background: #d1fae5; color: #047857; }
+.rkg-search-wrap { position: relative; margin-bottom: .65rem; }
+.rkg-search-ic { position: absolute; left: .8rem; top: .75rem; color: #64748b; pointer-events: none; }
+.rkg-search { width: 100%; min-height: 2.65rem; padding: .45rem .85rem .45rem 2.35rem; border: 2px solid #cbd5e1; border-radius: .95rem; background: #fff; font-size: .88rem; font-weight: 600; color: #0f172a; outline: none; }
+.rkg-search:focus { border-color: #0b7fd4; }
+.rkg-search-stat { margin-top: .3rem; font-size: .74rem; font-weight: 700; color: #64748b; }
+.rkg-toc { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .9rem; }
+.rkg-toc-chip { border: 1.5px solid #cbd5e1; border-radius: 9999px; background: #f8fafc; padding: .3rem .7rem; font-size: .72rem; font-weight: 700; color: #1e293b; text-align: left; cursor: pointer; }
+@media (hover: hover) { .rkg-toc-chip:hover { border-color: #0b7fd4; background: #eaf4fd; color: #0b7fd4; } }
+.rkg-chap { margin-bottom: 1.35rem; scroll-margin-top: .75rem; }
+.rkg-chap[hidden], .rk-item[hidden], .rkg-empty[hidden] { display: none !important; }
+.rkg-chap-head { border: 2px solid #bfdbfe; border-radius: 1.15rem; background: linear-gradient(135deg, #eff6ff, #ffffff); padding: .85rem 1rem; margin-bottom: .65rem; }
+.rkg-chap-head.tiu { border-color: #ddd6fe; background: linear-gradient(135deg, #f5f3ff, #ffffff); }
+.rkg-chap-head.tkp { border-color: #a7f3d0; background: linear-gradient(135deg, #ecfdf5, #ffffff); }
+.rkg-chap-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .35rem; font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: #475569; }
+.rkg-chap-title { margin-top: .3rem; font-size: 1rem; font-weight: 900; line-height: 1.3; color: #0f172a; }
+.rkg-chap-sum { margin-top: .25rem; font-size: .8rem; line-height: 1.45; color: #475569; }
+.rkg-chap-acts { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .65rem; }
+.rkg-chap-btn { min-height: 2rem; padding: .25rem .7rem; border: 1.5px solid #cbd5e1; border-radius: .7rem; background: #fff; font-size: .74rem; font-weight: 800; color: #1e293b; cursor: pointer; }
+.rkg-chap-link { border-color: #0b7fd4; color: #0b7fd4; background: #f0f9ff; }
+.rkg-empty { padding: 1.5rem 1rem; text-align: center; border: 2px dashed #cbd5e1; border-radius: 1rem; background: #fff; color: #64748b; font-size: .88rem; }
+@media (prefers-reduced-motion: reduce) { .rkg-btn, .rkg-pill { transition: none; } }
