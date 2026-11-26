@@ -10,15 +10,43 @@
   var S = load(), timer = null;
   function plain(h) { var d = document.createElement('div'); d.innerHTML = String(h || ''); return (d.textContent || '').replace(/\s+/g, ' ').trim(); }
 
-  /* ---------- isi pesan: bergantian TIU / TWK, diambil dari tips materi ---------- */
+  /* ---------- isi pesan: merotasi TIU, TWK, SKB (sesuai target profil), & Planning ---------- */
+  function readJson(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
   function buildMsg() {
-    var grp = (S.n % 2 === 0) ? 'TIU' : 'TWK';
-    var topics = (window.MATERI || []).filter(function (t) { return t.group === grp && !t.hidden && t.tips && t.tips.length; });
+    var tgt = readJson('cpns_target_v1') || {};
+    var plan = readJson('cpns_plan_v1');
+    var slot = S.n % 4;
+    if (slot === 3 && plan && plan.days) {
+      return {
+        title: 'Cek jadwal Planning ' + plan.days + ' hari! 📅',
+        body: 'Pastikan target belajar & tryout adaptif hari ini tuntas agar nilai tembus 500++.',
+        url: '#/planning',
+        grp: 'PLAN'
+      };
+    }
+    var grp = slot === 0 ? 'TIU' : slot === 1 ? 'TWK' : 'SKB';
+    var skbCat = tgt.bucket ? String(tgt.bucket).replace(/^SKB_/, '') : '';
+    var topics = (window.MATERI || []).filter(function (t) {
+      if (t.hidden || !t.tips || !t.tips.length) return false;
+      if (t.group !== grp) return false;
+      return grp !== 'SKB' || !skbCat || t.skbCategory === skbCat;
+    });
+    if (!topics.length && grp === 'SKB') {
+      topics = (window.MATERI || []).filter(function (t) { return !t.hidden && t.group === 'SKB' && t.tips && t.tips.length; });
+    }
     var t = topics.length ? topics[Math.floor(Math.random() * topics.length)] : null;
     var tip = t ? plain(t.tips[Math.floor(Math.random() * t.tips.length)]) : '';
     if (tip.length > 130) tip = tip.slice(0, 127).replace(/\s+\S*$/, '') + '…';
-    var title = grp === 'TIU' ? 'AYO belajar rumus TIU! 🧮' : 'AYO belajar TWK! 🇮🇩';
-    return { title: title, body: tip ? (t.title + ': ' + tip) : 'Luangkan beberapa menit untuk latihan ' + grp + ' sekarang.', url: t ? '#/materi/' + t.id : '#/', grp: grp };
+    var title = grp === 'TIU' ? 'AYO belajar rumus TIU! 🧮'
+      : grp === 'TWK' ? 'AYO belajar TWK HOTS! 🇮🇩'
+      : 'AYO kuasai SKB ' + (skbCat || 'Formasi') + '! 🎯';
+    var fallbackUrl = grp === 'SKB' ? (tgt.bucket ? '#/skb/' + tgt.bucket : '#/skb') : '#/';
+    return {
+      title: title,
+      body: tip ? (t.title + ': ' + tip) : 'Luangkan beberapa menit untuk latihan ' + grp + ' menuju skor 500++.',
+      url: t ? '#/materi/' + t.id : fallbackUrl,
+      grp: grp
+    };
   }
 
   /* ---------- tampil ---------- */
@@ -61,8 +89,8 @@
     var chips = INTERVALS.map(function (m) { return '<button type="button" class="ntf-chip' + (m === S.mins ? ' on' : '') + '" data-m="' + m + '">' + m + ' menit</button>'; }).join('');
     var warn = perm === 'denied' ? '<p class="ntf-warn">Notifikasi sedang diblokir di browser. Buka pengaturan situs (ikon gembok di address bar) dan izinkan Notifikasi, lalu buka dialog ini lagi.</p>'
       : perm === 'unsupported' ? '<p class="ntf-warn">Browser ini belum mendukung notifikasi web. Di iPhone, pasang web ke Layar Utama dulu (iOS 16.4 ke atas).</p>' : '';
-    el.innerHTML = '<div class="ntf-box"><div class="ntf-ic">🔔</div><h2 class="ntf-h">Pengingat belajar TIU &amp; TWK</h2>' +
-      '<p class="ntf-p">Mau diingatkan belajar? Notifikasi <b>AYO belajar rumus TIU</b> dan <b>AYO belajar TWK</b> akan muncul bergantian. Pilih jarak waktunya:</p>' +
+    el.innerHTML = '<div class="ntf-box"><div class="ntf-ic">🔔</div><h2 class="ntf-h">Pengingat belajar SKD, SKB &amp; Planning</h2>' +
+      '<p class="ntf-p">Mau diingatkan belajar? Notifikasi bergantian untuk <b>TIU</b>, <b>TWK</b>, <b>SKB bidang targetmu</b>, dan <b>jadwal Planning</b> akan muncul otomatis. Pilih jarak waktunya:</p>' +
       '<div class="ntf-chips">' + chips + '</div>' + warn +
       '<p class="ntf-note">Pengingat berjalan selama web/aplikasi ini masih terbuka di browser. Jika browser ditutup total, pengingat berhenti.</p>' +
       '<div class="ntf-act"><button type="button" class="ntf-btn ntf-main" id="ntf-on"' + (perm === 'unsupported' || perm === 'denied' ? ' disabled' : '') + '>' + (S.on ? 'Simpan' : 'Aktifkan') + '</button>' +

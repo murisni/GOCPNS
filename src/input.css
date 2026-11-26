@@ -335,11 +335,12 @@
   .lx-hero .lx-track { background: rgba(255,255,255,.28); height: .8rem; }
   .lx-hero .lx-fill { background: #fde047; }
   .lx-hero .lx-fill::after { background: rgba(255,255,255,.5); }
-  /* ---------- v29: kartu beranda geser (TWK / TIU / TKP / SKB) ---------- */
+  /* ---------- v29: kartu beranda geser (Planning / TWK / TIU / TKP / SKB) ---------- */
   .lx-car { display: flex; gap: .75rem; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: .25rem .1rem 1.1rem; margin: -.25rem -.1rem -.6rem; outline: none; overscroll-behavior-x: contain; }
   .lx-car::-webkit-scrollbar { display: none; }
   .lx-slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; }
   .lx-hero-fill { height: 100%; }
+  .lx-hero-plan { background: linear-gradient(135deg, #1e293b, #0284c7); box-shadow: 0 10px 24px -8px rgba(2,132,199,.45); }
   .lx-hero-twk { background: linear-gradient(135deg, #0b7fd4, #5b5fe0); box-shadow: 0 10px 24px -8px rgba(11,127,212,.45); }
   .lx-hero-tiu { background: linear-gradient(135deg, #7c3aed, #c026d3); box-shadow: 0 10px 24px -8px rgba(124,58,237,.45); }
   .lx-hero-tkp { background: linear-gradient(135deg, #0d9488, #0e7490); box-shadow: 0 10px 24px -8px rgba(13,148,136,.45); }
@@ -691,7 +692,11 @@
 .km-home-tools { padding: .85rem; border: 2px solid #cbd5e1; border-radius: 1.25rem; background: linear-gradient(135deg, #f8fafc, #eff6ff); }
 .km-home-tools-h { font-size: .76rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; color: #1e3a5f; margin-bottom: .55rem; }
 .km-home-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; }
-@media (max-width: 480px) { .km-home-grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .km-home-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.km-flashcard { display: block; border: 2px solid #cbd5e1; border-bottom-width: 4px; border-radius: 1.15rem; background: #fff; padding: 1.15rem; transition: border-color .15s, transform .1s; cursor: pointer; }
+.km-flashcard:hover { border-color: #0b7fd4; }
+.km-flashcard:active { transform: translateY(2px); border-bottom-width: 2px; }
+.km-epps-dim { width: 6.75rem; display: inline-block; }
 .km-tool-btn { display: flex; flex-direction: column; align-items: flex-start; gap: .12rem; padding: .6rem .7rem; border: 2px solid #e2e8f0; border-bottom-width: 3px; border-radius: .95rem; background: #fff; text-align: left; cursor: pointer; }
 .km-tool-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
 .km-tool-btn b { font-size: .78rem; font-weight: 800; color: #0f172a; line-height: 1.2; }
@@ -707,20 +712,23 @@
 .km-pad-btn:active { transform: translateY(2px); border-bottom-width: 2px; background: #eff6ff; }
 .km-item { border: 1.5px solid #e2e8f0; border-radius: .9rem; background: #fff; padding: .65rem .8rem; }
 
-/* ---------- Cetak / Print PDF Rangkuman ---------- */
+/* ---------- Cetak / Print PDF Rangkuman & Laporan Diktat ---------- */
 @media print {
-  body > *:not(#rangkuman) { display: none !important; }
+  body > *:not(#rangkuman):not(#dlg-kemen[open]) { display: none !important; }
   #rangkuman { position: static !important; inset: auto !important; overflow: visible !important; height: auto !important; background: #fff !important; color: #000 !important; }
   #rangkuman .lx-top .lx-x, #rangkuman .rk-tools, #rangkuman .rkg-search-wrap, #rangkuman .rkg-toc, #rangkuman .rkg-tabs, #rangkuman .rkg-chap-acts, #rangkuman .rk-read-row, #rangkuman .rk-sum-read, #rangkuman .rk-bm-btn, #rangkuman .lx-btn { display: none !important; }
   #rangkuman .lx-body { overflow: visible !important; }
   #rangkuman .rk-item { break-inside: avoid-page; border-color: #cbd5e1 !important; }
+  #dlg-kemen[open] { position: static !important; inset: auto !important; overflow: visible !important; height: auto !important; max-width: 100% !important; background: #fff !important; color: #000 !important; }
+  #dlg-kemen[open] .modal-box { max-width: 100% !important; box-shadow: none !important; border: none !important; }
+  .no-print, #dlg-kemen[open] .modal-backdrop { display: none !important; }
 }
 
 /* ---------- Mode Gelap (Dark Mode) ---------- */
 html.dark body { background: #0f172a; color: #e2e8f0; }
 html.dark .lx-overlay, html.dark .lx-top { background: #0f172a !important; border-color: #334155 !important; color: #f1f5f9 !important; }
 html.dark .app-top, html.dark .mrow, html.dark .bnav, html.dark .lx-foot, html.dark .sub-sticky, html.dark .hmenu { background: rgba(15, 23, 42, .96) !important; border-color: #334155 !important; color: #e2e8f0 !important; }
-html.dark .bg-white, html.dark .bg-white\/80, html.dark .bg-white\/95, html.dark .bg-base-100, html.dark .modal-box, html.dark .rk-item, html.dark .rk-tool, html.dark .opt, html.dark .opt-strike, html.dark .lx-opt, html.dark .lx-card, html.dark .rkg-btn, html.dark .rkg-pill, html.dark .rkg-toc-chip, html.dark .rkg-detail-bar, html.dark .km-card, html.dark .km-tool-btn, html.dark .km-item, html.dark .km-pad-btn, html.dark .km-qdot, html.dark .pl-row, html.dark .pl-opt, html.dark .pl-chip, html.dark .rkg-search, html.dark .rk-bm-btn { background: #1e293b !important; border-color: #334155 !important; color: #f1f5f9 !important; }
+html.dark .bg-white, html.dark .bg-white\/80, html.dark .bg-white\/95, html.dark .bg-base-100, html.dark .modal-box, html.dark .rk-item, html.dark .rk-tool, html.dark .opt, html.dark .opt-strike, html.dark .lx-opt, html.dark .lx-card, html.dark .rkg-btn, html.dark .rkg-pill, html.dark .rkg-toc-chip, html.dark .rkg-detail-bar, html.dark .km-card, html.dark .km-tool-btn, html.dark .km-item, html.dark .km-pad-btn, html.dark .km-qdot, html.dark .km-flashcard, html.dark .pl-row, html.dark .pl-opt, html.dark .pl-chip, html.dark .rkg-search, html.dark .rk-bm-btn { background: #1e293b !important; border-color: #334155 !important; color: #f1f5f9 !important; }
 html.dark .rkg-panel, html.dark .km-home-tools, html.dark .rkg-chap-head, html.dark .rk-ex, html.dark .bg-base-200, html.dark .bg-base-200\/50, html.dark .bg-base-200\/60, html.dark .bg-slate-50, html.dark .bg-slate-100 { background: #1e293b !important; border-color: #334155 !important; }
 html.dark .text-slate-900, html.dark .text-slate-800, html.dark .text-neutral, html.dark .rk-title, html.dark .rk-sum-t, html.dark .rk-qt, html.dark .rk-t, html.dark .rkg-chap-title, html.dark .rkg-btn-t, html.dark .rkg-panel-title, html.dark .km-tool-btn b, html.dark .km-pauli-pair, html.dark .lx-title, html.dark .lx-label, html.dark .lx-q, html.dark .lx-prompt, html.dark .lx-stat b, html.dark .lx-sheet-t, html.dark .lx-done-h, html.dark .materi-body, html.dark .materi-body h3, html.dark .materi-body strong, html.dark .materi-body td, html.dark .materi-body th { color: #f1f5f9 !important; }
 html.dark .text-slate-700, html.dark .text-slate-600, html.dark .text-slate-500, html.dark .rk-intro, html.dark .rk-chev, html.dark .rkg-chap-sum, html.dark .rkg-panel-sub, html.dark .rkg-btn-s, html.dark .rkg-search-stat, html.dark .km-tool-btn small, html.dark .lx-sub, html.dark .lx-stat, html.dark .lx-done-p { color: #94a3b8 !important; }

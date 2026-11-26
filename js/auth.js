@@ -5,7 +5,11 @@
   const API = window.CPNS_API || '', HAS_SERVER = !!API && !/GANTI/.test(API), SK = 'cpns_session_v1', GUEST = 'cpns_guest_v1';
   const KEYS = ['cpns_lesson_v1', 'cpns_seen_qids_v2', 'cpns_results_v3',
     'cpns_review_v1', 'cpns_plan_v1', 'cpns_plan_q_v1', 'cpns_target_v1', 'cpns_exam_history_v1'];
-  const EXTRA_KEYS = ['cpns_rk_read_v1', 'cpns_weak_materi_v1', 'cpns_plan_ended_v1', 'cpns_bookmarks_v1', 'cpns_wrong_qids_v1'];
+  const EXTRA_KEYS = [
+    'cpns_rk_read_v1', 'cpns_weak_materi_v1', 'cpns_plan_ended_v1', 'cpns_bookmarks_v1',
+    'cpns_wrong_qids_v1', 'cpns_jalur_v1', 'cpns_interview_notes_v1', 'cpns_pauli_best_v1',
+    'cpns_custom_packs_v2', 'cpns_tombstones_v1'
+  ];
   const dict = value => value && typeof value === 'object' && !Array.isArray(value);
   const records = value => Object.entries(value || {}).filter(([key]) => !['__proto__', 'constructor', 'prototype'].includes(key));
   const rd = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
@@ -100,16 +104,78 @@
     const aTarget = a.cpns_target_v1, bTarget = b.cpns_target_v1;
     const target = (aTarget?.at || 0) > (bTarget?.at || 0) ? aTarget : bTarget || aTarget || null;
     const sets = plan && !plan.reset ? [a.cpns_plan_q_v1, b.cpns_plan_q_v1].filter(p => p && p.at === plan.at) : [];
+    const tombstones = Object.create(null);
+    for (const kind of ['weak', 'wrong', 'book']) {
+      tombstones[kind] = Object.create(null);
+      for (const source of [b, a]) {
+        for (const [id, ts] of records(source?.cpns_tombstones_v1?.[kind])) {
+          if (Number.isFinite(ts)) tombstones[kind][id] = Math.max(tombstones[kind][id] || 0, ts);
+        }
+      }
+    }
+
+    const jalur = (aTarget?.at || 0) >= (bTarget?.at || 0)
+      ? (a.cpns_jalur_v1 || b.cpns_jalur_v1 || aTarget?.jalur || bTarget?.jalur || null)
+      : (b.cpns_jalur_v1 || a.cpns_jalur_v1 || bTarget?.jalur || aTarget?.jalur || null);
+
     const out = {
       cpns_lesson_v1: L, cpns_results_v3: R, cpns_review_v1: review,
       cpns_seen_qids_v2: Array.from(new Set([a.cpns_seen_qids_v2, b.cpns_seen_qids_v2]
         .flatMap(ids => Array.isArray(ids) ? ids.filter(id => typeof id === 'string') : []))),
       cpns_exam_history_v1: [...sessions.values()].sort((x, y) => x.date - y.date || x.id.localeCompare(y.id)).slice(-160),
-      cpns_target_v1: target, cpns_plan_v1: plan, cpns_plan_q_v1: sets.length ? { at: plan.at, sets: Object.assign({}, ...sets.map(p => p.sets)) } : null
+      cpns_target_v1: target, cpns_plan_v1: plan, cpns_plan_q_v1: sets.length ? { at: plan.at, sets: Object.assign({}, ...sets.map(p => p.sets)) } : null,
+      cpns_tombstones_v1: tombstones
     };
-    EXTRA_KEYS.forEach(k => {
+    if (jalur) out.cpns_jalur_v1 = jalur;
+
+    for (const k of ['cpns_rk_read_v1', 'cpns_plan_ended_v1']) {
       if (dict(a[k]) || dict(b[k])) out[k] = Object.assign({}, dict(b[k]) ? b[k] : {}, dict(a[k]) ? a[k] : {});
-    });
+    }
+
+    // Merge weakMateri, wrongQids, bookmarks dengan menghormati tombstone hapus/kuasai
+    for (const [k, kind] of [['cpns_weak_materi_v1', 'weak'], ['cpns_wrong_qids_v1', 'wrong'], ['cpns_bookmarks_v1', 'book']]) {
+      if (!dict(a[k]) && !dict(b[k])) continue;
+      const merged = Object.create(null);
+      for (const src of [b[k], a[k]]) {
+        for (const [id, item] of records(src)) {
+          if (!dict(item)) continue;
+          const itemAt = Number(item.at || item.wrongAt || 0);
+          if ((tombstones[kind][id] || 0) >= itemAt) continue;
+          const prev = merged[id];
+          const prevAt = prev ? Number(prev.at || prev.wrongAt || 0) : -1;
+          if (!prev || itemAt >= prevAt) merged[id] = item;
+        }
+      }
+      out[k] = merged;
+    }
+
+    // Merge draf wawancara STAR
+    if (dict(a.cpns_interview_notes_v1) || dict(b.cpns_interview_notes_v1)) {
+      const notes = Object.create(null);
+      for (const src of [b.cpns_interview_notes_v1, a.cpns_interview_notes_v1]) {
+        for (const [id, txt] of records(src)) {
+          if (typeof txt !== 'string') continue;
+          if (!notes[id] || txt.length > notes[id].length) notes[id] = txt;
+        }
+      }
+      out.cpns_interview_notes_v1 = notes;
+    }
+
+    // Merge rekor Kraepelin-Pauli terbaik
+    const pa = a.cpns_pauli_best_v1, pb = b.cpns_pauli_best_v1;
+    if (dict(pa) || dict(pb)) {
+      const ra = Number(pa?.rate || 0), rb = Number(pb?.rate || 0);
+      out.cpns_pauli_best_v1 = ra > rb ? pa : rb > ra ? pb : ((pa?.acc || 0) >= (pb?.acc || 0) ? pa : pb);
+    }
+
+    // Merge bank soal custom user (array)
+    if (Array.isArray(a.cpns_custom_packs_v2) || Array.isArray(b.cpns_custom_packs_v2)) {
+      const byPack = new Map();
+      for (const p of [...(Array.isArray(b.cpns_custom_packs_v2) ? b.cpns_custom_packs_v2 : []), ...(Array.isArray(a.cpns_custom_packs_v2) ? a.cpns_custom_packs_v2 : [])]) {
+        if (dict(p)) byPack.set(p.packId || p.id || JSON.stringify(p).slice(0, 64), p);
+      }
+      out.cpns_custom_packs_v2 = [...byPack.values()];
+    }
     return out;
   }
 
@@ -337,7 +403,7 @@
     if (!ok) return;
     clearTimeout(timer);
     if (await push(false) !== true || rd('cpns_dirty')) { if (window.toast) window.toast('Gagal menyimpan ke server. Coba lagi saat online.'); return; }
-    KEYS.forEach(del); del(SK); del(GUEST); del('cpns_dirty'); location.reload();
+    KEYS.concat(EXTRA_KEYS).forEach(del); del(SK); del(GUEST); del('cpns_dirty'); location.reload();
   }
   function menuHTML() {
     if (!HAS_SERVER) return '';
@@ -534,7 +600,7 @@
                 ? `Mode Offline aktif · progres otomatis disimpan lokal${st.pending ? ` (${st.pending} perubahan menunggu sinkron saat online)` : ''}.`
                 : (st.hasServer && st.loggedIn
                   ? (st.dirty ? 'Online · menunggu sinkronisasi ke akun...' : 'Online · seluruh progres tersinkronisasi aman.')
-                  : 'Online · penyimpanan lokal aktif otomatis (siap dipulihkan/dipindah lewat Kode Progres kapan saja).');
+                  : 'Online · penyimpanan lokal 100% aktif (isi URL Cloudflare Worker di js/config.js untuk auto-sync cloud, atau pindahkan lewat Kode Progres kapan saja).');
               return `<span class="font-semibold ${tone}">${esc(msg)}</span>${st.dirty && st.online && st.hasServer && st.loggedIn ? '<button type="button" id="pf-sync-now" class="btn btn-xs btn-primary">Sinkronkan sekarang</button>' : ''}`;
             })()}
           </div>
@@ -566,7 +632,19 @@
     if (!d.open) d.showModal();
   }
 
-  window.Auth = { hasServer: HAS_SERVER, _toCode: toCode, _fromCode: fromCode, touch, syncStatus, syncNow, open, openProfile, openOnboarding, openRestore: () => openBackup(ensureProfileDlg(), { returnToOnboarding: false }), logout, menuHTML, user: () => (sess() || {}).u || null };
+  function tombstone(kind, id) {
+    if (!['weak', 'wrong', 'book'].includes(kind) || !id) return;
+    const t = rd('cpns_tombstones_v1') || { weak: {}, wrong: {}, book: {} };
+    t[kind] = dict(t[kind]) ? t[kind] : {};
+    t[kind][id] = Date.now();
+    // Batasi ukuran tombstone per jenis agar localStorage tetap ramping
+    const ents = Object.entries(t[kind]).sort((a, b) => b[1] - a[1]).slice(0, 250);
+    t[kind] = Object.fromEntries(ents);
+    wr('cpns_tombstones_v1', t);
+    touch('cpns_tombstones_v1');
+  }
+
+  window.Auth = { hasServer: HAS_SERVER, _toCode: toCode, _fromCode: fromCode, touch, tombstone, syncStatus, syncNow, open, openProfile, openOnboarding, openRestore: () => openBackup(ensureProfileDlg(), { returnToOnboarding: false }), logout, menuHTML, user: () => (sess() || {}).u || null };
 
   /* gerbang awal: tampil bila belum login dan belum memilih "tanpa akun" */
   if (HAS_SERVER && !sess() && !rd(GUEST)) {

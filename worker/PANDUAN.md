@@ -9,7 +9,7 @@
 5. **(Disarankan) Batasi asal**: Settings → Variables → *Add* → `ALLOWED_ORIGIN` =
    `https://USERNAME.github.io` (tanpa garis miring dan tanpa nama repo) → Deploy.
 6. Salin alamat Worker (mis. `https://cpns-akun.nama-anda.workers.dev`) lalu isi ke
-   `js/auth.js` pada baris `const API = '...'`. Commit & push ke GitHub Pages.
+   `js/config.js` pada baris `window.CPNS_API = '...'`. Commit & push ke GitHub Pages.
 7. Tes: buka alamat Worker di browser, harus tampil `{"error":"Metode tidak didukung."}`.
 
 Folder `api/` dan `data/` (versi PHP) tidak dipakai di GitHub Pages; boleh dihapus.

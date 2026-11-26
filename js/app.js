@@ -100,7 +100,7 @@ const isBookmarked = q => !!(q && bookmarks[questions.resolve(q.id)]);
 function toggleBookmarkById(id, note = null) {
   const q = planQIndex().get(questions.resolve(id));
   const rid = questions.resolve(id);
-  if (bookmarks[rid] && note === null) { delete bookmarks[rid]; }
+  if (bookmarks[rid] && note === null) { delete bookmarks[rid]; window.Auth?.tombstone?.('book', rid); }
   else {
     bookmarks[rid] = {
       id: rid,
@@ -273,6 +273,9 @@ const SKB_META = {
   SKB_KEBIJAKAN: { name: 'Analis Kebijakan, Perencana & Tata Kelola', short: 'Kebijakan', desc: 'SPPN UU 25/2004, RPJMN/RPJMD Pemda, RIA, Policy Brief, SAKIP, RB, Zona Integritas & OSS-RBA.' },
   SKB_SDMA: { name: 'Analis SDMA, Kepegawaian, Arsiparis & Humas', short: 'SDMA & Arsip', desc: 'UU ASN 20/2023, Sistem Merit, Anjab-ABK, e-Kinerja SKP, SRIKANDI Arsiparis, PPID & Protokol.' },
   SKB_AUDITOR: { name: 'Auditor APIP, PPUPD & Pengadaan (PBJ)', short: 'Auditor & PBJ', desc: 'SAIPI-AAIPI, SPIP PP 60/2008, Probity Audit, Vouching/Tracing, Perpres PBJ 16/2018 & Siswaskeudes.' },
+  SKB_TEKNIK: { name: 'Teknik Sipil, PUPR & Penataan Ruang', short: 'Teknik & PUPR', desc: 'Struktur Beton/Gempa SNI 2847/1726, Jalan-Jembatan, Irigasi-SPAM, RDTR/KKPR OSS, PBG, EVM & SMKK.' },
+  SKB_STATISTIK: { name: 'Statistisi, Pranata Data & Survei', short: 'Statistisi', desc: 'Satu Data Indonesia, Sampling PPS/Stratified, Uji Hipotesis-Regresi, EPSS/GSBPM & Indikator BPS.' },
+  SKB_SOSIAL: { name: 'Pekerja Sosial, Penyuluh & Pemberdayaan', short: 'Sosial & Peksos', desc: 'UU 11/2009, 26 PPKS, Casework/Groupwork, DTSEN/PKH/ATENSI, UU SPPA/TPKS, Disabilitas & Bencana.' },
   SKB_INGGRIS: { name: 'Bahasa Inggris Kementerian & TI', short: 'Inggris Kemen', desc: 'Grammar/Structure, Written Expression, Reading kebijakan digital & kosakata pemerintahan.' }
 };
 const skbKeys = () => Object.keys(BANK).filter(k => k.startsWith('SKB_') && BANK[k].length);
@@ -333,6 +336,34 @@ function targetEditorHTML() {
 
 function chunk(arr, size) { const out = []; for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size)); return out; }
 
+function isHotsQuestion(q) {
+  if (!q) return false;
+  if (q.level === 'HOTS' || q.img || q.svg) return true;
+  const s = `${q.sub || ''} ${q.q || ''}`;
+  return /hots|sulit|studi kasus|analis|perbandingan|evaluasi|dampak|selisih|grafik|diagram|tabel|silogisme|figural|penerapan|dilema/i.test(s) || String(q.q || '').length >= 165;
+}
+function hotsPool(bucket, n) {
+  const arr = ordered(bucket);
+  const rank = q => (q.level === 'HOTS' ? 4 : 0) + (q.img || q.svg ? 3 : 0) + (isHotsQuestion(q) ? 2 : 0) + (!seenBefore(q) ? 1 : 0);
+  const sorted = [...arr].sort((a, b) => rank(b) - rank(a));
+  return selectQuestions(sorted, n);
+}
+function skdHotsPack() {
+  const twk = hotsPool('SKD_TWK', FULL_MIX.TWK);
+  const tiuBase = ordered('SKD_TIU').slice().sort((a, b) => ((b.level === 'HOTS' ? 4 : 0) + (b.img ? 3 : 0) + (isHotsQuestion(b) ? 1 : 0)) - ((a.level === 'HOTS' ? 4 : 0) + (a.img ? 3 : 0) + (isHotsQuestion(a) ? 1 : 0)));
+  const tiuBal = Object.entries(TIU_MIX).flatMap(([type, n]) => selectQuestions(tiuBase.filter(q => tiuType(q) === type), n));
+  const usedTiu = new Set(tiuBal.map(questions.key));
+  const tiu = shuffle(tiuBal.concat(selectQuestions(tiuBase, FULL_MIX.TIU - tiuBal.length, usedTiu)), 'hots:tiu');
+  const tkp = hotsPool('SKD_TKP', FULL_MIX.TKP);
+  return {
+    key: 'SKD_HOTS-1', group: 'SKD_FULL', no: '500+', kind: 'FULL', mode: 'SKD', preserveMix: true, hots: true,
+    title: 'Simulasi HOTS & Visual BKN 500++',
+    compose: `TWK ${twk.length} · TIU ${tiu.length} (Visual & HOTS) · TKP ${tkp.length}`,
+    questions: [...twk, ...tiu, ...tkp],
+    minutes: 100
+  };
+}
+
 function skbFullPack(group) {
   if (!group || !group.startsWith('SKB_') || !BANK[group] || !BANK[group].length) return null;
   const m = skbMeta(group), pool = ordered(group);
@@ -382,7 +413,7 @@ function packsFor(group) {
   return [];
 }
 function preparePack(pack) {
-  if (pack.plan) return pack; // Planning sudah memilih soal dari topik terkait.
+  if (pack.plan || pack.preserveMix) return pack; // Planning & Mode HOTS sudah menyusun komposisi soal.
   const groups = pack.kind === 'FULL' ? Object.keys(FULL_MIX).map(c => 'SKD_' + c) : [pack.group];
   const selected = groups.flatMap(bucket => {
     const base = pack.kind === 'FULL' ? pack.questions.filter(q => q.category === bucket.slice(4)) : pack.questions;
@@ -399,6 +430,7 @@ function preparePack(pack) {
 function findPack(key) {
   if (key.indexOf('PLAN-') === 0) return planPackByKey(key);   // v34: Try Out / latihan harian dari Planning
   if (key.indexOf('SKBFULL-') === 0) return skbFullPack(key.slice(8));
+  if (key === 'SKD_HOTS-1') return skdHotsPack();
   const i = key.lastIndexOf('-');
   const group = key.slice(0, i);
   return packsFor(group).find(p => p.key === key) || null;
@@ -564,6 +596,7 @@ function syncWeakMateriFromExam(r, curExam = exam) {
       changed = true;
     } else if (e.n >= 2 && pct >= 85 && e.wrongCount === 0 && e.slowCount === 0 && weakMateri[e.t.id]) {
       delete weakMateri[e.t.id];
+      window.Auth?.tombstone?.('weak', e.t.id);
       changed = true;
     }
   });
@@ -610,6 +643,7 @@ function resolveWeakMateri(tId) {
     delete weakMateri[tId];
     store.set(WEAK_MATERI_KEY, weakMateri);
   }
+  window.Auth?.tombstone?.('weak', tId);
   const idx = planQIndex();
   let revChanged = false;
   Object.entries(reviews).forEach(([bucket, rec]) => {
@@ -709,6 +743,7 @@ const ROUTES = {
 function route() {
   const parts = location.hash.replace(/^#\/?/, '').split('/');
   const view = ROUTES[parts[0]] ? parts[0] : '';
+  if (view !== 'planning') pendingPlanDay = 0;
   if (view !== 'ujian') { const d = $('#dlg-nums'); if (d && d.open) d.close(); }
   document.documentElement.classList.toggle('in-exam', view === 'ujian');
   if (view === 'materi') {
@@ -847,7 +882,8 @@ function renderHome() {
     }
     return { g, cur: c, label: lb, total: gr.length, done: gr.filter(x => x.p.total && x.p.pct === 100).length };
   };
-  const heroes = ['TWK', 'TIU', 'TKP', 'SKB'].map(pickFor).filter(x => x.total);
+  const planInfo = planLastContext();
+  const heroes = [{ g: 'PLAN', planInfo }, ...['TWK', 'TIU', 'TKP', 'SKB'].map(pickFor).filter(x => x.total)];
   const groups = ['SKD_FULL', 'SKD_TWK', 'SKD_TIU', 'SKD_TKP'].concat(skbKeys());
   const allPacks = groups.reduce((a, g) => a.concat(packsFor(g)), []);
   const packDone = allPacks.filter(p => results[p.key]).length;
@@ -861,8 +897,49 @@ function renderHome() {
          <a href="#/ujian" class="btn btn-warning btn-sm shrink-0 rounded-xl font-bold">Lanjut</a>
        </div>` : '';
 
-  /* --- kartu "Lanjutkan belajar": 4 kartu (TWK, TIU, TKP, SKB) yang bergeser otomatis / bisa digeser --- */
+  /* --- kartu "Lanjutkan belajar": 5 kartu (Planning + TWK, TIU, TKP, SKB) yang bergeser otomatis / bisa digeser --- */
   const heroCard = h => {
+    if (h.g === 'PLAN') {
+      const info = h.planInfo;
+      if (!info) {
+        return `<div class="lx-slide"><div class="lx-hero lx-hero-plan lx-hero-fill" aria-label="Planning belajar">
+          <div class="flex items-center justify-between gap-2">
+            <span class="inline-flex items-center rounded-full bg-white/20 px-2.5 py-1 text-[0.68rem] font-extrabold uppercase tracking-wide text-white">Planning Belajar</span>
+            <span class="text-xs font-bold text-white/90">5–30 Hari</span>
+          </div>
+          <h2 class="mt-2.5 line-clamp-2 text-lg font-extrabold leading-snug">Jadwal Adaptif Sesuai Kelemahan</h2>
+          <p class="mt-1 line-clamp-2 break-words text-xs text-white/85">Hari 1 tes pemetaan kelemahan, lalu materi &amp; soal disusun otomatis hingga siap ujian.</p>
+          <div class="mt-3 flex items-center gap-3">
+            <div class="lx-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="lx-fill" style="width:4%"></div></div>
+            <span class="shrink-0 text-xs font-bold text-white">${planEnded ? 'Selesai' : 'Belum dibuat'}</span>
+          </div>
+          <button type="button" class="lx-btn lx-green mt-4" onclick="App.goLastPlanning()">${icon('calendar', 'h-5 w-5')} ${planEnded ? 'Buka Planning' : 'Buat Planning'}</button>
+        </div></div>`;
+      }
+      const cfg = info.cfg, d = info.targetDay, dp = info.targetProg;
+      const scope = cfg.test === 'SKB' ? `SKB ${esc(skbMeta('SKB_' + cfg.cat).short)}` : cfg.test === 'GABUNG' ? `SKD + SKB ${esc(skbMeta('SKB_' + cfg.cat).short)}` : 'SKD';
+      const badge = info.allDone ? 'Planning Selesai' : (info.hasActivity ? 'Planning Terakhir' : 'Planning Aktif');
+      const title = info.allDone ? `Planning ${info.totalDays} Hari Tuntas` : `Hari ${d.no}: ${d.label}`;
+      const sub = info.allDone
+        ? `Semua ${info.totalDays} hari selesai · lihat evaluasi akhir atau tambah hari`
+        : d.kind === 'learn'
+          ? `${(d.topics || []).length} materi prioritas + soal · progres hari ${dp.pct}%`
+          : `${d.kind === 'diagnostic' ? 'Tes pemetaan kelemahan awal' : d.kind === 'final' ? 'Try Out Final & evaluasi' : 'Try Out Evaluasi Ulang'} · progres hari ${dp.pct}%`;
+      const btnText = info.allDone ? 'Lihat Hasil Planning' : (info.hasActivity ? `Lanjut Hari ${d.no}` : `Mulai Hari ${d.no}`);
+      return `<div class="lx-slide"><div class="lx-hero lx-hero-plan lx-hero-fill" aria-label="Planning terakhir">
+        <div class="flex items-center justify-between gap-2">
+          <span class="inline-flex items-center rounded-full bg-white/20 px-2.5 py-1 text-[0.68rem] font-extrabold uppercase tracking-wide text-white">${badge}</span>
+          <span class="text-xs font-bold text-white/90">${scope} · ${info.totalDays} Hari</span>
+        </div>
+        <h2 class="mt-2.5 line-clamp-2 text-lg font-extrabold leading-snug">${esc(title)}</h2>
+        <p class="mt-1 line-clamp-2 break-words text-xs text-white/85">${esc(sub)}</p>
+        <div class="mt-3 flex items-center gap-3">
+          <div class="lx-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${info.pctAll}"><div class="lx-fill" style="width:${Math.max(info.pctAll, 4)}%"></div></div>
+          <span class="shrink-0 text-xs font-bold text-white">${info.nDone} dari ${info.totalDays} hari</span>
+        </div>
+        <button type="button" class="lx-btn lx-green mt-4" onclick="App.goLastPlanning()">${icon('play', 'h-5 w-5')} ${btnText}</button>
+      </div></div>`;
+    }
     const cur = h.cur, label = h.label, g = h.g;
     const gLabel = g === 'SKB' && cur && cur.t.skbCategory ? `SKB ${esc(skbMeta('SKB_' + cur.t.skbCategory).short)}` : g;
     if (!cur) {
@@ -896,7 +973,7 @@ function renderHome() {
     cont = `
     <section class="mb-4" aria-label="Lanjutkan belajar" aria-roledescription="carousel">
       <div id="homeCar" class="lx-car" tabindex="0">${heroes.map(heroCard).join('')}</div>
-      <div class="lx-dots" id="homeDots">${heroes.map((h, i) => `<button type="button" class="lx-dot${i === 0 ? ' on' : ''}" aria-label="Kartu ${h.g}" data-i="${i}"></button>`).join('')}</div>
+      <div class="lx-dots" id="homeDots">${heroes.map((h, i) => `<button type="button" class="lx-dot${i === 0 ? ' on' : ''}" aria-label="Kartu ${h.g === 'PLAN' ? 'Planning' : h.g}" data-i="${i}"></button>`).join('')}</div>
     </section>`;
   }
 
@@ -929,26 +1006,10 @@ function renderHome() {
       ${icon('arrowR', 'h-5 w-5 shrink-0 text-slate-400')}
     </a>`;
 
-  const syncHomePill = (() => {
-    const st = window.Auth?.syncStatus?.();
-    if (!st) return '';
-    if (!st.online) {
-      return `<div id="home-sync-status" class="mt-2 flex flex-wrap items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900"><b>Offline Mode Aktif</b> · Seluruh materi &amp; CAT berjalan tanpa internet. Progres otomatis disimpan lokal${st.pending ? ` (${st.pending} perubahan)` : ''} &amp; siap disinkron saat online.</div>`;
-    }
-    if (st.dirty) {
-      return `<div id="home-sync-status" class="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-sky-200 bg-sky-50 px-3 py-2 text-xs text-sky-900"><span><b>Online kembali</b> · Mengamankan progres yang dikerjakan saat offline...</span><button type="button" class="btn btn-xs btn-primary" onclick="window.Auth?.syncNow?.()">Sinkronkan</button></div>`;
-    }
-    return `<div id="home-sync-status" class="mt-1.5 text-[0.72rem] font-semibold text-emerald-700">✓ Offline PWA siap · progres otomatis tersimpan lokal${st.hasServer && st.loggedIn ? ' &amp; tersinkron ke akun' : ''}</div>`;
-  })();
-  const jMeta = activeJalur();
-
   shell('', `
     <div class="home-wrap mx-auto w-full max-w-xl pb-2 pt-1 sm:pt-8">
       <header class="mb-4 px-0.5">
         <h1 class="text-2xl font-extrabold leading-tight tracking-tight text-neutral">${sapa}${preferred.name ? `, ${esc(preferred.name)}` : ''}!</h1>
-        <p class="mt-0.5 text-sm text-slate-600"><a href="#/planning" class="link link-primary font-bold">Planning ${planCfg ? planCfg.days : 7} hari</a> · Target SKD <b>500++ (${jMeta.targetSkd})</b>${preferred.bucket ? ` &amp; SKB ${esc(skbMeta(preferred.bucket).short)} 90%` : ' &amp; SKB 90%'} · Kementerian &amp; Pemda</p>
-        <p class="mt-1 text-xs"><a href="#/materi/rencana-7-hari" class="link link-primary">Panduan 7 hari dan rumus cepat TIU</a> · <button type="button" class="link link-secondary font-bold" onclick="Auth.openProfile()">Jalur: ${esc(jMeta.label)}</button></p>
-        ${syncHomePill}
       </header>
       <div class="home-grid">
       <div class="home-col home-col-left">
@@ -988,9 +1049,12 @@ function renderHome() {
             return `<div class="km-home-tools-h">Persiapan CPNS Kementerian &amp; Pemda${prepLabel}${setLink}</div>`;
           })()}
           <div class="km-home-grid">
-            <button type="button" class="km-tool-btn" onclick="App.openNonCat('wawancara')"><span>🎙️</span><b>Lab Non-CAT</b><small>Wawancara, Pauli, Kasus</small></button>
+            <button type="button" class="km-tool-btn" onclick="App.openNonCat('wawancara')"><span>🎙️</span><b>Lab Non-CAT</b><small>STAR, Pauli, Kasus, LGD, EPPS</small></button>
             <button type="button" class="km-tool-btn" onclick="App.openCalc()"><span>📊</span><b>Kalkulator 40:60</b><small>Kemen &amp; 100% CAT Pemda</small></button>
             <button type="button" class="km-tool-btn" onclick="App.openVault()"><span>🔖</span><b>Soal Salah &amp; Simpan</b><small>${Object.keys(wrongMap).length} salah · ${Object.keys(bookmarks).length} bookmark</small></button>
+            <button type="button" class="km-tool-btn" onclick="App.openAnalytics('SKD_FULL')"><span>📈</span><b>Analitik Tren 500++</b><small>Grafik skor &amp; peluang lolos</small></button>
+            <button type="button" class="km-tool-btn" onclick="App.openFlashcards('UNREAD')"><span>⚡</span><b>Flashcard Kilat</b><small>Hafalan cepat 5 menit H-1</small></button>
+            <button type="button" class="km-tool-btn" onclick="App.openReport()"><span>🖨️</span><b>Laporan &amp; PDF</b><small>Cetak diktat kelemahanmu</small></button>
           </div>
         </div>
       </section>
@@ -1083,6 +1147,23 @@ function renderSkd() {
         const st = rkGlobalStats(cat), m = RK_GLOBAL_META[cat];
         return `<button type="button" class="rkg-pill ${m.tone}" onclick="App.rangkumanGlobal('${cat}')">${icon(m.icon, 'h-3.5 w-3.5')} Global ${cat} <span class="opacity-75">(${st.count})</span></button>`;
       }).join('')}</div></div>`;
+  const hotsCard = ui.skdTab === 'SKD_FULL' ? (() => {
+    const hp = skdHotsPack(), hr = results[hp.key];
+    return `
+      <div class="mb-4 rounded-3xl border-2 border-b-4 border-indigo-300 bg-gradient-to-br from-primary to-secondary p-4 text-white">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="min-w-0 flex-1">
+            <span class="inline-flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-0.5 text-[0.7rem] font-extrabold uppercase">Mode HOTS &amp; Visual BKN · Target Elit 500++</span>
+            <h2 class="mt-1.5 text-lg font-extrabold leading-snug">${esc(hp.title)}</h2>
+            <p class="mt-0.5 text-xs text-white/85">${esc(hp.compose)} · Memprioritaskan soal visual SVG, tabel, figural matriks, dan penalaran BKN sulit.${hr ? ` · Terbaik: <b>${hr.best.score}/550</b>` : ''}</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" class="btn btn-sm border-0 bg-white/20 text-white" onclick="App.openAnalytics('SKD_FULL')">📈 Lihat Tren</button>
+            <button type="button" class="lx-btn lx-gold sm:w-auto shrink-0 px-4" onclick="App.openStart('SKD_HOTS-1')">${icon('play', 'h-5 w-5')} ${hr ? 'Ulangi HOTS 500++' : 'Mulai Tryout HOTS'}</button>
+          </div>
+        </div>
+      </div>`;
+  })() : '';
   shell('skd', `
     ${breadcrumb([['#/', 'Beranda'], [null, 'SKD']])}
     ${pageHead('Seleksi Kompetensi Dasar (SKD)', 'Pilih jenis latihan, lalu pilih paket soal. Paket mengutamakan soal yang belum pernah kamu buka.')}
@@ -1092,6 +1173,7 @@ function renderSkd() {
       ${packs.length ? `<div class="mt-2.5 flex items-center gap-3"><div class="lx-track !h-2.5"><div class="lx-fill" style="width:${pct}%"></div></div><span class="shrink-0 text-xs font-bold text-slate-600">${nDone} dari ${packs.length} paket</span></div>` : ''}
       ${skdRkRow}
     </div>
+    ${hotsCard}
     ${packs.length
       ? `<div class="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">${packs.map(packCard).join('')}</div>`
       : `<div class="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-600">Bank soal untuk bagian ini belum tersedia.</div>`}
@@ -1101,7 +1183,7 @@ function renderSkd() {
 /* ---------- SKB ---------- */
 function renderSkb(key) {
   if (!key || !BANK[key]) {
-    const icons = { SKB_PRAKOM: 'db', SKB_HUKUM: 'clipboard', SKB_KEUANGAN: 'trophy', SKB_KESEHATAN: 'check', SKB_PENDIDIKAN: 'book', SKB_KEBIJAKAN: 'sliders', SKB_SDMA: 'user', SKB_AUDITOR: 'check', SKB_INGGRIS: 'book' };
+    const icons = { SKB_PRAKOM: 'db', SKB_HUKUM: 'clipboard', SKB_KEUANGAN: 'trophy', SKB_KESEHATAN: 'check', SKB_PENDIDIKAN: 'book', SKB_KEBIJAKAN: 'sliders', SKB_SDMA: 'user', SKB_AUDITOR: 'check', SKB_TEKNIK: 'sliders', SKB_STATISTIK: 'grid', SKB_SOSIAL: 'user', SKB_INGGRIS: 'book' };
     const preferred = targetPreference().bucket;
     const cards = skbKeys().sort((a, b) => Number(b === preferred) - Number(a === preferred)).map(k => {
       const m = skbMeta(k), n = bankLen(k), ps = packsFor(k), np = ps.length;
@@ -1131,9 +1213,14 @@ function renderSkb(key) {
           <p class="rkg-panel-sub">Kuasi SKB CAT BKN 100% (Pemda/Standar BKN) maupun Wawancara STAR, Kraepelin/Pauli &amp; Studi Kasus semua formasi Kementerian.</p></div>
         </div>
         <div class="rkg-grid">
-          <button type="button" class="rkg-btn twk on" onclick="App.openNonCat('wawancara')"><span class="rkg-ic">🎙️</span><span class="rkg-meta"><span class="rkg-btn-t">Wawancara &amp; Studi Kasus STAR</span><span class="rkg-btn-s">15 skenario + 11 studi kasus semua formasi</span></span></button>
+          <button type="button" class="rkg-btn twk on" onclick="App.openNonCat('wawancara')"><span class="rkg-ic">🎙️</span><span class="rkg-meta"><span class="rkg-btn-t">Lab Non-CAT, LGD &amp; Kepribadian</span><span class="rkg-btn-s">Wawancara STAR, Kasus, LGD &amp; EPPS</span></span></button>
           <button type="button" class="rkg-btn tiu" onclick="App.openNonCat('pauli')"><span class="rkg-ic">⚡</span><span class="rkg-meta"><span class="rkg-btn-t">Tes Konsentrasi Kraepelin</span><span class="rkg-btn-s">Simulasi kecepatan &amp; akurasi berhitung</span></span></button>
           <button type="button" class="rkg-btn tkp" onclick="App.openCalc()"><span class="rkg-ic">📊</span><span class="rkg-meta"><span class="rkg-btn-t">Kalkulator 40% SKD + 60% SKB</span><span class="rkg-btn-s">Preset 100% CAT Pemda &amp; Kemen 500++</span></span></button>
+        </div>
+        <div class="mt-2.5 flex flex-wrap gap-2">
+          <button type="button" class="btn btn-outline btn-xs" onclick="App.openAnalytics('ALL_SKB')">📈 Analitik Tren SKB</button>
+          <button type="button" class="btn btn-outline btn-xs" onclick="App.openFlashcards('SKB')">⚡ Flashcard Kilat SKB</button>
+          <button type="button" class="btn btn-outline btn-xs" onclick="App.openReport()">🖨️ Cetak Diktat PDF</button>
         </div>
       </div>
       ${cards ? `<div class="grid grid-cols-[minmax(0,1fr)] gap-3.5 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>`
@@ -1216,6 +1303,9 @@ function renderMateri(id) {
     { id: 'KEBIJAKAN', name: 'Analis Kebijakan' },
     { id: 'SDMA', name: 'SDMA & Arsip' },
     { id: 'AUDITOR', name: 'Auditor & PBJ' },
+    { id: 'TEKNIK', name: 'Teknik & PUPR' },
+    { id: 'STATISTIK', name: 'Statistisi & Data' },
+    { id: 'SOSIAL', name: 'Sosial & Peksos' },
     { id: 'INGGRIS', name: 'Bahasa Inggris Kemen' }
   ].concat(weakSkbN ? [{ id: 'WEAK', name: `⚠ Kelemahan (${weakSkbN})` }] : []);
 
@@ -1238,7 +1328,7 @@ function renderMateri(id) {
       : skbAll.filter(t => ui.materiSkbGroup === 'ALL' || t.skbCategory === ui.materiSkbGroup || (!t.skbCategory && ui.materiSkbGroup === 'ALL'));
   }
 
-  const skbIcons = { PRAKOM: 'db', INGGRIS: 'book', KESEHATAN: 'check', HUKUM: 'clipboard', KEUANGAN: 'trophy', PENDIDIKAN: 'book', KEBIJAKAN: 'sliders', SDMA: 'user', AUDITOR: 'check' };
+  const skbIcons = { PRAKOM: 'db', INGGRIS: 'book', KESEHATAN: 'check', HUKUM: 'clipboard', KEUANGAN: 'trophy', PENDIDIKAN: 'book', KEBIJAKAN: 'sliders', SDMA: 'user', AUDITOR: 'check', TEKNIK: 'sliders', STATISTIK: 'grid', SOSIAL: 'user' };
   const groupIcons = { TWK: 'flag', TIU: 'puzzle', TKP: 'bulb' };
   let nDone = 0;
   const cards = list.map(t => {
@@ -1285,7 +1375,7 @@ function renderMateri(id) {
       </button>
       <button type="button" onclick="App.setMateriTab('SKB')" class="flex min-h-14 items-center justify-center gap-2 rounded-2xl border-2 border-b-4 px-2 py-2 transition active:translate-y-[2px] active:border-b-2 ${!isSkd ? 'border-teal-500 bg-teal-50 text-teal-700' : 'border-slate-200 bg-white text-slate-600'}">
         <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg ${!isSkd ? 'bg-teal-500 text-white' : 'bg-slate-100 text-slate-500'}">${icon('briefcase', 'h-4 w-4')}</span>
-        <span class="min-w-0 text-left leading-tight"><span class="block text-sm font-extrabold">Materi SKB</span><span class="block text-[0.68rem] font-semibold opacity-75">9 bidang Kemen &amp; Pemda</span></span>
+        <span class="min-w-0 text-left leading-tight"><span class="block text-sm font-extrabold">Materi SKB</span><span class="block text-[0.68rem] font-semibold opacity-75">12 bidang Kemen &amp; Pemda</span></span>
       </button>
     </div>
 
@@ -1420,12 +1510,12 @@ function lessonPlan(t) {
 /* v31: soal PENGGANTI. Jika jawaban salah, soal itu tidak diulang persis, melainkan diganti soal lain
    dengan KONSEP yang sama (label fam sama; bila tidak ada -> sub-topik sama + kemiripan kata kunci). */
 function lessonReplacement(L, q) {
-  const choices = lessonChoices(L.t)[L.i];
+  const choices = lessonChoices(L.t)[L.i] || [];
   const otherPlan = new Set(lessonPlan(L.t).flat().map(x => x.id));
   const planRsv = planReservedSet();
   const qt = lxQuestionTokens(q);
   const idx = planQIndex();
-  const alreadyUsed = new Set([...L.used].map(id => idx.get(id)).filter(Boolean).map(questions.key));
+  const alreadyUsed = new Set([...L.used].map(id => idx.get(questions.resolve(id))).filter(Boolean).map(questions.key));
   const reserved = new Set(reservedFinalKeys());
   const candidates = choices.filter(x => !reserved.has(questions.key(x)) && !seenBefore(x) && !L.used.has(x.id) && !alreadyUsed.has(questions.key(x)))
     .map(x => {
@@ -1434,7 +1524,7 @@ function lessonReplacement(L, q) {
       const concept = q.fam && x.fam === q.fam;
       const relevant = concept || x.sub === q.sub || common >= 5;
       const score = (concept ? 100 : 0) + (x.sub === q.sub ? 12 : 0) + Math.min(common, 24)
-        - (otherPlan.has(x.id) || planRsv.has(x.id) ? 3 : 0);
+        - (otherPlan.has(x.id) || planRsv.has(questions.resolve(x.id)) ? 3 : 0);
       return { x, relevant, score };
     }).filter(c => c.relevant).sort((a, b) => b.score - a.score);
   return candidates[0]?.x || null;
@@ -1676,14 +1766,28 @@ const lessonApi = {
     lessonPaint();
   },
   lessonReread() { if (!lesson || lesson.phase !== 'quiz') return; lesson.phase = 'read'; lesson.picked = null; lesson.checked = false; lessonPaint(); },
-  lessonPick(k) { if (!lesson || lesson.checked) return; lesson.picked = k; lessonPaint(); },
-  lessonCheck() {
-    if (!lesson || lesson.checked || lesson.picked === null) return;
+  lessonPick(k) {
+    if (!lesson || lesson.phase !== 'quiz' || lesson.checked) return;
     const q = lesson.queue[0];
-    lesson.ok = lesson.picked === q.ans; lesson.checked = true;
+    if (!q || !Array.isArray(q.options) || k < 0 || k >= q.options.length) return;
+    lesson.picked = k;
+    lessonPaint();
+  },
+  lessonCheck() {
+    if (!lesson || lesson.phase !== 'quiz' || lesson.checked || lesson.picked === null) return;
+    const q = lesson.queue[0];
+    if (!q) return;
+    const ok = lesson.picked === q.ans;
+    let pending = null;
+    if (!ok) {
+      try { pending = lessonReplacement(lesson, q); }
+      catch (err) { console.error('lessonReplacement error:', err); }
+    }
+    lesson.ok = ok;
+    lesson.pending = pending;
+    lesson.checked = true;
     lesson.answered++;
-    if (lesson.ok) lesson.correct++;
-    lesson.pending = lesson.ok ? null : lessonReplacement(lesson, q);
+    if (ok) lesson.correct++;
     lessonPaint();
   },
   lessonNext() {
@@ -2206,6 +2310,7 @@ const PLAN_XS = [0, 40, 66, 40, 0, -40, -66, -40];
 let planCfg = planSanitize(store.get(PLAN_KEY, null));
 let planQ = store.get(PLANQ_KEY, null);
 let planDraft = null;
+let pendingPlanDay = 0;
 
 function planSanitize(c) {
   if (!c || !['SKD', 'SKB', 'GABUNG'].includes(c.test)) return null;
@@ -2222,7 +2327,8 @@ function planSanitize(c) {
     updated: c.updated || c.at || Date.now(),
     phases: c.phases && typeof c.phases === 'object' ? c.phases : {},
     extensions: Array.isArray(c.extensions) ? c.extensions : [],
-    reviewed: c.reviewed && typeof c.reviewed === 'object' ? c.reviewed : {}
+    reviewed: c.reviewed && typeof c.reviewed === 'object' ? c.reviewed : {},
+    lastDay: c.lastDay && c.lastDay.no >= 1 ? c.lastDay : null
   };
 }
 const planDlg = id => {
@@ -2465,6 +2571,15 @@ function planBuildSkdMix(nTwk, nTiu, nTkp, seed, preferSubs = [], blockedKeys = 
   return [...p1, ...p2, ...p3];
 }
 
+function planReservedSet() {
+  const s = new Set();
+  if (planCfg && planQ && planQ.at === planCfg.at && planQ.sets) {
+    Object.values(planQ.sets).forEach(arr => {
+      if (Array.isArray(arr)) arr.forEach(id => s.add(questions.resolve(id)));
+    });
+  }
+  return s;
+}
 function finalSetName(field) { return 'FINAL-' + field; }
 function reservedFinalKeys() {
   if (planCfg?.test !== 'GABUNG' || planQ?.at !== planCfg.at) return [];
@@ -2667,6 +2782,56 @@ function planOnCheckpointFinish(curExam, r, curWeakFromExam) {
   }
 }
 
+function planTouchDay(dayNo, meta = {}) {
+  if (!planCfg || !(dayNo >= 1)) return;
+  const days = planBuild(planCfg), day = days[dayNo - 1];
+  if (!day) return;
+  planCfg.lastDay = {
+    no: day.no,
+    label: day.label,
+    at: Date.now(),
+    topicId: meta.topicId || (day.topics?.[0]?.id || '')
+  };
+  planCfg.updated = Date.now();
+  store.set(PLAN_KEY, planCfg);
+}
+function planLastContext() {
+  const cfg = planCfg;
+  if (!cfg) return null;
+  const days = planBuild(cfg);
+  if (!days.length) return null;
+  const progs = days.map(planDayProg);
+  const nowIdx = progs.findIndex(p => !p.full);
+  const allDone = nowIdx === -1;
+  let latestNo = 0, latestAt = 0;
+  const bump = (no, at) => { if (no >= 1 && no <= days.length && at >= latestAt) { latestAt = at; latestNo = no; } };
+  if (cfg.lastDay?.no) bump(cfg.lastDay.no, cfg.lastDay.at || 1);
+  days.forEach(d => {
+    Object.entries(cfg.reviewed || {}).forEach(([k, ts]) => {
+      if (k.startsWith(d.no + ':')) bump(d.no, Number(ts) || 1);
+    });
+    if (d.packKey && results[d.packKey]?.last?.date) bump(d.no, results[d.packKey].last.date);
+    if (d.drillKey && results[d.drillKey]?.last?.date) bump(d.no, results[d.drillKey].last.date);
+    if (cfg.test === 'GABUNG') {
+      const k1 = combinedKey(cfg, d.no, 'SKD'), k2 = combinedKey(cfg, d.no, 'SKB');
+      if (results[k1]?.last?.date) bump(d.no, results[k1].last.date);
+      if (results[k2]?.last?.date) bump(d.no, results[k2].last.date);
+    }
+    if (cfg.phases?.[d.no]?.at) bump(d.no, cfg.phases[d.no].at);
+  });
+  let targetDay = nowIdx >= 0 ? days[nowIdx] : days[days.length - 1];
+  if (latestNo && !progs[latestNo - 1]?.full && days[latestNo - 1]?.ready !== false) {
+    targetDay = days[latestNo - 1];
+  }
+  const targetProg = progs[targetDay.no - 1] || { pct: 0, full: false };
+  const pctAll = allDone ? 100 : Math.min(99, Math.floor(progs.reduce((a, p) => a + p.pct, 0) / progs.length));
+  const nDone = progs.filter(p => p.full).length;
+  return {
+    cfg, days, progs, allDone, pctAll, nDone, totalDays: days.length, targetDay, targetProg,
+    hasActivity: latestAt > 0 || nDone > 0 || progs.some(p => p.pct > 0)
+  };
+}
+
 /* ---------- Halaman Planning Adaptif ---------- */
 function renderPlanning() {
   const cfg = planCfg;
@@ -2792,6 +2957,13 @@ function renderPlanning() {
       ${body}
     </div>
   `);
+  if (pendingPlanDay) {
+    const act = pendingPlanDay;
+    pendingPlanDay = 0;
+    if (act === 'setup') planApi.planSetup();
+    else if (act === 'final') setTimeout(() => document.getElementById('plan-final-box')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 40);
+    else if (typeof act === 'number') planDayOpen(act);
+  }
 }
 
 /* ---------- Lembar "Atur planning" ---------- */
@@ -2871,6 +3043,7 @@ function planDayOpen(no) {
   if (!planCfg) return;
   const days = planBuild(planCfg), day = days[no - 1];
   if (!day) return;
+  if (day.kind !== 'learn' || day.ready !== false) planTouchDay(no);
   const p = planDayProg(day);
   let rows = '', cta = '', note = '';
   if (day.kind !== 'learn') {
@@ -3008,7 +3181,7 @@ const planApi = {
     if (planCfg) {
       planCfg.reviewed = planCfg.reviewed || {};
       planCfg.reviewed[`${dayNo}:${id}`] = Date.now();
-      store.set(PLAN_KEY, planCfg);
+      planTouchDay(dayNo, { topicId: id });
     }
     this.planStudy(id);
   },
@@ -3017,7 +3190,7 @@ const planApi = {
     planCfg.reviewed = planCfg.reviewed || {};
     const k = `${dayNo}:${id}`;
     if (planCfg.reviewed[k]) delete planCfg.reviewed[k]; else planCfg.reviewed[k] = Date.now();
-    store.set(PLAN_KEY, planCfg);
+    planTouchDay(dayNo, { topicId: id });
     planDayOpen(dayNo);
     if (location.hash === '#/planning') renderPlanning();
   },
@@ -3071,6 +3244,7 @@ function shuffleQuestionOptions(q) {
   return Object.assign({}, q, { options, scores, ans: inv[q.ans], _letterMap: inv });
 }
 function startExam(pack, opts = {}) {
+  if (pack.plan && pack.planDay) planTouchDay(pack.planDay);
   if (pack.planSet && planQ && pack.key.startsWith('PLAN-' + planQ.at + '-')) {
     planQ.sets[pack.planSet] = pack.questions.map(q => q.id);
     store.set(PLANQ_KEY, planQ);
@@ -3780,7 +3954,9 @@ function openResult() {
       ${reviewSummary('sesi')}
       <div class="flex flex-wrap gap-2">
         ${(full || exam.pack.mode === 'SKB') ? `<button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openCalc(${full ? r.total : ''})">📊 Hitung Nilai Akhir 40:60</button>` : ''}
+        <button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openAnalytics('${full ? 'SKD_FULL' : esc(field.startsWith('SKB_') ? field : 'SKD_FULL')}')">📈 Analitik Tren</button>
         <button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openVault()">🔖 Soal Salah &amp; Bookmark</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openReport()">🖨️ Cetak PDF</button>
       </div>
       <div class="modal-action act-stack mt-2">
         <button class="btn btn-ghost max-sm:h-12" onclick="App.exitToList()">Daftar paket</button>
@@ -3809,7 +3985,7 @@ function recordWrongQuestions() {
       };
       changed = true;
     } else if (sc === 5 && wrongMap[rid]) {
-      if ((wrongMap[rid].interval || 1) >= 3) delete wrongMap[rid];
+      if ((wrongMap[rid].interval || 1) >= 3) { delete wrongMap[rid]; window.Auth?.tombstone?.('wrong', rid); }
       else {
         const nextInt = (wrongMap[rid].interval || 1) * 3;
         wrongMap[rid].interval = nextInt;
@@ -3829,6 +4005,7 @@ function finishExam() {
   recordWrongQuestions();
   const curWeakFromExam = syncWeakMateriFromExam(r, exam);
   if (exam.pack.plan) planOnCheckpointFinish(exam, r, curWeakFromExam);
+  if (exam.pack.plan && exam.pack.planDay) planTouchDay(exam.pack.planDay);
   if (!exam.pack.noSave) {
     saveExamHistory(r);
     const rec = results[exam.pack.key] || { attempts: 0, best: { score: -1, max: r.max } };
@@ -4029,6 +4206,9 @@ const App = {
   openNonCat(tab) { window.KemenSuite?.openNonCat(tab); },
   openCalc(skdScore) { window.KemenSuite?.openCalc(skdScore); },
   openVault() { window.KemenSuite?.openVault(); },
+  openAnalytics(scope) { window.KemenSuite?.openAnalytics(scope); },
+  openFlashcards(scope) { window.KemenSuite?.openFlashcards(scope); },
+  openReport() { window.KemenSuite?.openReport(); },
   openKelemahanMateri,
   clearWeakMateri(tId) {
     resolveWeakMateri(tId);
@@ -4045,6 +4225,17 @@ const App = {
     if (!hasSkdW && hasSkbW) { ui.materiTab = 'SKB'; ui.materiSkbGroup = 'WEAK'; }
     else ui.materiGroup = hasSkdW ? 'WEAK' : 'ALL';
     go('#/materi');
+  },
+  goLastPlanning() {
+    const info = planLastContext();
+    if (!info) {
+      if (!planEnded) pendingPlanDay = 'setup';
+      go('#/planning');
+      return;
+    }
+    if (!info.allDone && info.targetDay) pendingPlanDay = info.targetDay.no;
+    else if (info.allDone) pendingPlanDay = 'final';
+    go('#/planning');
   },
 
   confirmStart(key) {
@@ -4234,15 +4425,20 @@ window.App = App;
 window.GocpnsBridge = {
   store, BANK, questions, planDlg, planQIndex, toast, ask, esc, icon, fmtNum,
   getTargetBucket: () => targetPreference().bucket,
+  getTargetRole: () => targetPreference().role,
   skbMeta,
+  getMateriList: () => MATERI,
   getResults: () => results,
+  getReviews: () => reviews,
   getHistory: () => examHistory,
   getBookmarks: () => bookmarks,
   setBookmarkNote: (id, note) => toggleBookmarkById(id, note),
-  removeBookmark: id => { delete bookmarks[questions.resolve(id)]; store.set(BOOKMARK_KEY, bookmarks); },
+  removeBookmark: id => { const rid = questions.resolve(id); delete bookmarks[rid]; store.set(BOOKMARK_KEY, bookmarks); window.Auth?.tombstone?.('book', rid); },
   getWrongMap: () => wrongMap,
-  removeWrong: id => { delete wrongMap[questions.resolve(id)]; store.set(WRONG_KEY, wrongMap); },
-  clearWrong: () => { wrongMap = {}; store.set(WRONG_KEY, wrongMap); },
+  removeWrong: id => { const rid = questions.resolve(id); delete wrongMap[rid]; store.set(WRONG_KEY, wrongMap); window.Auth?.tombstone?.('wrong', rid); },
+  clearWrong: () => { Object.keys(wrongMap).forEach(rid => window.Auth?.tombstone?.('wrong', rid)); wrongMap = {}; store.set(WRONG_KEY, wrongMap); },
+  isRkRead,
+  setRkReadState,
   startCustomExam: (pack, opts) => startExam(pack, opts),
   rerender: () => { if (!exam && location.hash !== '#/ujian') route(); },
   onSyncChange(st) {
