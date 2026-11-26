@@ -260,8 +260,8 @@ const activeJalur = () => JALUR_META[studyJalur] || JALUR_META.UMUM;
 
 const SKD_GROUPS = {
   SKD_FULL: { label: 'Tryout Lengkap', short: 'Tryout', desc: '30 TWK + 35 TIU + 45 TKP • 100 menit — acuan format CPNS BKN dengan benchmark skor 500++.' },
-  SKD_TWK: { label: 'TWK', short: 'TWK', desc: 'Tes Wawasan Kebangsaan: pilar negara, nasionalisme, integritas, bahasa Indonesia.' },
-  SKD_TIU: { label: 'TIU', short: 'TIU', desc: 'Tes Intelegensia Umum: verbal, numerik, dan figural.' },
+  SKD_TWK: { label: 'TWK', short: 'TWK', desc: 'Tes Wawasan Kebangsaan: nasionalisme, integritas, bela negara, pilar negara (empat konsensus kebangsaan), bahasa Indonesia.' },
+  SKD_TIU: { label: 'TIU', short: 'TIU', desc: 'Tes Intelegensia Umum: verbal (silogisme, penalaran induktif, analitis), numerik, dan figural.' },
   SKD_TKP: { label: 'TKP', short: 'TKP', desc: 'Tes Karakteristik Pribadi: skor 1–5 pada tiap opsi.' }
 };
 const SKB_META = {
@@ -450,11 +450,11 @@ const catStyle = c => GROUP_STYLE[['TWK', 'TIU', 'TKP'].includes(c) ? c : 'SKB']
 const RK_GLOBAL_META = {
   TWK: {
     id: 'TWK', title: 'Rangkuman Global TWK', subtitle: 'Tes Wawasan Kebangsaan', icon: 'flag', tone: 'twk',
-    desc: 'Gabungan seluruh pecahan materi TWK: Pancasila, UUD 1945, NKRI, Sejarah, Bela Negara, Integritas, Otda, Bahasa Indonesia & EYD V.'
+    desc: 'Gabungan seluruh pecahan materi TWK: Empat Konsensus Kebangsaan (Pancasila, UUD 1945, NKRI, Bhinneka Tunggal Ika), Sejarah, Bela Negara, Nasionalisme, Integritas, Otda, Bahasa Indonesia & EYD V.'
   },
   TIU: {
     id: 'TIU', title: 'Rangkuman Global TIU', subtitle: 'Tes Intelegensia Umum', icon: 'puzzle', tone: 'tiu',
-    desc: 'Gabungan seluruh pecahan materi TIU: Strategi TIU, Pecahan, Perbandingan, Soal Cerita, Peluang, Silogisme, Deret, Analogi, Figural & Kecukupan Data.'
+    desc: 'Gabungan seluruh pecahan materi TIU: Strategi TIU, Berhitung & Pecahan, Perbandingan Kuantitatif, Soal Cerita, Peluang, Silogisme, Penalaran Induktif, Analitis, Deret, Analogi, Figural (Serial, Analogi, Matriks) & Kecukupan Data.'
   },
   TKP: {
     id: 'TKP', title: 'Rangkuman Global TKP', subtitle: 'Tes Karakteristik Pribadi', icon: 'bulb', tone: 'tkp',

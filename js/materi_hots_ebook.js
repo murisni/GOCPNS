@@ -54,8 +54,8 @@
     {
       id: 'twk-bedah-hots-ebook',
       group: 'TWK',
-      title: 'Bedah TWK HOTS: Penalaran Konstitusi, Filsafat Bela Negara & EYD V',
-      summary: 'Materi pendalaman berstandar soal sulit TWK (KepmenPANRB 321/2024): peta perubahan UUD & RIS, dimensi vertikal-horizontal Pancasila, integritas Hatta & M. Jusuf, hilirisasi & soft power, serta aturan pasti KBBI & EYD Edisi V.',
+      title: 'Bedah TWK HOTS: Empat Konsensus (Pilar Negara), Bela Negara & EYD V',
+      summary: 'Materi pendalaman berstandar soal sulit TWK (KepmenPANRB 321/2024): Empat Konsensus Kebangsaan (Pancasila, UUD 1945, NKRI, Bhinneka Tunggal Ika), RIS & perubahan UUD, integritas Hatta & M. Jusuf, bela negara modern, serta KBBI & EYD Edisi V.',
       buckets: ['SKD_TWK'],
       subs: ['TWK HOTS', 'Bahasa Indonesia (EYD V', 'Moderasi Beragama'],
       sections: [

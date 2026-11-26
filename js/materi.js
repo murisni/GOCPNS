@@ -10,13 +10,13 @@ window.MATERI_GROUPS = [
     "id": "TWK",
     "name": "TWK",
     "full": "Tes Wawasan Kebangsaan",
-    "desc": "Pilar negara, nasionalisme, integritas, dan bahasa Indonesia."
+    "desc": "Pilar negara (empat konsensus kebangsaan: Pancasila, UUD 1945, NKRI, Bhinneka Tunggal Ika), nasionalisme, integritas, bela negara, dan bahasa Indonesia."
   },
   {
     "id": "TIU",
     "name": "TIU",
     "full": "Tes Intelegensia Umum",
-    "desc": "Penalaran verbal, numerik rumus kilat, dan logika figural."
+    "desc": "Penalaran verbal (silogisme, penalaran induktif, analitis), numerik rumus kilat, dan logika figural (serial, analogi, matriks)."
   },
   {
     "id": "TKP",
@@ -37,7 +37,7 @@ window.MATERI = [
     "id": "pancasila",
     "group": "TWK",
     "title": "Pancasila: Sila, Lambang, Butir & Sejarah",
-    "summary": "Infografis Garuda Pancasila, makna lambang 5 sila, tabel pembeda butir sila tersering keluar, dan sejarah perumusan BPUPKI-PPKI.",
+    "summary": "Bagian 1 dari Empat Konsensus Kebangsaan (Pilar Negara): infografis Garuda Pancasila, makna lambang 5 sila, tabel pembeda butir sila tersering keluar, dan sejarah perumusan BPUPKI-PPKI.",
     "buckets": [
       "SKD_TWK"
     ],
@@ -77,7 +77,7 @@ window.MATERI = [
     "id": "uud-1945",
     "group": "TWK",
     "title": "UUD 1945, Lembaga Negara & Hierarki Hukum",
-    "summary": "Diagram struktur ketatanegaraan RI pasca-amandemen, piramida hierarki perundang-undangan UU 12/2011, serta tabel pasal keramat BKN.",
+    "summary": "Bagian 2 dari Empat Konsensus Kebangsaan (Pilar Negara): diagram ketatanegaraan RI pasca-amandemen, piramida hierarki UU 12/2011, serta tabel pasal keramat BKN.",
     "buckets": [
       "SKD_TWK"
     ],
@@ -109,7 +109,7 @@ window.MATERI = [
     "id": "nkri-bhinneka",
     "group": "TWK",
     "title": "NKRI, Batas Laut & Wawasan Nusantara",
-    "summary": "Infografis batas laut UNCLOS 1982, Deklarasi Djuanda 1957, konsep Asta Gatra (Trigatra & Pancagatra), dan Bhinneka Tunggal Ika.",
+    "summary": "Bagian 3 & 4 Empat Konsensus Kebangsaan (NKRI & Bhinneka Tunggal Ika): infografis batas laut UNCLOS 1982, Deklarasi Djuanda 1957, dan konsep Asta Gatra.",
     "buckets": [
       "SKD_TWK"
     ],
