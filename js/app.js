@@ -237,6 +237,21 @@ function ordered(bucket) {
   }
   return orderCache[key];
 }
+/* Sebarkan soal HOTS/Visual/Baru secara merata di Tryout Paket 1..N agar paket awal langsung setara standar BKN. */
+function interleaveTryoutPool(bucket) {
+  const arr = ordered(bucket);
+  const modern = q => q.level === 'HOTS' || q.img || q.svg || /-X\d{4}$/.test(q.id) || isHotsQuestion(q);
+  const hots = shuffle(arr.filter(modern), 'tryout-h:' + bucket);
+  const reg = shuffle(arr.filter(q => !modern(q)), 'tryout-r:' + bucket);
+  const out = [];
+  let hi = 0, ri = 0;
+  while (hi < hots.length || ri < reg.length) {
+    if (hi < hots.length) out.push(hots[hi++]);
+    if (ri < reg.length) out.push(reg[ri++]);
+    if (ri < reg.length && hots.length < reg.length) out.push(reg[ri++]);
+  }
+  return out;
+}
 const bucketOfId = {};
 function indexBuckets() { Object.entries(BANK).forEach(([b, arr]) => arr.forEach(q => { bucketOfId[q.id] = b; })); }
 
@@ -343,22 +358,23 @@ function isHotsQuestion(q) {
   return /hots|sulit|studi kasus|analis|perbandingan|evaluasi|dampak|selisih|grafik|diagram|tabel|silogisme|figural|penerapan|dilema/i.test(s) || String(q.q || '').length >= 165;
 }
 function hotsPool(bucket, n) {
-  const arr = ordered(bucket);
-  const rank = q => (q.level === 'HOTS' ? 4 : 0) + (q.img || q.svg ? 3 : 0) + (isHotsQuestion(q) ? 2 : 0) + (!seenBefore(q) ? 1 : 0);
+  const arr = interleaveTryoutPool(bucket);
+  const rank = q => (!seenBefore(q) ? 12 : 0) + (String(q.q || '').length >= 650 ? 5 : 0) + (q.level === 'HOTS' ? 4 : 0) + (q.img || q.svg ? 3 : 0) + (isHotsQuestion(q) ? 2 : 0);
   const sorted = [...arr].sort((a, b) => rank(b) - rank(a));
   return selectQuestions(sorted, n);
 }
 function skdHotsPack() {
   const twk = hotsPool('SKD_TWK', FULL_MIX.TWK);
-  const tiuBase = ordered('SKD_TIU').slice().sort((a, b) => ((b.level === 'HOTS' ? 4 : 0) + (b.img ? 3 : 0) + (isHotsQuestion(b) ? 1 : 0)) - ((a.level === 'HOTS' ? 4 : 0) + (a.img ? 3 : 0) + (isHotsQuestion(a) ? 1 : 0)));
+  const rankTiu = q => (!seenBefore(q) ? 12 : 0) + (q.level === 'HOTS' ? 4 : 0) + (q.img ? 3 : 0) + (isHotsQuestion(q) ? 1 : 0);
+  const tiuBase = interleaveTryoutPool('SKD_TIU').slice().sort((a, b) => rankTiu(b) - rankTiu(a));
   const tiuBal = Object.entries(TIU_MIX).flatMap(([type, n]) => selectQuestions(tiuBase.filter(q => tiuType(q) === type), n));
   const usedTiu = new Set(tiuBal.map(questions.key));
-  const tiu = shuffle(tiuBal.concat(selectQuestions(tiuBase, FULL_MIX.TIU - tiuBal.length, usedTiu)), 'hots:tiu');
+  const tiu = shuffle(tiuBal.concat(selectQuestions(tiuBase, FULL_MIX.TIU - tiuBal.length, usedTiu)), 'hots:tiu:' + seen.size);
   const tkp = hotsPool('SKD_TKP', FULL_MIX.TKP);
   return {
     key: 'SKD_HOTS-1', group: 'SKD_FULL', no: '500+', kind: 'FULL', mode: 'SKD', preserveMix: true, hots: true,
     title: 'Simulasi HOTS & Visual BKN 500++',
-    compose: `TWK ${twk.length} · TIU ${tiu.length} (Visual & HOTS) · TKP ${tkp.length}`,
+    compose: `TWK ${twk.length} · TIU ${tiu.length} (Visual, Induktif & HOTS) · TKP ${tkp.length}`,
     questions: [...twk, ...tiu, ...tkp],
     minutes: 100
   };
@@ -380,18 +396,27 @@ function skbFullPack(group) {
 
 function packsFor(group) {
   if (group === 'SKD_FULL') {
-    const twk = ordered('SKD_TWK'), tiu = ordered('SKD_TIU'), tkp = ordered('SKD_TKP');
+    const twk = interleaveTryoutPool('SKD_TWK'), tiu = interleaveTryoutPool('SKD_TIU'), tkp = interleaveTryoutPool('SKD_TKP');
+    const tiuV = tiu.filter(q => tiuType(q) === 'Verbal'), tiuN = tiu.filter(q => tiuType(q) === 'Numerik'), tiuF = tiu.filter(q => tiuType(q) === 'Figural');
     const n = Math.min(Math.floor(twk.length / FULL_MIX.TWK), Math.floor(tiu.length / FULL_MIX.TIU), Math.floor(tkp.length / FULL_MIX.TKP));
     const out = [];
     for (let i = 0; i < n; i++) {
+      const pickWrap = (arr, k, ofs) => {
+        const res = [];
+        for (let j = 0; j < k && arr.length; j++) res.push(arr[(ofs + j) % arr.length]);
+        return res;
+      };
+      const fPart = pickWrap(tiuF, TIU_MIX.Figural, i * TIU_MIX.Figural);
+      const vPart = pickWrap(tiuV, TIU_MIX.Verbal, i * TIU_MIX.Verbal);
+      const nPart = pickWrap(tiuN, TIU_MIX.Numerik, i * TIU_MIX.Numerik);
       const qs = [
         ...twk.slice(i * FULL_MIX.TWK, (i + 1) * FULL_MIX.TWK),
-        ...tiu.slice(i * FULL_MIX.TIU, (i + 1) * FULL_MIX.TIU),
+        ...vPart, ...nPart, ...fPart,
         ...tkp.slice(i * FULL_MIX.TKP, (i + 1) * FULL_MIX.TKP)
       ];
       out.push({
         key: `SKD_FULL-${i + 1}`, group, no: i + 1, kind: 'FULL', mode: 'SKD', title: `Tryout Paket ${i + 1}`,
-        compose: `TWK ${FULL_MIX.TWK} · TIU ${FULL_MIX.TIU} · TKP ${FULL_MIX.TKP}`, questions: qs, minutes: 100
+        compose: `TWK ${FULL_MIX.TWK} · TIU ${FULL_MIX.TIU} (HOTS & Visual) · TKP ${FULL_MIX.TKP}`, questions: qs, minutes: 100
       });
     }
     return out;
@@ -417,7 +442,7 @@ function preparePack(pack) {
   const groups = pack.kind === 'FULL' ? Object.keys(FULL_MIX).map(c => 'SKD_' + c) : [pack.group];
   const selected = groups.flatMap(bucket => {
     const base = pack.kind === 'FULL' ? pack.questions.filter(q => q.category === bucket.slice(4)) : pack.questions;
-    const pool = base.concat(ordered(bucket));
+    const pool = base.concat(pack.kind === 'FULL' ? interleaveTryoutPool(bucket) : ordered(bucket));
     if (pack.kind !== 'FULL' || bucket !== 'SKD_TIU') return selectQuestions(pool, base.length);
     const balanced = Object.entries(TIU_MIX).flatMap(([type, n]) => selectQuestions(pool.filter(q => tiuType(q) === type), n));
     const used = new Set(balanced.map(questions.key));
@@ -4066,16 +4091,19 @@ function openStart(key) {
       <li class="flex gap-2">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Waktu bisa dijeda dari menu titik tiga (⋮) di pojok kanan atas.</span></li>
       <li class="hidden gap-2 md:flex">${icon('check', 'h-4 w-4 shrink-0 text-success')}<span>Pintasan keyboard: A–E untuk memilih, ← → untuk pindah soal.</span></li>
     </ul>
-    ${p.forceTimed ? '<p class="mt-4 text-xs text-base-content/70">Pembahasan tersedia setelah simulasi selesai.</p>' : `<div class="mt-4 space-y-2.5">
+    ${p.forceTimed ? '<p class="mt-4 text-xs text-base-content/70">Pembahasan tersedia setelah simulasi selesai.</p>' : (() => {
+      const defStrict = store.get(p.kind === 'FULL' ? 'cpns_strict_full' : 'cpns_strict', p.kind === 'FULL');
+      const defInst = defStrict ? false : store.get('cpns_instant', p.kind !== 'FULL');
+      return `<div class="mt-4 space-y-2.5">
       <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-base-200 px-4 py-3">
         <span><span class="block text-sm font-semibold text-neutral">Bahas instan</span><span class="text-xs text-base-content/60">Kunci &amp; pembahasan langsung tampil setelah menjawab. Matikan untuk suasana ujian sebenarnya.</span></span>
-        <input type="checkbox" id="st-instant" class="toggle toggle-primary shrink-0" ${store.get('cpns_instant', p.kind !== 'FULL') ? 'checked' : ''} onchange="if(this.checked && $('#st-strict')) $('#st-strict').checked=false">
+        <input type="checkbox" id="st-instant" class="toggle toggle-primary shrink-0" ${defInst ? 'checked' : ''} onchange="if(this.checked && $('#st-strict')) $('#st-strict').checked=false">
       </label>
       <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-base-200 px-4 py-3">
         <span><span class="block text-sm font-semibold text-neutral">Mode CAT BKN Ketat</span><span class="text-xs text-base-content/60">Acak urutan opsi A–E, sembunyikan skor langsung saat ujian, tanpa tombol jeda waktu.</span></span>
-        <input type="checkbox" id="st-strict" class="toggle toggle-secondary shrink-0" ${store.get('cpns_strict', false) ? 'checked' : ''} onchange="if(this.checked && $('#st-instant')) $('#st-instant').checked=false">
+        <input type="checkbox" id="st-strict" class="toggle toggle-secondary shrink-0" ${defStrict ? 'checked' : ''} onchange="if(this.checked && $('#st-instant')) $('#st-instant').checked=false">
       </label>
-    </div>`}
+    </div>`; })()}
     <div class="modal-action act-stack">
       <button class="btn btn-ghost" onclick="$('#dlg-start').close()">Batal</button>
       <button class="btn btn-primary" onclick="App.confirmStart('${p.key}')">Mulai ujian ${icon('arrowR', 'h-4 w-4')}</button>
@@ -4244,7 +4272,7 @@ const App = {
     pendingPack = null;
     const strict = !p.forceTimed && !!$('#st-strict')?.checked;
     const inst = !p.forceTimed && !strict && !!$('#st-instant')?.checked;
-    if (!p.forceTimed) { store.set('cpns_instant', inst); store.set('cpns_strict', strict); }
+    if (!p.forceTimed) { store.set('cpns_instant', inst); store.set(p.kind === 'FULL' ? 'cpns_strict_full' : 'cpns_strict', strict); }
     $('#dlg-start').close();
     startExam(p, { instant: inst, strict });
   },

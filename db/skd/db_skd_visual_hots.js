@@ -97,13 +97,13 @@
       'Pilar Negara - UUD 1945', 'twk-hots-ky-mk-01',
       'Perhatikan bagan kewenangan kekuasaan kehakiman pasca Amandemen UUD 1945 di bawah. Apabila seorang Ketua Pengadilan Negeri diduga melanggar kode etik berat saat memutus perkara sengketa lahan pemerintah, sementara sebuah Undang-Undang diduga menabrak hak konstitusional warga, lembaga mana saja yang berwenang secara berurutan memeriksa kedua hal tersebut?',
       [
-        'A. Mahkamah Konstitusi memeriksa etik hakim PN; Mahkamah Agung menguji UU terhadap UUD',
-        'B. Komisi Yudisial memeriksa etik hakim PN; Mahkamah Konstitusi menguji UU terhadap UUD 1945',
-        'C. DPR memanggil hakim PN lewat hak angket; Komisi Yudisial membatalkan pasal UU',
-        'D. Komisi Yudisial mengawasi etik Hakim Konstitusi; MA menguji UU terhadap UUD 1945',
-        'E. Ombudsman RI menjatuhkan sanksi hakim PN; Presiden menerbitkan Perppu pembatalan UU'
+        'A. Mahkamah Konstitusi memeriksa etik hakim pengadilan negeri secara langsung; Mahkamah Agung menguji UU terhadap UUD',
+        'B. DPR memanggil hakim pengadilan negeri lewat hak angket khusus; Komisi Yudisial membatalkan pasal undang-undang',
+        'C. Komisi Yudisial memeriksa etik hakim PN; Mahkamah Konstitusi menguji UU terhadap UUD',
+        'D. Komisi Yudisial mengawasi etik Hakim Konstitusi secara rutin; Mahkamah Agung menguji UU terhadap UUD NRI 1945',
+        'E. Ombudsman RI menjatuhkan sanksi disiplin hakim pengadilan negeri; Presiden menerbitkan Perppu pembatalan UU'
       ],
-      1,
+      2,
       'Etik hakim peradilan umum = KY (dan MA internal); Uji UU vs UUD = MK!',
       'Pasca Amandemen UUD 1945 Pasal 24B dan 24C serta Putusan MK 005/PUU-IV/2006, KY mengawasi perilaku hakim agung/hakim peradilan di bawah MA, sedangkan uji materi UU terhadap UUD NRI 1945 adalah kewenangan eksklusif MK.',
       TWK_SVG_KEHAKIMAN
@@ -112,13 +112,13 @@
       'Pilar Negara - UUD 1945', 'twk-hots-impeach-02',
       'Berdasarkan bagan alur Pasal 7B UUD NRI Tahun 1945 di bawah, syarat sah pengajuan usul pemberhentian Presiden dan keputusan akhir oleh MPR yang paling tepat adalah...',
       [
-        'A. DPR cukup menyetujui dengan 50%+1 hadir, lalu MPR memutus tanpa perlu sidang MK',
-        'B. Usul DPR disetujui >=2/3 dari anggota hadir (kuorum >=2/3 anggota), MK memutus max 90 hari, lalu MPR memutuskan dengan >=2/3 hadir dari kuorum >=3/4 jumlah anggota MPR',
-        'C. MK berhak memberhentikan Presiden langsung begitu putusan pelanggaran hukum dibacakan',
-        'D. MPR wajib mengadakan pemilu sela dalam 30 hari sebelum meminta pendapat hukum MK',
-        'E. DPR bersama DPD langsung memberhentikan Presiden jika Presiden tidak hadir dalam rapat paripurna'
+        'A. DPR cukup menyetujui dengan suara terbanyak sederhana tanpa sidang MK, lalu MPR memutus melalui rapat tertutup fraksi',
+        'B. Mahkamah Konstitusi berhak memberhentikan Presiden secara langsung begitu putusan pelanggaran hukum dibacakan dalam sidang terbuka',
+        'C. MPR wajib menyelenggarakan pemilihan presiden sela dalam 30 hari kerja sebelum meminta pendapat hukum resmi dari Mahkamah Konstitusi',
+        'D. Usul DPR disetujui >=2/3 dari >=2/3 hadir, MK memutus max 90 hari, lalu MPR memutus >=2/3 dari kuorum >=3/4 anggota',
+        'E. DPR bersama DPD langsung memberhentikan Presiden apabila Presiden tidak menghadiri undangan penyampaian keterangan di rapat paripurna'
       ],
-      1,
+      3,
       'Hafal angka emas Pasal 7B: DPR (2/3 dari 2/3) -> MK (90 hari) -> MPR (2/3 dari 3/4).',
       'Pasal 7B UUD 1945 mensyaratkan DPR hadir minimal 2/3 anggota dan disetujui >=2/3 yang hadir, lalu MK memeriksa dan wajib memutus maksimal 90 hari. Jika terbukti, MPR bersidang dengan kuorum >=3/4 dan disetujui >=2/3 anggota yang hadir.',
       TWK_SVG_IMPEACH
@@ -142,13 +142,13 @@
       'Pilar Negara - Pancasila', 'twk-hots-nilai-pancasila-04',
       'Pemerintah meluncurkan program subsidi energi tepat sasaran berbasis KTP digital agar kelompok miskin menerima manfaat penuh, namun di lapangan sebagian lansia di pelosok tidak memiliki gawai sehingga petugas kelurahan turun mendata door-to-door sambil tetap membuka loket manual. Praktik tersebut mencerminkan perwujudan...',
       [
-        'A. Nilai Dasar yang hanya berlaku di kota metropolitan dengan infrastruktur serat optik penuh',
-        'B. Nilai Instrumental saja karena fokus pada penyusunan aplikasi digital tanpa pendampingan',
-        'C. Nilai Praksis Sila Ke-5 Keadilan Sosial yang dikawinkan dengan nilai kemanusiaan adil dan beradab',
-        'D. Pengingkaran terhadap reformasi birokrasi karena tetap mempertahankan layanan tatap muka',
-        'E. Chauvinisme teknologi yang menolak sistem verifikasi otomatis pusat'
+        'A. Nilai Praksis Sila Ke-5 (Keadilan Sosial) dipadukan dengan nilai kemanusiaan',
+        'B. Nilai Instrumental saja karena kebijakan fokus pada penyusunan aplikasi digital pusat tanpa pendampingan masyarakat desa',
+        'C. Nilai Dasar abstrak yang hanya berlaku di kota metropolitan dengan dukungan penuh infrastruktur jaringan serat optik nasional',
+        'D. Pengingkaran terhadap prinsip reformasi birokrasi modern karena kantor kelurahan tetap mempertahankan loket layanan tatap muka',
+        'E. Chauvinisme teknologi daerah yang menolak sistem verifikasi basis data terpadu milik kementerian pemerintah pusat'
       ],
-      2,
+      0,
       'Tindakan nyata di lapangan menjawab hambatan keadilan akses warga rentan = Nilai Praksis Sila ke-5 + Sila ke-2.',
       'Pancasila sebagai ideologi terbuka diwujudkan dalam Nilai Praksis (perbuatan nyata sehari-hari). Menjamin akses kelompok rentan agar tidak terpinggirkan oleh digitalisasi adalah implementasi keadilan sosial (Sila 5) dan kemanusiaan (Sila 2).',
       ''
@@ -157,13 +157,13 @@
       'Bela Negara & Pertahanan', 'twk-hots-belanegara-siber-05',
       'Seorang ASN Pranata Komputer/Analis menemukan akun media sosial palsu memakai video deepfake pimpinan instansinya yang memprovokasi warga agar memboikot layanan pajak daerah. Dalam perspektif UU No. 23 Tahun 2019 tentang Pengelolaan Sumber Daya Nasional (PSDN), langkah ASN tersebut yang termasuk komponen Bela Negara non-fisik paling strategis adalah...',
       [
-        'A. Membalas komentar provokatif dengan akun pribadi tanpa melapor atasan agar cepat reda',
-        'B. Melakukan verifikasi forensik konten, berkoordinasi dengan tim humas/PPID dan CSIRT merilis klarifikasi resmi berbasis fakta, serta mengamankan kanal instansi',
-        'C. Mematikan seluruh situs layanan pajak daerah selama 1 bulan agar bebas dari komentar warga',
-        'D. Meminta pegawai lain menyebarkan balik isu tandingan mengenai kelompok pengkritik',
-        'E. Menunggu laporan masuk ke Ombudsman sebelum melakukan klarifikasi publik'
+        'A. Membalas komentar provokatif dengan akun media sosial pribadi tanpa melapor atasan langsung agar persoalan cepat mereda',
+        'B. Mematikan seluruh peladen situs layanan pajak daerah selama satu bulan penuh supaya bebas dari komentar negatif warganet',
+        'C. Meminta pegawai antarbidang menyebarkan balik isu tandingan mengenai latar belakang kelompok warga yang menyampaikan kritik',
+        'D. Menunggu masuknya laporan resmi dari Ombudsman RI sebelum kantor menyusun tanggapan serta klarifikasi informasi kepada publik',
+        'E. Memverifikasi forensik konten serta berkoordinasi dengan humas/CSIRT guna merilis klarifikasi resmi'
       ],
-      1,
+      4,
       'Bela negara sipil era digital = menjaga kedaulatan informasi & keandalan layanan publik secara profesional dan sah.',
       'Menurut UU 23/2019, kesadaran bela negara dapat diaktualisasikan sesuai profesi sebagai pengabdian profesi untuk menjaga ketahanan nasional (termasuk ketahanan siber, integritas informasi publik, dan kelancaran pelayanan negara).',
       ''
@@ -172,13 +172,13 @@
       'Integritas', 'twk-hots-gratifikasi-suap-06',
       'Dua situasi terjadi pada pejabat pengadaan: (1) Penyedia kalah tender mengirimi parsel hari raya senilai Rp1,2 juta ke rumah pejabat tanpa janji apa pun 2 bulan pascaproyek; (2) Penyedia menjanjikan komisi 5% sebelum pengumuman pemenang agar syarat teknis diubah untuk mengarah padanya. Perbedaan hukum keduanya menurut UU Tipikor adalah...',
       [
-        'A. Keduanya otomatis bebas pidana selama uang dikembalikan setelah audit BPK selesai',
-        'B. Situasi (1) adalah gratifikasi yang wajib dilaporkan ke KPK dalam 30 hari kerja agar tidak menjadi suap, sedangkan (2) langsung merupakan tindak pidana suap/permufakatan jahat',
-        'C. Situasi (1) adalah pemerasan jabatan, sedangkan (2) adalah sumbangan sukarela rekanan',
-        'D. Keduanya baru dapat diproses hukum jika nilai transaksi melebihi Rp50 juta',
-        'E. Situasi (2) boleh dilaporkan ke UPG dalam 60 hari untuk menggugurkan unsur niat jahat'
+        'A. Situasi (1) wajib dilaporkan ke KPK dalam 30 hari kerja agar bebas pidana; (2) langsung pidana suap',
+        'B. Keduanya otomatis bebas dari tuntutan pidana korupsi selama seluruh barang atau dana dikembalikan setelah audit BPK berakhir',
+        'C. Situasi (1) dikategorikan sebagai pemerasan dalam jabatan struktural, sedangkan (2) adalah sumbangan sukarela pihak ketiga',
+        'D. Keduanya baru memenuhi unsur tindak pidana korupsi apabila total nilai pemberian telah melampaui batas lima puluh juta rupiah',
+        'E. Situasi (2) boleh dilaporkan secara resmi kepada Unit Pengendalian Gratifikasi dalam 60 hari untuk menggugurkan unsur niat jahat'
       ],
-      1,
+      0,
       'Gratifikasi (Ps 12B) pasif tanpa kesepakatan = lapor <= 30 hari kerja ke KPK; Suap (Ps 5/11) ada transaksional/meeting of minds = pidana seketika!',
       'Pasal 12B UU Tipikor menganggap gratifikasi >=10jt atau terkait jabatan menjadi suap jika TIDAK dilaporkan ke KPK dalam <=30 hari kerja. Sementara janji imbalan untuk mengarahkan spesifikasi tender sejak awal sudah memenuhi unsur suap aktif/pasif tanpa bisa diputihkan pelaporan.',
       ''
@@ -187,13 +187,13 @@
       'Nasionalisme', 'twk-hots-tkdn-nasionalisme-07',
       'Kementerian mengetatkan penggunaan Produk Dalam Negeri (PDN) dengan bobot TKDN + BMP >= 40% dalam e-Katalog meskipun harga produk impor serupa sedikit lebih murah di awal. Makna kebijakan ini ditinjau dari nilai Nasionalisme Pancasila adalah...',
       [
-        'A. Bentuk chauvinisme sempit yang memusuhi investasi dan perdagangan internasional',
-        'B. Perwujudan nasionalisme ekonomi dan kemandirian bangsa untuk menumbuhkan industri serta lapangan kerja domestik',
-        'C. Pemborosan APBN karena melanggar prinsip efisiensi harga terendah semata',
-        'D. Primordialisme kedaerahan yang hanya menguntungkan pengusaha satu provinsi',
-        'E. Monopoli negara yang bertentangan dengan Pasal 33 UUD NRI Tahun 1945'
+        'A. Bentuk chauvinisme ekonomi sempit yang memusuhi arus investasi asing serta perjanjian dagang antarnegara',
+        'B. Pemborosan anggaran belanja negara karena bertentangan dengan prinsip efisiensi perolehan harga pasar terendah',
+        'C. Primordialisme kedaerahan yang hanya melindungi pengusaha manufaktur dari satu provinsi industri tertentu saja',
+        'D. Praktik monopoli badan usaha milik negara yang bertentangan langsung dengan amanat Pasal 33 UUD NRI Tahun 1945',
+        'E. Nasionalisme ekonomi guna menumbuhkan kemandirian industri dan penyerapan tenaga kerja lokal'
       ],
-      1,
+      4,
       'Nasionalisme sehat (bukan chauvinisme) memberdayakan ekonomi nasional & kemandirian industri dalam negeri (Pasal 33 UUD 1945 & Perpres PBJ).',
       'Nasionalisme modern bukan membenci negara lain (chauvinisme), melainkan berpihak pada kemandirian bangsa, nilai tambah manufaktur lokal, dan penyerapan tenaga kerja nasional sesuai amanat Pasal 33 UUD 1945 dan Inpres P3DN.',
       ''
@@ -202,13 +202,13 @@
       'Pilar Negara - NKRI & Bhinneka Tunggal Ika', 'twk-hots-otda-urusan-08',
       'Sebuah pemerintah kabupaten ingin menerbitkan perjanjian pertahanan perbatasan dan pencetakan mata uang lokal guna mempercepat ekonomi perbatasan. Dalam desain negara kesatuan dengan otonomi luas menurut UU 23/2014, usulan tersebut ditolak karena...',
       [
-        'A. Kabupaten belum memiliki Perda tentang tata ruang wilayah pesisir',
-        'B. Pertahanan dan kebijakan moneter/fiskal nasional termasuk 6 urusan pemerintahan absolut yang sepenuhnya menjadi kewenangan Pemerintah Pusat',
-        'C. Urusan tersebut termasuk urusan konkuren pilihan yang hanya boleh dikelola tingkat provinsi',
-        'D. Kepala daerah belum meminta pertimbangan teknis kepada Dewan Perwakilan Daerah',
-        'E. Perjanjian tersebut hanya boleh dilakukan oleh Badan Usaha Milik Daerah (BUMD)'
+        'A. Pemerintah kabupaten belum menyusun Peraturan Daerah mengenai rencana tata ruang wilayah pesisir perbatasan',
+        'B. Urusan tersebut masuk kategori urusan konkuren pilihan yang hanya boleh dikelola oleh pemerintah provinsi',
+        'C. Pertahanan serta moneter termasuk enam urusan absolut kewenangan penuh Pemerintah Pusat',
+        'D. Kepala daerah belum meminta pertimbangan hukum dan teknis terlebih dahulu kepada Dewan Perwakilan Daerah',
+        'E. Kerja sama penerbitan alat pembayaran lokal hanya boleh diselenggarakan oleh Badan Usaha Milik Daerah (BUMD)'
       ],
-      1,
+      2,
       '6 Urusan Absolut Pusat (Polugri, Pertahanan, Keamanan, Yustisi, Moneter/Fiskal Nasional, Agama)!',
       'Pasal 10 UU 23/2014 menetapkan 6 urusan absolut Pemerintah Pusat: politik luar negeri, pertahanan, keamanan, yustisi, moneter & fiskal nasional, dan agama. Pemda hanya menyelenggarakan urusan konkuren (wajib dasar, wajib non-dasar, pilihan).',
       ''
@@ -247,13 +247,13 @@
       'Pilar Negara - Pancasila', 'twk-hots-ideologi-ai-11',
       'Kementerian menetapkan etika pemanfaatan kecerdasan buatan (AI) agar algoritma layanan publik transparan, tidak mendiskriminasi suku/wilayah tertentu, dan tetap menghormati putusan kemanusiaan ASN. Dalam konsep Alfian mengenai Pancasila sebagai ideologi terbuka, penyesuaian aturan terhadap kemajuan teknologi AI tanpa mengubah sila dasarnya mencerminkan dimensi...',
       [
-        'A. Dimensi Realitas semata karena hanya memotret tradisi masyarakat masa lalu',
-        'B. Dimensi Fleksibilitas (pengembangan) karena nilai dasar mampu menjawab tantangan zaman baru secara adaptif',
-        'C. Dimensi Dogmatis yang memaksa teknologi lama dipertahankan tanpa inovasi',
-        'D. Dimensi Keterbukaan tanpa batas yang membolehkan penggantian dasar negara',
-        'E. Dimensi Eksklusivitas yang menolak seluruh standar riset global'
+        'A. Dimensi Realitas semata karena hanya memotret tradisi masyarakat masa lalu tanpa pembaharuan aturan',
+        'B. Dimensi Dogmatis yang memaksa prosedur administrasi lama dipertahankan terus tanpa inovasi baru',
+        'C. Dimensi Keterbukaan tanpa batas yang membolehkan penggantian sila dasar negara secara berkala',
+        'D. Dimensi Fleksibilitas (pengembangan) karena nilai dasar mampu menjawab tantangan zaman baru',
+        'E. Dimensi Eksklusivitas yang menolak seluruh standar riset tata kelola digital tingkat global'
       ],
-      1,
+      3,
       '3 Dimensi Ideologi Terbuka (Alfian): Realitas (berakar di masyarakat), Idealitas (cita-cita harapan), Fleksibilitas (luwes ikuti perkembangan zaman).',
       'Dimensi Fleksibilitas memungkinkan Pancasila mengembangkan penafsiran, kebijakan baru, dan instrumen hukum (seperti etika AI dan UU PDP) mengikuti dinamika zaman tanpa meninggalkan nilai fundamentalnya.',
       ''
@@ -262,13 +262,13 @@
       'Nasionalisme & Moderasi Beragama', 'twk-hots-bhinneka-layanan-12',
       'Di sebuah kecamatan, kelompok mayoritas menolak pembangunan fasilitas kesehatan terpadu karena bersebelahan dengan rumah ibadah minoritas dengan dalih ketertiban. Sikap camat/ASN yang paling mencerminkan Bhinneka Tunggal Ika dan netralitas hukum adalah...',
       [
-        'A. Langsung membatalkan izin klinik tanpa kajian agar kelompok mayoritas tidak memprotes',
-        'B. Membiarkan kedua kelompok menyelesaikan sendiri secara bebas tanpa kehadiran negara',
-        'C. Mengadakan dialog inklusif lintas tokoh agama/masyarakat berbasis fakta tata ruang, hak warga atas layanan kesehatan, dan regulasi PBM tanpa mengorbankan hak minoritas',
-        'D. Mengutamakan aspirasi suara terbanyak mutlak walaupun melanggar hak konstitusional warga lain',
-        'E. Menutup sementara rumah ibadah demi menghindari gesekan selama proyek berlangsung'
+        'A. Langsung membatalkan seluruh izin pendirian klinik tanpa kajian lapangan agar kelompok mayoritas tidak mengajukan protes lanjutan',
+        'B. Membiarkan kedua kelompok warga menyelesaikan sendiri perbedaan pendapat secara bebas tanpa kehadiran aparatur pemerintah daerah',
+        'C. Mengutamakan aspirasi suara terbanyak mutlak dalam forum warga walaupun jelas melanggar hak konstitusional masyarakat lainnya',
+        'D. Membuka dialog lintas tokoh berbasis tata ruang, hak kesehatan warga, serta regulasi secara adil',
+        'E. Menutup sementara kegiatan operasional rumah ibadah di lingkungan tersebut demi meredam gesekan sosial selama masa pembangunan'
       ],
-      2,
+      3,
       'Negara hadir melindungi hak konstitusional semua warga (bukan tirani mayoritas) lewat dialog & hukum objektif.',
       'Bhinneka Tunggal Ika menuntut keadilan setara dan musyawarah berkeadaban berdasar hukum tata negara, bukan tunduk pada tekanan eksklusi atau membungkam hak kelompok minoritas.',
       ''
@@ -277,13 +277,13 @@
       'Sejarah Nasional & Kemerdekaan', 'twk-hots-sejarah-konsensus-13',
       'Peristiwa perubahan tujuh kata pada Pembukaan UUD 1945 (Piagam Jakarta) pada sidang PPKI 18 Agustus 1945 demi menjaga keutuhan wilayah Indonesia bagian timur hingga hari ini mengajarkan prinsip kepemimpinan negara berupa...',
       [
-        'A. Sentralisasi kekuasaan eksekutif tanpa mempertimbangkan keberagaman daerah',
-        'B. Kesediaan berjiwa besar menomorsatukan persatuan nasional di atas kepentingan golongan',
-        'C. Pengabaian aspirasi kelompok keagamaan dalam penyusunan konstitusi',
-        'D. Penghapusan nilai ketuhanan dari seluruh norma dasar bernegara',
-        'E. Penundaan pengesahan kemerdekaan hingga seluruh negara mengakui kedaulatan'
+        'A. Sentralisasi penuh kekuasaan eksekutif tanpa mempertimbangkan aspirasi maupun keberagaman daerah kepulauan',
+        'B. Pengabaian menyeluruh terhadap suara tokoh kelompok keagamaan dalam proses penyusunan konstitusi republik',
+        'C. Penghapusan mutlak nilai-nilai ketuhanan dari seluruh norma hukum dasar penyelenggaraan negara merdeka',
+        'D. Kesediaan berjiwa besar mendahulukan persatuan nasional di atas kepentingan golongan tertentu',
+        'E. Penundaan pengesahan kemerdekaan republik hingga seluruh negara di dunia mengakui kedaulatan Indonesia'
       ],
-      1,
+      3,
       'Tokoh BPUPKI/PPKI merelakan ego golongan demi persatuan seluruh Nusantara (Sila ke-3).',
       'Kesepakatan 18 Agustus 1945 merupakan kompromi luhur pendiri bangsa (Moh. Hatta, Ki Bagus Hadikusumo, Teuku M. Hasan, dll.) yang mengutamakan persatuan NKRI sambil tetap menjunjung Ketuhanan Yang Maha Esa.',
       ''
@@ -292,11 +292,11 @@
       'Pilar Negara - UUD 1945', 'twk-hots-apbn-bpk-14',
       'Jika Rancangan APBN yang diajukan Presiden tidak disetujui oleh DPR sebelum tahun anggaran baru dimulai, sekaligus ditemukan indikasi penyimpangan dana kementerian pada tahun berjalan, langkah konstitusional menurut Pasal 23 dan 23E UUD NRI 1945 yang benar adalah...',
       [
-        'A. Pemerintah otomatis berhenti beroperasi total sampai DPR mengesahkan APBN baru; audit dilakukan oleh DPR sendiri',
-        'B. Pemerintah menjalankan APBN tahun yang lalu; pemeriksaan pengelolaan tanggung jawab keuangan negara dilakukan oleh BPK untuk diserahkan ke DPR, DPD, dan DPRD',
-        'C. Presiden langsung menerbitkan PP APBN darurat tanpa persetujuan DPR; BPKP menjatuhkan vonis pidana',
-        'D. Menteri Keuangan meminjam dana darurat tanpa batas dari bank komersial; hasil audit dirahasiakan dari publik',
-        'E. DPD menggantikan fungsi DPR mengesahkan APBN, sementara MK mengaudit kas negara'
+        'A. Pemerintah otomatis berhenti beroperasi total sampai DPR mengesahkan Rancangan APBN baru; pemeriksaan anggaran dilakukan mandiri oleh fraksi DPR',
+        'B. Pemerintah menjalankan APBN tahun lalu; audit dilakukan BPK dan diserahkan kepada DPR, DPD, serta DPRD',
+        'C. Presiden langsung menerbitkan Peraturan Pemerintah tentang APBN darurat tanpa persetujuan DPR; BPKP langsung menjatuhkan putusan pidana pejabat',
+        'D. Menteri Keuangan langsung meminjam dana talangan tanpa batas dari bank komersial; laporan hasil pemeriksaan keuangan negara dirahasiakan dari publik',
+        'E. Dewan Perwakilan Daerah menggantikan fungsi DPR mengesahkan RAPBN tahunan, sedangkan Mahkamah Konstitusi bertugas mengaudit realisasi kas negara'
       ],
       1,
       'Pasal 23 ayat (3): APBN ditolak -> pakai APBN tahun lalu! Pasal 23E: BPK audit, serahkan ke DPR, DPD, dan DPRD sesuai kewenangan.',
@@ -307,13 +307,13 @@
       'Bahasa Indonesia (EYD V & Penalaran)', 'twk-hots-paragraf-kebijakan-15',
       'Bacalah teks singkat berikut: "Indeks SPBE kementerian tahun ini melonjak ke predikat Sangat Baik, namun tingkat keluhan warga terhadap antrean tatap muka tetap tinggi. Hal ini mengindikasikan banyak aplikasi dibangun hanya untuk memenuhi skor administratif, bukan memangkas kerumitan proses bisnis warga." Simpulan yang paling tepat dan logis atas teks tersebut adalah...',
       [
-        'A. Skor SPBE yang tinggi selalu menjamin kepuasan warga meningkat otomatis',
-        'B. Perlu penyelarasan pembangunan sistem digital dengan penyederhanaan proses bisnis nyata yang dirasakan masyarakat',
-        'C. Seluruh layanan tatap muka harus dihapus besok agar keluhan warga langsung nol',
-        'D. Penilaian indeks SPBE tidak memerlukan integrasi data antarunit',
-        'E. Warga belum mampu menggunakan gawai sehingga antrean fisik tidak perlu ditata'
+        'A. Capaian skor SPBE tinggi secara otomatis selalu menjamin kepuasan pengguna layanan tatap muka langsung meningkat tajam',
+        'B. Seluruh loket pelayanan tatap muka instansi wajib dihapuskan segera agar jumlah keluhan antrean warga menurun menjadi nol',
+        'C. Penyelarasan pembangunan aplikasi digital dengan penyederhanaan proses bisnis layanan nyata warga',
+        'D. Instrumen penilaian indeks SPBE nasional tidak memerlukan pertukaran maupun integrasi basis data lintas unit kerja instansi',
+        'E. Mayoritas warga belum terbiasa memakai gawai pintar sehingga penataan proses antrean fisik tatap muka tidak perlu dipikirkan'
       ],
-      1,
+      2,
       'Fokus pada jurang antara "skor administratif" vs "proses bisnis warga" — hindari kesimpulan ekstrem ("hapus semua/selalu").',
       'Premis utama menyoroti ketimpangan antara skor teknis-administratif dengan pengalaman layanan warga, sehingga kesimpulan logis yang menjawab masalahnya adalah perbaikan proses bisnis agar digitalisasi berdampak nyata.',
       ''
@@ -340,11 +340,11 @@
       'Figural - Jaring-jaring Kubus', 'tiu-hots-figural-kubus-02',
       'Jika jaring-jaring pada gambar dilipat membentuk kubus tertutup dengan seluruh simbol berada di sisi luar, pernyataan mana yang PASTI SALAH mengenai dua sisi yang saling bersebelahan?',
       [
-        'A. Sisi ▲ bersebelahan dengan sisi ●',
+        'A. Sisi ▲ bersebelahan dengan sisi ● pada sisi tengah',
         'B. Sisi ▲ berhadapan langsung dengan sisi ★ dan TIDAK mungkin bersebelahan',
-        'C. Sisi ■ berhadapan langsung dengan sisi ● dan TIDAK mungkin bersebelahan',
-        'D. Sisi ◆ berhadapan dengan sisi ●',
-        'E. Sisi ■ berhadapan langsung dengan sisi ✖'
+        'C. Sisi ■ berhadapan langsung dengan sisi ●',
+        'D. Sisi ◆ berhadapan dengan sisi ● secara berlawanan',
+        'E. Sisi ■ berhadapan langsung dengan sisi ✖ pada jaring'
       ],
       2,
       'Pasangan berhadapan (lompat 1 kotak lurus): (▲, ★), (■, ✖), (●, ◆)! Jadi ■ bersebelahan dengan ● (BUKAN berhadapan).',
@@ -372,8 +372,8 @@
       [
         'A. Batang panjang vertikal di kanan, kaki pendek ke kanan atas, titik kuning di kanan bawah',
         'B. Batang panjang horizontal di sisi atas, kaki pendek mengarah ke bawah kanan, titik kuning di kiri atas',
-        'C. Batang panjang rebah horizontal di sisi BAWAH dengan kaki pendek mengarah ke ATAS di sisi KIRI, dan titik kuning di ujung KANAN BAWAH',
-        'D. Tetap tegak menghadap kanan seperti posisi awal dengan titik kuning di kiri atas',
+        'C. Batang panjang rebah di BAWAH, kaki ke ATAS di KIRI, dan titik kuning di KANAN BAWAH',
+        'D. Tetap tegak menghadap kanan persis posisi semula dengan titik kuning di sudut kiri atas',
         'E. Batang panjang horizontal di sisi BAWAH dengan kaki pendek mengarah ke BAWAH di sisi kanan dan titik kuning di kiri'
       ],
       2,
@@ -506,10 +506,10 @@
       'DOKTER : STETOSKOP : DIAGNOSIS = ... : ... : ...',
       [
         'A. AUDITOR : KERTAS KERJA : OPINI',
-        'B. PETANI : SAWAH : HAMA',
-        'C. HAKIM : PENJARA : POLISI',
-        'D. GURU : MURID : SEKOLAH',
-        'E. ARSITEK : SEMEN : RUMAH'
+        'B. PETANI : BAJAK SAWAH : HAMA PADI',
+        'C. HAKIM : RUANG SIDANG : PENJARA',
+        'D. GURU : MODUL AJAR : GEDUNG SEKOLAH',
+        'E. ARSITEK : SEMEN COR : RUMAH KOTA'
       ],
       0,
       'Pola: Profesi + Alat/Instrumen Kerja Utama + Keluaran Evaluatif (Opini/Diagnosis)!',
@@ -535,11 +535,11 @@
       'Numerik - Ketimpangan Ganda & Persen', 'tiu-hots-diskon-bertingkat-15',
       'Harga awal komputer instansi dinaikkan 25% karena penyesuaian komponen, lalu saat negosiasi e-Katalog mendapat diskon berjenjang 20%. Bagaimana harga akhir dibandingkan harga awal sebelum naik?',
       [
-        'A. Kembali persis sama (100% harga awal)',
-        'B. Lebih mahal 5% dari harga awal',
-        'C. Lebih murah 5% dari harga awal',
-        'D. Lebih mahal 2,5% dari harga awal',
-        'E. Lebih murah 10% dari harga awal'
+        'A. Kembali persis sama (100%)',
+        'B. Lebih mahal 5% dari harga sebelum naik',
+        'C. Lebih murah 5% dari harga sebelum naik',
+        'D. Lebih mahal 2,5% dari harga awal barang',
+        'E. Lebih murah 10% dari harga awal barang'
       ],
       0,
       'Uji angka 100 -> naik 25% = 125 -> diskon 20% = 125 - (20% × 125 = 25) = 100! Persis sama!',
@@ -554,137 +554,137 @@
       'Pelayanan Publik', 'tkp-hots-medsos-komplain-01',
       'Sistem antrean online puskesmas/kantor layanan mendadak macet karena lonjakan akses pagi hari, sementara seorang warga sudah merekam situasi dan mengunggah keluhan tajam ke media sosial yang mulai ramai dikomentari. Sikap Anda di loket layanan adalah...',
       [
-        'A. Mengaktifkan antrean cadangan manual/QR lokal segera, melayani pemohon dengan tenang, menginformasikan estimasi pemulihan, dan melaporkan insiden ke tim TI untuk rilis klarifikasi resmi',
-        'B. Memberikan pelayanan manual sambil meminta warga tersebut menghapus video sebelum berkasnya diproses agar tidak mengganggu suasana',
-        'C. Meminta maaf secara sopan dengan layanan manual sementara dan mengarahkan semua pertanyaan teknis kepada petugas TI',
-        'D. Fokus mengamankan data di ruang belakang terlebih dahulu sampai sistem pulih total baru membuka loket lagi',
-        'E. Menenangkan warga secara lisan dan berjanji keluhan antrean akan disampaikan dalam rapat evaluasi bulanan'
+        'A. Memberikan pelayanan manual sambil meminta warga tersebut menghapus rekaman videonya lebih dulu sebelum berkas permohonannya diproses lebih lanjut di loket',
+        'B. Menenangkan warga secara lisan sambil meyakinkan bahwa segala keluhan antrean sistem pasti akan dilaporkan dalam rapat evaluasi rutin akhir bulan',
+        'C. Aktifkan antrean manual segera, layani pemohon tenang, beri estimasi pulih, dan lapor TI untuk klarifikasi resmi',
+        'D. Mengutamakan pengamanan data di ruang belakang kantor dahulu sampai seluruh jaringan aplikasi pulih total sebelum kembali membuka layanan loket umum',
+        'E. Meminta maaf secara sopan dengan menyediakan layanan manual sementara lalu mengarahkan seluruh pertanyaan teknis warga kepada petugas meja informasi'
       ],
-      [5, 1, 4, 2, 3],
+      [1, 3, 5, 2, 4],
       'Pelayanan publik prima saat krisis: solusi kontingensi langsung + transparansi informasi + eskalasi teknis tanpa mengancam warga.',
-      'A (5) langsung memberi solusi riil di lapangan, menjaga ketenangan informasi, dan eskalasi resmi. C (4) masih solutif namun pasif soal eskalasi. E (3) kurang cepat, D (2) menghentikan layanan, B (1) bersifat transaksional/menekan warga.'
+      'C (5) langsung memberi solusi riil di lapangan, menjaga ketenangan informasi, dan eskalasi resmi. E (4) masih solutif namun pasif soal eskalasi. B (3) kurang cepat, D (2) menghentikan layanan, A (1) bersifat transaksional/menekan warga.'
     ],
     [
       'Teknologi Informasi dan Komunikasi (TIK)', 'tkp-hots-senior-resisten-02',
       'Instansi Anda beralih ke aplikasi persuratan digital terpadu (SRIKANDI), namun beberapa pegawai senior kewalahan sehingga tetap mengantar berkas kertas yang memperlambat disposisi unit. Sikap paling tepat yang Anda lakukan adalah...',
       [
-        'A. Mengusulkan jadwal mentoring singkat 15 menit per minggu dengan panduan visual sederhana dan mendampingi mereka langsung saat memproses dokumen pertama kali',
-        'B. Membuatkan ringkasan panduan PDF lalu mengirimkannya ke grup chat kantor untuk dipelajari masing-masing',
-        'C. Menolak tegas seluruh berkas kertas tanpa pengecualian sejak hari pertama agar pegawai senior terpaksa segera belajar',
-        'D. Tetap menerima berkas kertas mereka lalu Anda ketik ulang seluruh surat mereka diam-diam agar target unit selesai',
-        'E. Melaporkan keterlambatan pegawai senior tersebut langsung kepada pimpinan agar segera diberi teguran kinerja'
+        'A. Menolak tegas seluruh berkas kertas tanpa pengecualian apa pun sejak hari pertama penerapan sistem agar pegawai senior terdorong segera belajar mandiri',
+        'B. Mengadakan mentoring 15 menit/pekan dengan panduan ringkas dan mendampingi saat memproses surat pertama kali',
+        'C. Membuatkan ringkasan panduan penggunaan format PDF lalu mengirimkannya ke grup pesan resmi kantor untuk dipelajari oleh masing-masing pegawai',
+        'D. Tetap menerima seluruh berkas kertas mereka lalu Anda ketik ulang isi suratnya diam-diam di sistem agar target penyelesaian unit kerja tetap aman',
+        'E. Melaporkan keterlambatan adaptasi pegawai senior tersebut langsung kepada pimpinan unit kerja agar segera diberikan surat teguran disiplin kinerja'
       ],
-      [5, 4, 2, 3, 1],
+      [2, 5, 4, 3, 1],
       'Adaptif + Kolaboratif: ajarkan berdaya (enablement), bukan mengerjakan terus-menerus atau menolak kaku/menghukum langsung.',
-      'A (5) membangun kapasitas tim berkelanjutan dengan empati. B (4) informatif namun kurang pendampingan aktif. D (3) menjaga output sesaat tapi tidak mendidik kemandirian sistem. C (2) berisiko melumpuhkan layanan. E (1) minim empati.'
+      'B (5) membangun kapasitas tim berkelanjutan dengan empati. C (4) informatif namun kurang pendampingan aktif. D (3) menjaga output sesaat tapi tidak mendidik kemandirian sistem. A (2) berisiko melumpuhkan layanan. E (1) minim empati.'
     ],
     [
       'Anti Radikalisme', 'tkp-hots-wa-intoleran-03',
       'Di grup WhatsApp tidak resmi pegawai, seorang rekan mulai rutin membagikan artikel provokatif bernada menyudutkan kelompok warga tertentu dan menyindir kebijakan moderasi beragama instansi. Banyak anggota memilih diam karena rekan tersebut cukup vokal. Tindakan Anda...',
       [
-        'A. Mengingatkan secara objektif dan santun etika netralitas ASN serta UU ITE lewat pesan pribadi/grup dengan rujukan resmi, serta melaporkan ke atasan/PPK bila terus berulang',
-        'B. Membagikan pengumuman etika ASN secara umum di grup tanpa menyinggung langsung pesan rekan tersebut agar mereda perlahan',
-        'C. Keluar diam-diam dari grup WhatsApp tersebut agar tidak ikut terseret masalah disiplin ASN',
-        'D. Membalas dengan argumen emosional di grup hingga terjadi perdebatan panjang guna membuktikan kekeliruannya',
-        'E. Ikut menyukai unggahan rekan tersebut sekadar menjaga keakraban agar tidak dikucilkan di kantor'
+        'A. Membagikan pengumuman aturan etika ASN secara umum di grup kantor tanpa menyinggung langsung pesan rekan tersebut agar suasana mereda perlahan',
+        'B. Keluar diam-diam dari grup percakapan tersebut agar nama pribadi Anda tidak ikut terseret pemeriksaan pelanggaran disiplin ASN di kemudian hari',
+        'C. Membalas dengan argumen keras penuh emosi di grup hingga memicu perdebatan berkepanjangan guna membuktikan ketidaktepatan pendapat pribadinya',
+        'D. Mengingatkan etika netralitas ASN secara santun berbasis aturan resmi dan melapor ke atasan bila berulang',
+        'E. Ikut menekan tanda suka pada unggahan rekan tersebut sekadar menjaga keakraban pergaulan kerja agar Anda tidak dikucilkan rekan seruangan'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 5, 1],
       'Anti-radikalisme ASN: berani meluruskan dengan elegan berbasis netralitas & regulasi, bukan ikut menyebarkan atau membiarkan api konflik.',
-      'A (5) tegas menjaga ideologi Pancasila & etika ASN dengan cara konstruktif serta terukur. B (4) persuasif namun kurang menargetkan penghentian perilaku. C (3) menghindari risiko pribadi tanpa mencegah penyebaran di unit. D (2) kontra-produktif. E (1) memfasilitasi intoleransi.'
+      'D (5) tegas menjaga ideologi Pancasila & etika ASN dengan cara konstruktif serta terukur. A (4) persuasif namun kurang menargetkan penghentian perilaku. B (3) menghindari risiko pribadi tanpa mencegah penyebaran di unit. C (2) kontra-produktif. E (1) memfasilitasi intoleransi.'
     ],
     [
       'Profesionalisme', 'tkp-hots-deadline-integritas-04',
       'Anda menjadi ketua tim penyusunan laporan anggaran akhir tahun. Pada H-1 batas waktu penyerahan, Anda menemukan kekeliruan hitung pada lampiran satu sub-bagian yang jika direvisi butuh lembur 4 jam, padahal rekan lain mengusulkan membiarkan dulu agar tepat waktu. Pilihan Anda...',
       [
-        'A. Mengajak tim langsung membagi pos pengecekan untuk memperbaiki hitungan hingga tuntas malam ini sambil mengabarkan atasan tentang status finalisasi agar akurat 100%',
-        'B. Memperbaiki sendiri bagian penting saja sampai larut malam tanpa merepotkan rekan lain agar cepat selesai',
-        'C. Mengirimkan laporan sesuai tenggat lalu menyisipkan catatan kaki bahwa lampiran masih dalam tahap verifikasi lanjutan',
-        'D. Menyerahkan laporan apa adanya sambil menyiapkan draf perbaikan terpisah keesokan harinya bila diminta inspektorat',
-        'E. Menyetujui usulan rekan membiarkannya karena angkanya hanya selisih kecil pada lampiran pendukung'
+        'A. Memperbaiki sendiri bagian lampiran penting sampai larut malam tanpa merepotkan anggota tim lain agar berkas bisa segera dikirim sesuai jadwal',
+        'B. Mengirimkan laporan sesuai tenggat waktu terlebih dahulu lalu menyisipkan catatan kaki bahwa angka lampiran masih dalam tahap verifikasi lanjutan',
+        'C. Menyerahkan berkas laporan apa adanya malam ini sambil diam-diam menyiapkan draf perbaikan terpisah keesokan harinya apabila diminta inspektorat',
+        'D. Menyetujui usulan rekan membiarkan kekeliruan hitungan itu karena angkanya hanya selisih kecil pada salah satu lembar lampiran pendukung anggaran',
+        'E. Membagi tim memeriksa dan memperbaiki hitungan hingga tuntas malam ini sambil mengabarkan atasan tentang finalisasi'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 1, 5],
       'Akuntabel + Kompeten: kualitas data akurat tidak boleh dikorbankan demi kecepatan semu; ajak kolaborasi tim!',
-      'A (5) menggabungkan ketuntasan akuntabilitas, koordinasi pimpinan, dan kerja tim. B (4) akuntabel namun tidak memberdayakan tim. C (3) transparan namun belum menuntaskan kewajiban utama. D (2) dan E (1) menurunkan integritas pelaporan.'
+      'E (5) menggabungkan ketuntasan akuntabilitas, koordinasi pimpinan, dan kerja tim. A (4) akuntabel namun tidak memberdayakan tim. B (3) transparan namun belum menuntaskan kewajiban utama. C (2) dan D (1) menurunkan integritas pelaporan.'
     ],
     [
       'Jejaring Kerja', 'tkp-hots-lintas-opd-05',
       'Anda ditunjuk sebagai penghubung program penurunan stunting terpadu antar 4 instansi/OPD berbeda. Pada rapat perdana, masing-masing perwakilan bersikukuh bahwa data dan anggaran mereka adalah yang paling valid sehingga pembagian tugas macet. Langkah Anda...',
       [
-        'A. Mengalihkan fokus rapat ke sasaran warga terdampak yang sama, menyamakan definisi indikator inti, lalu memfasilitasi pemetaan kontribusi nyata tiap OPD berdasarkan kewenangan masing-masing',
-        'B. Meminta waktu jeda lalu menyusun usulan pembagian tugas tertulis berdasarkan aturan induk untuk dibahas kembali minggu depan',
-        'C. Menyerahkan sepenuhnya keputusan pembagian tugas kepada pimpinan daerah karena semua instansi setara jabatannya',
-        'D. Menggunakan data instansi Anda sebagai patokan utama terlebih dahulu agar pekerjaan segera berjalan',
-        'E. Membiarkan tiap OPD menjalankan program sendiri-sendiri lalu hasilnya saja yang digabungkan di akhir tahun'
+        'A. Mengarahkan rapat ke sasaran warga terdampak, menyamakan indikator inti, dan memetakan peran tiap OPD sesuai kewenangan',
+        'B. Meminta waktu jeda pertemuan beberapa hari lalu menyusun usulan pembagian tugas tertulis berdasarkan aturan induk untuk dibahas kembali pekan depan',
+        'C. Menyerahkan sepenuhnya keputusan pembagian tugas operasional kepada pimpinan daerah karena keempat instansi tersebut memiliki kedudukan setara',
+        'D. Menetapkan data milik instansi Anda sebagai patokan utama sementara terlebih dahulu agar seluruh pekerjaan lapangan antarinstansi dapat segera berjalan',
+        'E. Membiarkan masing-masing OPD menjalankan program kerja lapangan sendiri-sendiri lalu angka laporannya saja yang digabungkan di akhir tahun anggaran'
       ],
       [5, 4, 3, 2, 1],
       'Jejaring kerja lintas sektor: kembalikan ke outcome bersama (warga), samakan standar, lalu petakan peran objektif!',
-      'A (5) efektif memecah ego sektoral dengan orientasi dampak nyata dan pembagian peran adil. B (4) terstruktur namun tertunda seminggu. C (3) melempar eskalasi tanpa fasilitasi solusi. D (2) memicu resistensi. E (1) mengagalkan konvergensi.'
+      'A (5) efektif memecah ego sektoral dengan orientasi dampak nyata dan pembagian peran adil. B (4) terstruktur namun tertunda seminggu. C (3) melempar eskalasi tanpa fasilitasi solusi. D (2) memicu resistensi. E (1) menggagalkan konvergensi.'
     ],
     [
       'Sosial Budaya', 'tkp-hots-adat-vs-sop-06',
       'Anda ditugaskan memimpin verifikasi bantuan sosial di wilayah dengan adat musyawarah tokoh setempat yang kuat. Tokoh desa menghendaki daftar penerima disepakati di balai adat meski sebagian belum memenuhi kriteria miskin objektif sesuai pedoman resmi. Sikap Anda...',
       [
-        'A. Menghadiri pertemuan adat dengan santun, menjelaskan secara terbuka indikator objektif pedoman resmi bersama tokoh masyarakat agar kesepakatan musyawarah selaras dan bebas temuan hukum',
-        'B. Mempersilakan tokoh adat menyusun daftar usulan terlebih dahulu, lalu menapisnya diam-diam di kantor agar tidak berdebat di balai desa',
-        'C. Membagikan berkas persyaratan ke perangkat desa dan meminta mereka menjelaskannya sendiri kepada tokoh masyarakat',
-        'D. Menolak undangan pertemuan adat dan langsung memverifikasi pintu ke pintu tanpa pemberitahuan tokoh lokal',
-        'E. Mengikuti daftar tokoh adat seluruhnya sebagai bentuk penghormatan kearifan lokal agar kegiatan aman'
+        'A. Mempersilakan tokoh adat menyusun daftar usulan terlebih dahulu secara lengkap, lalu menapisnya diam-diam di kantor agar terhindar dari perdebatan terbuka',
+        'B. Menghadiri musyawarah adat dengan santun dan menjelaskan indikator objektif pedoman resmi agar kesepakatan bebas temuan hukum',
+        'C. Membagikan salinan berkas persyaratan teknis ke perangkat desa setempat dan meminta mereka menjelaskannya sendiri kepada para tokoh masyarakat desa',
+        'D. Menolak undangan pertemuan balai adat secara tegas dan langsung melakukan verifikasi rumah ke rumah tanpa memberitahukan pengurus tokoh lokal',
+        'E. Mengikuti seluruh daftar usulan tokoh adat setempat tanpa perubahan apa pun sebagai wujud penghormatan tinggi terhadap kearifan lokal masyarakat'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 5, 3, 2, 1],
       'Harmonis + Akuntabel: rangkul kearifan lokal tanpa melanggar SOP/kriteria objektif negara!',
-      'A (5) memadukan kecerdasan budaya/komunikasi empatik dan kepatuhan regulasi secara transparan. B (4) patuh aturan tapi kurang terbuka. C (3) menghindari komunikasi langsung. D (2) kaku dan berpotensi menimbulkan penolakan. E (1) berisiko salah sasaran dan temuan audit.'
+      'B (5) memadukan kecerdasan budaya/komunikasi empatik dan kepatuhan regulasi secara transparan. A (4) patuh aturan tapi kurang terbuka. C (3) menghindari komunikasi langsung. D (2) kaku dan berpotensi menimbulkan penolakan. E (1) berisiko salah sasaran dan temuan audit.'
     ],
     [
       'Pelayanan Publik', 'tkp-hots-disabilitas-akses-07',
       'Kantor Anda melayani ratusan pemohon harian, namun jalur pemandu dan formulir khusus penyandang disabilitas netra belum tersedia memadai saat seorang pemohon tunanetra datang seorang diri mengurus izin. Sikap Anda...',
       [
-        'A. Mendampingi pemohon dengan ramah membacakan formulir secara akurat tanpa memaksa, menuntaskan permohonan prioritasnya, lalu mengusulkan pengadaan formulir aksesibel/audio kepada pimpinan',
-        'B. Memprioritaskan antrean pemohon tersebut di loket depan dan membantunya mengisi formulir hingga selesai',
-        'C. Meminta petugas keamanan mencarikan kursi terdekat agar pemohon menunggu hingga ada pendamping keluarganya yang datang',
-        'D. Menerima berkasnya dulu namun menyarankan pengisian rincian dilanjutkan di rumah bersama kerabatnya',
-        'E. Meminta maaf bahwa kantor belum memiliki fasilitas khusus disabilitas sehingga memohon agar kembali lain hari'
+        'A. Memprioritaskan nomor antrean pemohon tersebut di loket pelayanan depan lalu membantunya mengisikan rincian formulir permohonan izin hingga selesai',
+        'B. Meminta petugas keamanan kantor mencarikan kursi tunggu terdekat agar pemohon menunggu dengan nyaman hingga ada pendamping keluarganya yang datang',
+        'C. Mendampingi membaca formulir ramah, menuntaskan izin prioritasnya, lalu mengusulkan pengadaan formulir aksesibel ke pimpinan',
+        'D. Menerima berkas permohonannya dahulu hari ini namun menyarankan pengisian rincian lanjutan dikerjakan di rumah bersama anggota kerabat terdekatnya',
+        'E. Memohon maaf dengan sopan bahwa gedung kantor belum memiliki fasilitas layanan disabilitas khusus sehingga menyarankan agar kembali pada hari lain'
       ],
-      [5, 4, 3, 2, 1],
-      'Layanan inklusif + perbaikan sistemik: tangani kebutuhan individu saat itu AND dorong perbaikan fasilitas kantor!',
-      'A (5) tuntas untuk layanan hari ini sekaligus memperbaiki sistem jangka panjang. B (4) melayani baik namun belum memperbaiki celah aksesibilitas. C/D (3/2) menunda layanan. E (1) diskriminatif terhadap warga.'
+      [4, 3, 5, 2, 1],
+      'Layanan inklusif + perbaikan sistemik: tangani kebutuhan individu saat itu DAN dorong perbaikan fasilitas kantor!',
+      'C (5) tuntas untuk layanan hari ini sekaligus memperbaiki sistem jangka panjang. A (4) melayani baik namun belum memperbaiki celah aksesibilitas. B/D (3/2) menunda layanan. E (1) diskriminatif terhadap warga.'
     ],
     [
       'Profesionalisme', 'tkp-hots-mutasi-baru-08',
       'Anda baru dipindahkan ke unit kerja baru yang metode dokumentasi, ritme kerja, dan perangkat lunaknya jauh lebih kompleks dari bidang Anda sebelumnya. Pada minggu pertama Anda merasa tertinggal. Tindakan terbaik adalah...',
       [
-        'A. Membuat peta kompetensi yang belum dikuasai, memelajari SOP unit di luar jam sibuk, dan proaktif meminta umpan balik terarah dari rekan/mentor senior',
-        'B. Mengikuti alur kerja yang diberikan sambil mencatat hal-hal yang belum paham untuk ditanyakan bila rapat evaluasi',
-        'C. Berfokus pada tugas administratif ringan yang sudah dikuasai sambil menunggu jadwal diklat resmi dari SDM',
-        'D. Meminta atasan menunda pembebanan target kinerja kepada Anda selama 3 bulan masa adaptasi',
-        'E. Mengusulkan pengubahan seluruh SOP unit baru agar mirip dengan kebiasaan unit kerja lama Anda'
+        'A. Mengikuti alur kerja harian yang diberikan pimpinan unit sambil mencatat poin yang belum dipahami untuk ditanyakan saat rapat evaluasi bulanan',
+        'B. Berfokus pada penyelesaian tugas administratif ringan yang sudah dikuasai dahulu sambil menunggu jadwal diklat teknis resmi dari bagian SDM',
+        'C. Mengajukan permohonan tertulis kepada atasan langsung agar menunda pembebanan target kinerja kepada Anda selama tiga bulan masa adaptasi awal',
+        'D. Memetakan kompetensi kurang, memelajari SOP unit di luar jam sibuk, serta proaktif meminta umpan balik mentor senior',
+        'E. Mengusulkan perubahan menyeluruh atas standar prosedur operasional unit kerja baru agar disesuaikan dengan kebiasaan unit kerja lama Anda'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 5, 1],
       'Kompeten & Adaptif: jangan menunggu disuapi, langsung susun self-learning plan + cari mentor teknis.',
-      'A (5) menunjukkan inisiatif belajar cepat dan tanggung jawab penuh atas target unit. B (4) cukup kooperatif tapi lambat. C/D (3/2) pasif menunggu. E (1) tidak menghormati sistem kerja yang sudah berjalan.'
+      'D (5) menunjukkan inisiatif belajar cepat dan tanggung jawab penuh atas target unit. A (4) cukup kooperatif tapi lambat. B/C (3/2) pasif menunggu. E (1) tidak menghormati sistem kerja yang sudah berjalan.'
     ],
     [
       'Teknologi Informasi dan Komunikasi (TIK)', 'tkp-hots-phishing-dataleak-09',
       'Anda menerima pesan email tampak meyakinkan mengatasnamakan Admin Kepegawaian Nasional yang meminta pengisian NIP, NIK, dan kata sandi email dinas guna "pemutakhiran tunjangan kinerja", lengkap dengan tautan pendek. Banyak rekan kerja sudah bersiap mengeklik tautan tersebut. Tindakan Anda...',
       [
-        'A. Tidak mengeklik tautan, memverifikasi domain resmi pengirim ke unit SDM/TI, segera memperingatkan rekan kerja di grup internal agar tidak mengisi data, serta melaporkan insiden phishing ke tim keamanan TI',
-        'B. Mengabaikan pesan tersebut dan menghapusnya dari kotak masuk pribadi agar akun Anda tetap aman',
-        'C. Memberitahu 1-2 teman terdekat saja secara lisan supaya lebih berhati-hati terhadap tautan tersebut',
-        'D. Membuka tautannya melalui peramban mode penyamaran sekadar melihat tampilan formulirnya sebelum melapor',
-        'E. Meneruskan pesan tersebut secara langsung ke semua grup pegawai sambil menanyakan apakah itu asli atau bukan'
+        'A. Mengabaikan pesan email tersebut dan segera menghapusnya dari kotak masuk pribadi Anda supaya akun kepegawaian pribadi tetap aman dari gangguan',
+        'B. Memberitahu satu hingga dua rekan kerja terdekat saja secara lisan di ruangan supaya mereka lebih berhati-hati dan tidak mengeklik tautan itu',
+        'C. Membuka tautannya sebentar melalui peramban mode penyamaran sekadar memeriksa tampilan formulir daringnya sebelum melaporkannya ke bagian kepegawaian',
+        'D. Meneruskan pesan email tersebut secara langsung ke seluruh grup kerja pegawai sambil menanyakan kebenaran pengirimannya kepada rekan yang lain',
+        'E. Tahan klik tautan, verifikasi domain resmi pengirim ke SDM/TI, peringatkan grup internal, serta lapor insiden phishing ke TI'
       ],
-      [5, 3, 4, 2, 1],
+      [3, 4, 2, 1, 5],
       'Keamanan data ASN (UU PDP & CSIRT): jangan klik, verifikasi kanal resmi, cegah rekan jadi korban, dan eskalasi ke TI!',
-      'A (5) melindungi diri sekaligus mengamankan seluruh ekosistem pegawai. C (4) membantu terbatas. B (3) hanya aman untuk diri sendiri. D (2) berbahaya (eksploitasi browser/tracking). E (1) menyebarkan tautan phishing lebih luas!'
+      'E (5) melindungi diri sekaligus mengamankan seluruh ekosistem pegawai. B (4) membantu terbatas. A (3) hanya aman untuk diri sendiri. C (2) berbahaya (eksploitasi browser/tracking). D (1) menyebarkan tautan phishing lebih luas!'
     ],
     [
       'Anti Radikalisme', 'tkp-hots-penolakan-simbol-negara-10',
       'Dalam suatu kegiatan pembinaan kepemudaan di daerah penugasan, sebagian peserta menolak mengikuti sesi pengenalan wawasan kebangsaan dengan alasan paham tertentu yang mereka yakini melarang hormat pada simbol negara. Sikap Anda sebagai ASN pembina...',
       [
-        'A. Tetap menghormati dialog tanpa memusuhi secara pribadi, mengajak diskusi terbuka dengan pendekatan nilai persatuan, rasionalitas sejarah, serta regulasi kewarganegaraan agar mereka memahami makna simbol negara bukan penyembahan',
-        'B. Mengizinkan mereka tidak mengikuti sesi seremonial tetapi tetap mewajibkan materi pelayanan sosial masyarakat',
-        'C. Membacakan peraturan disiplin dan langsung mengeluarkan peserta tersebut dari seluruh rangkaian kegiatan pembinaan',
-        'D. Mengubah format acara menjadi diskusi santai bebas agar isu simbol negara tidak perlu dibahas sama sekali',
-        'E. Menghentikan acara sepenuhnya saat itu juga karena merasa tersinggung sebagai aparatur negara'
+        'A. Mengajak diskusi terbuka berbasis nilai persatuan, rasionalitas sejarah, serta aturan kewarganegaraan agar tidak salah paham',
+        'B. Mengizinkan mereka tidak mengikuti seluruh sesi seremonial upacara tetapi tetap mewajibkan keikutsertaan penuh pada materi pelayanan sosial warga',
+        'C. Membacakan ketentuan tata tertib pembinaan secara tegas dan langsung mengeluarkan peserta tersebut dari seluruh rangkaian kegiatan daerah hari ini',
+        'D. Mengubah format seluruh acara menjadi sesi diskusi santai bertema bebas supaya isu simbol negara maupun konstitusi tidak perlu disinggung lagi',
+        'E. Menghentikan seluruh agenda kegiatan pembinaan kepemudaan saat itu juga karena merasa sikap para peserta menyinggung kehormatan aparatur negara'
       ],
       [5, 4, 3, 2, 1],
       'Pendekatan dialogis ideologi Pancasila: tegas pada prinsip NKRI namun persuasif meluruskan salah paham konseptual.',
@@ -694,67 +694,67 @@
       'Pelayanan Publik', 'tkp-hots-pungli-oknum-11',
       'Seorang kenalan dekat menawarkan imbalan "ucapan terima kasih" uang tunai kepada Anda setelah berkas perizinannya selesai lebih cepat sesuai prosedur antrean resmi, dan menyatakan ingin mentransfer secara pribadi. Sikap Anda...',
       [
-        'A. Menolak dengan santun namun tegas, menjelaskan bahwa seluruh layanan berbiaya sesuai PNBP/retribusi resmi tanpa tip pribadi, serta mendorongnya mengisi survei kepuasan layanan secara resmi',
-        'B. Menolak uang tunai tersebut secara tegas dan langsung menyudahi percakapan agar tidak canggung',
-        'C. Mengarahkan kenalan tersebut menitipkan ucapan terima kasih berupa makanan di meja lobi umum untuk seluruh staf',
-        'D. Menerimanya sementara lalu memasukkannya ke kas sosial non-resmi ruangan pegawai',
-        'E. Menerimanya sebagai bentuk menjaga silaturahmi karena berkas memang sudah selesai secara sah'
+        'A. Menolak pemberian uang tunai tersebut secara tegas tanpa basa-basi tambahan lalu langsung menyudahi percakapan agar tidak terasa canggung di lobi',
+        'B. Menolak santun dan tegas, tegaskan tarif sesuai aturan resmi tanpa tip pribadi, serta arahkan mengisi survei kepuasan layanan',
+        'C. Mengarahkan kenalan tersebut menitipkan ucapan terima kasih berupa bingkisan makanan ringan di meja resepsionis umum untuk dinikmati seluruh staf',
+        'D. Menerima titipan transfer tersebut sementara waktu lalu segera memasukkannya ke dalam uang kas sosial non-resmi di lingkungan ruangan pegawai',
+        'E. Menerimanya dengan tulus sebagai bentuk menjaga hubungan baik silaturahmi karena proses pengurusan berkas izin memang sudah selesai secara sah'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 5, 3, 2, 1],
       'BerAKHLAK Akuntabel & Zona Integritas WBK: nol toleransi uang/hadiah layanan meski setelah proses selesai!',
-      'A (5) menolak bersih sekaligus mengedukasi masyarakat soal budaya anti-gratifikasi dan kanal evaluasi resmi. B (4) berintegritas namun kurang edukatif. C (3) masih berisiko gratifikasi layanan. D/E (2/1) melanggar etika ASN & WBK.'
+      'B (5) menolak bersih sekaligus mengedukasi masyarakat soal budaya anti-gratifikasi dan kanal evaluasi resmi. A (4) berintegritas namun kurang edukatif. C (3) masih berisiko gratifikasi layanan. D/E (2/1) melanggar etika ASN & WBK.'
     ],
     [
       'Jejaring Kerja', 'tkp-hots-konflik-mentor-rekan-12',
       'Dua rekan kunci di tim proyek strategis Anda sedang berselisih paham pribadi hingga saling tidak menyapa, akibatnya koordinasi integrasi data tersendat dua minggu sebelum peluncuran aplikasi publik. Sebagai anggota/koordinator proyek, sikap Anda...',
       [
-        'A. Mengajak keduanya berdialog secara netral di ruang terpisah fokus pada standar teknis proyek yang disepakati, menetapkan kanal serah-terima kerja tertulis yang jelas, dan memantau progres harian secara objektif',
-        'B. Menjadi perantara komunikasi bolak-balik di antara keduanya sementara waktu agar pekerjaan teknis selesai dulu',
-        'C. Meminta salah satu dari mereka mengalah di hadapan rapat tim agar masalah cepat dianggap selesai',
-        'D. Menunggu mereka berdamai sendiri sambil fokus mengerjakan porsi tugas Anda masing-masing',
-        'E. Meminta pimpinan memindahkan salah satu rekan tersebut ke tim lain segera tanpa pembicaraan awal'
+        'A. Bersedia menjadi perantara penyampai pesan bolak-balik di antara keduanya untuk sementara waktu agar pekerjaan teknis integrasi cepat selesai dulu',
+        'B. Meminta salah satu dari mereka berdua mengalah secara terbuka di hadapan rapat tim proyek agar persoalan dianggap selesai lebih cepat hari itu juga',
+        'C. Mediasi netral di ruang terpisah fokus standar proyek, tetapkan kanal serah-terima tertulis, dan pantau progres objektif',
+        'D. Menunggu kedua rekan kerja tersebut berdamai sendiri seiring berjalannya waktu sambil tetap berfokus mengerjakan bagian tugas Anda masing-masing',
+        'E. Meminta pimpinan unit segera memindahkan salah satu dari kedua rekan kerja tersebut ke tim proyek lain tanpa pembicaraan mediasi awal di kantor'
       ],
-      [5, 4, 2, 3, 1],
+      [4, 2, 5, 3, 1],
       'Kolaboratif: pisahkan konflik personal dari objektivitas proses kerja, mediasi netral fokus pada target layanan!',
-      'A (5) menyelesaikan hambatan sistem kerja sekaligus meredakan ketegangan secara adil. B (4) menolong proyek tapi melelahkan dan sementara. D (3) pasif. C (2) berisiko melukai harga diri. E (1) gegabah.'
+      'C (5) menyelesaikan hambatan sistem kerja sekaligus meredakan ketegangan secara adil. A (4) menolong proyek tapi melelahkan dan sementara. D (3) pasif. B (2) berisiko melukai harga diri. E (1) gegabah.'
     ],
     [
       'Profesionalisme', 'tkp-hots-cuti-keadaan-darurat-13',
       'Anda sudah memperoleh izin cuti keluarga jauh hari ke luar kota. Sehari sebelum keberangkatan, terjadi bencana banjir bandang di wilayah kerja instansi Anda dan pimpinan memerlukan tenaga lapangan untuk pendataan posko darurat. Sikap Anda...',
       [
-        'A. Mengonfirmasi detail kebutuhan posko kepada pimpinan; bila peran teknis Anda krusial dan belum tergantikan, bersedia menunda/menyesuaikan jadwal keberangkatan atau membantu koordinasi data jarak jauh sebelum berangkat',
-        'B. Menyampaikan rincian cadangan pegawai yang dapat menggantikan Anda terlebih dahulu sembari bersiap bila memang tetap dibutuhkan',
-        'C. Membantu merapikan seluruh berkas data awal hari ini sampai malam hari sebelum tetap berangkat cuti esok pagi',
-        'D. Mengirimkan ucapan simpati ke grup kantor sambil tetap berangkat cuti karena tiket keluarga sudah dipesan',
-        'E. Mematikan ponsel selama perjalanan cuti agar tidak terganggu urusan tugas darurat kantor'
+        'A. Menyampaikan rincian daftar pegawai cadangan yang cakap menggantikan peran Anda terlebih dahulu sambil bersiaga apabila tenaga Anda masih tetap dibutuhkan',
+        'B. Membantu merapikan seluruh berkas basis data awal warga hari ini sampai malam hari menjelang keberangkatan sebelum tetap berangkat cuti esok pagi',
+        'C. Mengirimkan pesan ucapan simpati mendalam ke grup kantor sambil tetap berangkat cuti luar kota karena tiket perjalanan keluarga sudah dipesan jauh hari',
+        'D. Konfirmasi kebutuhan posko ke pimpinan; jika peran krusial tak tergantikan, sesuaikan jadwal atau bantu data jarak jauh dahulu',
+        'E. Menonaktifkan sementara telepon seluler selama masa perjalanan cuti keluarga agar waktu istirahat bersama tidak terganggu urusan tugas darurat kantor'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 5, 1],
       'Loyal & Adaptif pada situasi krisis kemanusiaan: utamakan kepentingan darurat publik/keselamatan secara komunikatif.',
-      'A (5) menunjukkan jiwa pengabdian ASN tinggi dalam kondisi bencana tanpa menutup komunikasi. B (4) kolaboratif menyiapkan backup. C (3) membantu sebagian. D/E (2/1) abai terhadap kondisi kedaruratan publik.'
+      'D (5) menunjukkan jiwa pengabdian ASN tinggi dalam kondisi bencana tanpa menutup komunikasi. A (4) kolaboratif menyiapkan backup. B (3) membantu sebagian. C/E (2/1) abai terhadap kondisi kedaruratan publik.'
     ],
     [
       'Sosial Budaya', 'tkp-hots-penempatan-daerah-3t-14',
       'Setelah dinyatakan lulus CPNS, Anda ditempatkan di unit pelayanan wilayah kepulauan dengan akses internet terbatas dan bahasa daerah yang sangat berbeda dari daerah asal Anda. Langkah adaptasi paling efektif di bulan pertama...',
       [
-        'A. Mengamati kebiasaan serta tata krama lokal dengan rendah hati, mempelajari kosakata layanan harian bahasa setempat bersama rekan lokal, dan menyesuaikan cara penyuluhan agar mudah dipahami warga',
-        'B. Bekerja profesional menggunakan Bahasa Indonesia baku secara penuh sambil perlahan menyesuaikan ritme lingkungan',
-        'C. Berkoordinasi terutama dengan sesama pegawai perantau agar meminimalkan kesalahpahaman budaya',
-        'D. Menyarankan langsung perombakan sistem kantor agar persis sama dengan kota besar asal Anda',
-        'E. Memfokuskan diri bekerja di balik meja saja sambil mengajukan rencana pindah tugas di akhir masa percobaan'
+        'A. Bekerja profesional memakai Bahasa Indonesia baku secara konsisten sambil perlahan-lahan menyesuaikan diri dengan ritme sosial lingkungan kerja baru',
+        'B. Membangun koordinasi harian terutama dengan sesama pegawai perantau dari daerah lain guna meminimalkan potensi kesalahpahaman komunikasi budaya',
+        'C. Menyarankan langsung perombakan sistem tata kerja kantor agar disamakan persis dengan standar layanan di kota besar asal kelahiran Anda sebelumnya',
+        'D. Memfokuskan diri bekerja di balik meja administrasi kantor saja sambil menyiapkan rencana pengajuan pindah penugasan di akhir masa percobaan CPNS',
+        'E. Mengamati adat lokal dengan rendah hati, belajar kosakata layanan setempat bersama rekan, dan menyesuaikan gaya penyuluhan'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 1, 5],
       'Harmonis dalam kebinekaan Nusantara: pelajari bahasa & kearifan setempat agar pelayanan berdampak nyata!',
-      'A (5) mencerminkan adaptasi lintas budaya aktif dan empati sosial tinggi. B (4) sopan tetapi kurang merangkul kedekatan budaya lokal. C (3) membentuk eksklusivitas. D/E (2/1) resisten terhadap konteks penugasan.'
+      'E (5) mencerminkan adaptasi lintas budaya aktif dan empati sosial tinggi. A (4) sopan tetapi kurang merangkul kedekatan budaya lokal. B (3) membentuk eksklusivitas. C/D (2/1) resisten terhadap konteks penugasan.'
     ],
     [
       'Teknologi Informasi dan Komunikasi (TIK)', 'tkp-hots-inovasi-otomatisasi-15',
       'Anda melihat petugas rekap laporan harian di unit masih menyalin manual data dari 15 berkas Excel berbeda selama 3 jam setiap hari dan kerap memicu salah ketik. Pimpinan belum menganggarkan pembelian aplikasi mahal. Inisiatif TIK terbaik Anda...',
       [
-        'A. Merancang templat terpadu gratis menggunakan fitur validasi otomatis/Power Query atau skrip internal aman yang disetujui atasan dan melatih tim menggunakannya',
-        'B. Membuatkan ringkasan makro/rumus sederhana untuk dipakai sendiri dulu lalu dibagikan bila ada yang bertanya',
-        'C. Mengajukan proposal pengadaan software vendor bernilai ratusan juta untuk anggaran tahun berikutnya',
-        'D. Membuat daftar checklist pengecekan ganda manual agar kesalahan salah ketik rekan kerja berkurang',
-        'E. Membiarkan alur lama berjalan karena perubahan format Excel bukan menjadi tugas pokok resmi Anda'
+        'A. Merancang templat validasi otomatis atau skrip internal aman berizin atasan serta melatih tim memakainya',
+        'B. Membuatkan ringkasan makro atau rumus sederhana untuk dipakai mempercepat pekerjaan sendiri dulu lalu dibagikan bila ada rekan yang menanyakan',
+        'C. Menyusun dan mengajukan proposal pengadaan perangkat lunak vendor eksternal bernilai ratusan juta rupiah untuk masuk usulan anggaran tahun depan',
+        'D. Membuat daftar periksa verifikasi ganda secara manual harian agar risiko kesalahan pengetikan rekan kerja di unit dapat ditekan sedikit demi sedikit',
+        'E. Membiarkan alur kerja penyalinan manual berjalan seperti biasanya karena perubahan format rekap Excel bukan menjadi uraian tugas pokok resmi Anda'
       ],
       [5, 4, 3, 2, 1],
       'Inovasi TIK berdampak & efisien biaya: manfaatkan tools yang ada + libatkan persetujuan atasan + latih tim!',

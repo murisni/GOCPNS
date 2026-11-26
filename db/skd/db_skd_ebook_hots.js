@@ -26,11 +26,11 @@
       'TWK HOTS - Konstitusi & Tata Negara', 'twk56-konstitusi', 'SKD-TWK-X5601',
       'Indonesia pernah mempraktikkan Konstitusi RIS (Desember 1949–Agustus 1950) dan UUDS 1950 dengan banyak pergantian kabinet, termasuk era Kabinet Natsir hingga Dekret Presiden 5 Juli 1959. Perbedaan paling mendasar pada era Konstitusi RIS terhadap desain UUD NRI 1945 pasca-amandemen adalah...',
       [
-        'A. Kepala negara dipegang oleh perdana menteri sementara parlemen tidak punya hak angket',
-        'B. Bentuk negara berubah sementara menjadi serikat (federal) dengan negara-negara bagian',
-        'C. Mahkamah Konstitusi dibubarkan dan digantikan seluruhnya oleh Dewan Konstituante',
-        'D. Wilayah Indonesia kembali terbatas pada garis Van Mook tanpa mengakui kedaulatan laut',
-        'E. Sistem ekonomi pasal 33 dihapuskan guna memenuhi seluruh syarat perjanjian KMB'
+        'A. Kepala negara dijabat perdana menteri sementara DPR periode transisi tidak memiliki hak interpelasi atau hak angket',
+        'B. Bentuk negara berubah sementara menjadi serikat (federal) dengan negara bagian',
+        'C. Mahkamah Konstitusi dibubarkan dan fungsinya digantikan seluruhnya oleh majelis Dewan Konstituante',
+        'D. Wilayah Indonesia dibatasi kembali hanya pada garis Van Mook tanpa mengakui kedaulatan perairan antarpulau',
+        'E. Ketentuan ekonomi kerakyatan pasal 33 dihapuskan sementara guna memenuhi seluruh syarat perjanjian Konferensi Meja Bundar'
       ],
       1,
       'Pembeda khas RIS (1949–1950) vs UUD 1945 = bentuk negara FEDERAL (serikat), sedangkan UUD 1945 tetap negara KESATUAN (Pasal 1 ayat 1).',
@@ -41,13 +41,13 @@
       'TWK HOTS - Konstitusi & Tata Negara', 'twk56-konstitusi', 'SKD-TWK-X5602',
       'Sebelum Amandemen UUD 1945, naskah "Penjelasan UUD 1945" sering dijadikan rujukan penafsiran pasal, seperti istilah negara berdasar atas hukum (rechtsstaat). Namun pasca-Amandemen IV tahun 2002 melalui Pasal II Aturan Tambahan, kedudukan hukum Penjelasan UUD 1945 tersebut adalah...',
       [
-        'A. Tetap menjadi hukum tertinggi setingkat Pembukaan yang tidak boleh diubah siapa pun',
-        'B. Tidak lagi menjadi bagian naskah UUD yang memiliki kekuatan hukum mengikat karena muatan pentingnya telah dimasukkan ke pasal-pasal',
-        'C. Ditingkatkan statusnya menjadi Ketetapan MPR yang wajib diuji oleh Mahkamah Agung setiap tahun',
-        'D. Digunakan khusus untuk menyelesaikan sengketa kewenangan antara Presiden dan DPRD Provinsi',
-        'E. Berlaku hanya apabila DPR dan DPD gagal mencapai kuorum pembahasan Rancangan Undang-Undang'
+        'A. Tetap menjadi hukum tertinggi setingkat Pembukaan yang tidak boleh diubah siapa pun dalam sidang parlemen',
+        'B. Ditingkatkan statusnya menjadi Ketetapan MPR yang wajib diuji oleh Mahkamah Agung secara rutin setiap tahun',
+        'C. Digunakan khusus untuk menyelesaikan sengketa kewenangan konstitusional antara Presiden dan DPRD Provinsi',
+        'D. Tidak lagi bagian mengikat UUD karena muatan pentingnya telah masuk ke dalam pasal-pasal',
+        'E. Berlaku hanya apabila DPR dan DPD gagal mencapai kuorum dalam pembahasan Rancangan Undang-Undang prioritas'
       ],
-      1,
+      3,
       'Pasal II Aturan Tambahan UUD NRI 1945 menetapkan UUD kini HANYA terdiri atas Pembukaan dan Pasal-pasal — Penjelasan resmi ditiadakan!',
       'Setelah Perubahan Keempat UUD 1945, Pasal II Aturan Tambahan menyatakan UUD NRI 1945 terdiri atas Pembukaan dan Pasal-pasal. Materi normatif penting dalam Penjelasan lama (misalnya Indonesia sebagai negara hukum pada Pasal 1 ayat 3) telah diangkat langsung ke dalam pasal-pasal sehingga Penjelasan lama tidak mengikat secara hukum.',
       ''
@@ -71,13 +71,13 @@
       'TWK HOTS - Konstitusi & Tata Negara', 'twk56-konstitusi', 'SKD-TWK-X5604',
       'Alinea keempat Pembukaan UUD 1945 mengamanatkan tujuan negara "ikut melaksanakan ketertiban dunia yang berdasarkan kemerdekaan, perdamaian abadi dan keadilan sosial." Saat terjadi konflik bersenjata di kawasan strategis yang memicu krisis pangan global, implikasi konstitusional bagi diplomasi Indonesia adalah...',
       [
-        'A. Bergabung ke aliansi pakta pertahanan negara adidaya agar memperoleh jaminan pasokan logistik militer',
-        'B. Menutup seluruh hubungan dagang dan diplomatik dengan negara yang terlibat perselisihan',
-        'C. Aktif menginisiasi mediasi damai, bantuan kemanusiaan, dan menjaga kemandirian sikap tanpa memihak blok militer',
-        'D. Mengirimkan pasukan tempur ofensif secara sepihak demi mempercepat berakhirnya konflik regional',
-        'E. Mengutamakan urusan domestik semata karena penyelesaian konflik lintas negara bukan kewenangan pemerintah'
+        'A. Bergabung ke aliansi pakta pertahanan negara adidaya agar memperoleh jaminan pasokan logistik militer dan diplomasi keamanan',
+        'B. Menutup seluruh hubungan dagang, perwakilan diplomatik, dan kerja sama ekonomi dengan seluruh negara yang terlibat perselisihan',
+        'C. Mengirimkan pasukan tempur ofensif secara sepihak demi mempercepat berakhirnya konflik bersenjata di kawasan strategis tersebut',
+        'D. Mengutamakan urusan domestik semata karena penyelesaian konflik lintas negara bukan kewenangan pemerintah berdaulat di kawasan',
+        'E. Aktif memelopori mediasi damai, bantuan kemanusiaan, dan menjaga kemandirian nonblok'
       ],
-      2,
+      4,
       'Alinea 4 Pembukaan UUD 1945 = dasar Politik Luar Negeri Bebas Aktif: aktif menciptakan perdamaian & keadilan tanpa mengikatkan diri pada pakta militer.',
       '"Bebas" berarti menentukan sikap secara merdeka tanpa tekanan blok kekuatan besar, sedangkan "Aktif" berarti proaktif memperjuangkan perdamaian dunia, hukum internasional, dan bantuan kemanusiaan (seperti peran pasukan perdamaian PBB & diplomasi bebas aktif).',
       ''
@@ -86,13 +86,13 @@
       'TWK HOTS - Konstitusi & Tata Negara', 'twk56-konstitusi', 'SKD-TWK-X5605',
       'Dalam praktik ketatanegaraan modern, koalisi partai pendukung pemerintah yang sangat besar di DPR sering dikhawatirkan melemahkan fungsi pengawasan parlemen terhadap Presiden dalam proses pembentukan undang-undang. Sesuai desain UUD NRI 1945 pasca-amandemen, mekanisme koreksi konstitusional yang tetap menjaga prinsip checks and balances adalah...',
       [
-        'A. Mengembalikan kedudukan MPR sebagai lembaga tertinggi yang dapat mencabut undang-undang secara langsung',
-        'B. Memperkuat kemandirian kekuasaan yudikatif (MK dan MA) serta partisipasi uji materi publik terhadap norma yang cacat konstitusi',
-        'C. Meminta Presiden menerbitkan Perppu pembekuan fungsi legislatif apabila koalisi dinilai terlalu dominan',
-        'D. Membiarkan seluruh produk undang-undang berjalan penuh selama lima tahun karena disahkan mayoritas parlemen',
-        'E. Menyerahkan hak veto mutlak pembatalan undang-undang kepada Dewan Perwakilan Daerah'
+        'A. Menguatkan independensi yudikatif (MK dan MA) serta ruang uji materi norma publik',
+        'B. Mengembalikan kedudukan MPR sebagai lembaga tertinggi negara yang berhak mencabut undang-undang secara sepihak tanpa sidang',
+        'C. Meminta Presiden menerbitkan Perppu pembekuan fungsi pengawasan legislatif apabila koalisi oposisi dinilai menghambat kebijakan',
+        'D. Membiarkan seluruh produk undang-undang tetap berlaku penuh lima tahun karena sudah disahkan suara mayoritas parlemen',
+        'E. Menyerahkan hak veto mutlak pembatalan rancangan undang-undang kepada Dewan Perwakilan Daerah di parlemen nasional'
       ],
-      1,
+      0,
       'Checks & balances pasca-amandemen menjaga yudikatif independen (MK menguji UU vs UUD, MA menguji aturan di bawah UU) + hak uji warga negara!',
       'Ketika cabang eksekutif dan legislatif beririsan kuat akibat koalisi mayoritas, perimbangan kekuasaan negara hukum modern bertumpu pada yudikatif yang independen (MK melalui judicial review UU terhadap UUD) serta ruang koreksi hukum konstitusional oleh warga.',
       ''
@@ -101,13 +101,13 @@
       'TWK HOTS - Konstitusi & Tata Negara', 'twk56-konstitusi', 'SKD-TWK-X5606',
       'Saat merancang Perda penanggulangan wabah atau ancaman siber, sebuah pemerintah daerah hendak membatasi kebebasan berkumpul sekaligus berencana menangguhkan hak tidak dituntut atas dasar hukum yang berlaku surut. Ditinjau dari Pasal 28I dan Pasal 28J UUD NRI 1945, sikap hukum yang benar adalah...',
       [
-        'A. Keduanya boleh dibatasi lewat Peraturan Kepala Daerah sepanjang mendapat dukungan forum tokoh lokal',
-        'B. Kebebasan berkumpul dapat dibatasi dengan undang-undang demi ketertiban umum (Ps 28J ayat 2), tetapi larangan hukum berlaku surut bersifat non-derogable (Ps 28I ayat 1)',
-        'C. Seluruh hak asasi manusia dapat ditangguhkan sementara waktu oleh gubernur saat status darurat sipil daerah',
-        'D. Hak berkumpul bersifat mutlak tanpa syarat apa pun sehingga karantina kesehatan melanggar konstitusi',
-        'E. Pasal 28J membolehkan penyimpangan asas non-retroaktif asal disetujui bersama oleh DPRD dan Kejaksaan'
+        'A. Keduanya boleh dibatasi lewat Peraturan Kepala Daerah sepanjang mendapat dukungan penuh forum tokoh masyarakat lokal',
+        'B. Seluruh hak asasi manusia dapat ditangguhkan sementara waktu oleh kepala daerah saat berlakunya status darurat sipil daerah',
+        'C. Hak berkumpul bersifat mutlak tanpa pembatasan apa pun sehingga karantina kesehatan dinilai bertentangan dengan konstitusi',
+        'D. Hak berkumpul bisa dibatasi UU (Ps 28J), sedangkan larangan berlaku surut absolut tak bisa ditangguhkan (Ps 28I)',
+        'E. Pasal 28J membolehkan penyimpangan asas non-retroaktif asal disetujui bersama oleh pimpinan DPRD dan Kejaksaan'
       ],
-      1,
+      3,
       'Pasal 28I ayat (1) = 7 hak absolut (non-derogable rights: hidup, bebas siksaan, nurani, agama, tak diperbudak, diakui hukum, bebas hukum berlaku surut); Ps 28J(2) = batasan dgn UU.',
       'Pasal 28J ayat (2) mengizinkan pembatasan pelaksanaan HAM melalui undang-undang demi menghormati hak orang lain dan ketertiban/kesehatan umum. Sebaliknya, Pasal 28I ayat (1) melarang pengurangan dalam keadaan apa pun (non-derogable) atas hak tidak dituntut atas dasar hukum yang berlaku surut.',
       ''
@@ -133,13 +133,13 @@
       'TWK HOTS - Pancasila HOTS', 'twk56-pancasila', 'SKD-TWK-X5608',
       'Sebuah yayasan keagamaan mengelola rumah singgah dan layanan pemeriksaan kesehatan gratis yang didanai sedekah jemaah, namun terbuka bagi seluruh warga prasejahtera dari agama dan suku mana pun tanpa syarat berpindah keyakinan. Ditinjau dari pengamalan Sila Pertama Pancasila, praktik tersebut menggambarkan...',
       [
-        'A. Pengurangan makna ketuhanan karena mencampurkan ibadah murni dengan program sosial publik',
-        'B. Perwujudan dimensi vertikal (ketakwaan kepada Tuhan YME) yang diaktualisasikan ke dimensi horizontal (manfaat sosial bagi sesama)',
-        'C. Pelaksanaan nilai kemanusiaan yang berdiri terpisah sama sekali dari nilai ketuhanan dalam negara sekuler',
-        'D. Upaya asimilasi budaya lintas golongan agar seluruh warga menggunakan satu tata cara ibadah yang sama',
-        'E. Pemenuhan nilai instrumental semata tanpa menyentuh nilai dasar Ketuhanan Yang Maha Esa'
+        'A. Pengurangan kemurnian nilai ketuhanan karena mencampurkan ibadah privat dengan program pelayanan sosial publik',
+        'B. Pelaksanaan nilai kemanusiaan yang berdiri terpisah sama sekali dari nilai ketuhanan di dalam negara berkonstitusi sekuler',
+        'C. Upaya asimilasi budaya lintas golongan supaya seluruh warga menggunakan satu tata cara peribadatan bersama yang seragam',
+        'D. Pemenuhan nilai instrumental peraturan semata tanpa menyentuh substansi nilai dasar Ketuhanan Yang Maha Esa',
+        'E. Dimensi vertikal (ketakwaan kepada Tuhan) yang memancar ke dimensi horizontal (amal sosial)'
       ],
-      1,
+      4,
       'Sila Ke-1 berdimensi ganda: VERTIKAL (hubungan khusyuk dengan Tuhan) + HORIZONTAL (kasih sayang, toleransi, & amal sosial bagi sesama manusia).',
       'Pengamalan Sila Pertama tidak berhenti pada ritual privat (dimensi vertikal), tetapi juga menuntut ketaatan spiritual itu memancar menjadi tindakan sosial inklusif dan bermanfaat bagi semua manusia tanpa membedakan keyakinan (dimensi horizontal).',
       ''
@@ -148,13 +148,13 @@
       'TWK HOTS - Pancasila HOTS', 'twk56-pancasila', 'SKD-TWK-X5609',
       'Arus modal asing membawa sistem kerja kompetitif yang efisien, namun di sisi lain berisiko mendorong pragmatisme individualistis di lingkungan kerja. Agar pembangunan ekonomi tetap berdaulat sebagai cerminan Pancasila sebagai ideologi terbuka, dimensi yang berfungsi menyaring dan menyesuaikan regulasi baru tersebut adalah...',
       [
-        'A. Dimensi Realitas saja, yang hanya memelihara kebiasaan tradisional tanpa boleh mengubah aturan kerja',
-        'B. Dimensi Dogmatis tertutup yang menolak seluruh investasi dan teknologi modern dari luar negeri',
-        'C. Dimensi Fleksibilitas (pengembangan), yang merumuskan nilai instrumental baru secara adaptif tanpa mengubah nilai dasar sila',
-        'D. Dimensi Keterbukaan tanpa batas yang membolehkan penggantian rumusan sila agar menarik investor',
-        'E. Dimensi Elitis yang menyerahkan tafsir etika kerja sepenuhnya kepada mekanisme pasar bebas'
+        'A. Dimensi Fleksibilitas guna menyusun nilai instrumental baru tanpa mengubah nilai dasar',
+        'B. Dimensi Dogmatis tertutup yang menolak seluruh investasi asing dan teknologi kerja modern dari luar negeri',
+        'C. Dimensi Realitas semata yang hanya mempertahankan kebiasaan lama tanpa boleh merumuskan aturan kerja baru',
+        'D. Dimensi Keterbukaan tanpa batas yang membolehkan penggantian sila dasar demi menarik minat investor global',
+        'E. Dimensi Elitis yang menyerahkan sepenuhnya etika ketenagakerjaan nasional kepada mekanisme pasar bebas'
       ],
-      2,
+      0,
       '3 Dimensi Ideologi Terbuka (Alfian): Realitas (mengakar nyata), Idealitas (harapan luhur), Fleksibilitas (pengembangan luwes menghadapi tantangan zaman tanpa ubah nilai dasar).',
       'Pancasila terbuka berarti nilai dasarnya tetap, tetapi nilai instrumental dan praksisnya luwes berkembang (Dimensi Fleksibilitas) menjawab isu baru—seperti investasi asing, AI, atau tata kelola digital—sebagai filter agar pragmatisme ekonomi tidak menggerus nilai kemanusiaan dan keadilan sosial.',
       ''
@@ -163,13 +163,13 @@
       'TWK HOTS - Pancasila HOTS', 'twk56-pancasila', 'SKD-TWK-X5610',
       'Dalam sebuah musyawarah perencanaan desa, kelompok mayoritas bersikukuh menggunakan seluruh dana desa untuk proyek mercusuar di dusun mereka dan mengabaikan usulan air bersih dusun terpencil karena jumlah penduduknya sedikit. Jika dinilai berdasarkan Sila Keempat Pancasila, kekeliruan utama dalam pengambilan keputusan tersebut adalah...',
       [
-        'A. Musyawarah berlangsung terbuka terlalu lama tanpa langsung mengadakan pemungutan suara cepat',
-        'B. Keputusan hanya berlandaskan suara mayoritas tanpa dipimpin hikmat kebijaksanaan serta mengabaikan tanggung jawab moral keadilan',
-        'C. Perwakilan dusun terpencil tidak berhak mengajukan usulan apabila kontribusi pajaknya masih kecil',
-        'D. Kepala desa seharusnya menentukan lokasi proyek sepihak tanpa mengundang forum warga mana pun',
-        'E. Program air bersih hanya menjadi urusan pemerintah pusat sehingga tidak boleh dibahas di musyawarah desa'
+        'A. Musyawarah berjalan terlalu panjang tanpa langsung mengadakan pemungutan suara cepat sejak pembukaan rapat desa',
+        'B. Perwakilan dusun terpencil tidak berhak mengusulkan program pembangunan apabila setoran pajaknya masih lebih kecil',
+        'C. Kepala desa semestinya menetapkan lokasi proyek secara sepihak tanpa mengundang forum musyawarah masyarakat mana pun',
+        'D. Keputusan bertumpu pada suara mayoritas tanpa hikmat kebijaksanaan serta mengabaikan nilai keadilan',
+        'E. Penyediaan air bersih sepenuhnya merupakan kewenangan pemerintah pusat sehingga dilarang dibahas dalam musyawarah desa'
       ],
-      1,
+      3,
       'Sila Ke-4 = "dipimpin oleh hikmat kebijaksanaan" + musyawarah untuk kepentingan bersama & tanggung jawab kepada Tuhan, bukan dominasi angka mayoritas (tirani mayoritas)!',
       'Demokrasi Pancasila dalam Sila Keempat menuntut "hikmat kebijaksanaan", yaitu akal sehat, kejujuran nurani, dan keberpihakan pada keadilan bersama—bukan sekadar menang jumlah suara yang meminggirkan kelompok kecil atau rentan.',
       ''
@@ -178,13 +178,13 @@
       'TWK HOTS - Pancasila HOTS', 'twk56-pancasila', 'SKD-TWK-X5611',
       'Sebuah kementerian meluncurkan aplikasi layanan administrasi yang efisien, tetapi tetap mewajibkan unit layanan menyediakan meja pendampingan khusus bagi penyandang disabilitas, lansia tanpa gawai, dan warga daerah 3T agar tidak tertinggal layanan. Kebijakan ini paling kuat mencerminkan perpaduan nilai...',
       [
-        'A. Nilai Instrumental dan Nilai Praksis dari Sila Kelima (Keadilan Sosial) serta Sila Kedua (Kemanusiaan)',
-        'B. Nilai dasar Sila Pertama semata karena berhubungan dengan empati keagamaan individu',
-        'C. Penghambatan transformasi digital birokrasi karena memelihara loket layanan tatap muka',
-        'D. Chauvinisme teknologi yang menutup kemungkinan penggunaan standar aplikasi internasional',
-        'E. Prinsip kesamarataan mutlak yang melarang adanya perlakuan afirmasi terhadap kelompok rentan'
+        'A. Nilai dasar Sila Pertama semata karena hanya berkaitan dengan rasa belas kasih keagamaan masing-masing petugas loket',
+        'B. Penghambatan transformasi digital birokrasi nasional karena tetap mempertahankan meja layanan tatap muka bagi masyarakat',
+        'C. Chauvinisme teknologi daerah yang menolak pemanfaatan standar pengembangan aplikasi layanan publik bertaraf internasional',
+        'D. Prinsip kesamarataan mutlak yang melarang adanya bentuk pelayanan afirmatif bagi kelompok masyarakat penyandang kerentanan',
+        'E. Nilai Instrumental dan Praksis Sila Ke-5 (Keadilan Sosial) serta Sila Ke-2'
       ],
-      0,
+      4,
       'Menjamin akses setara bagi warga rentan lewat kebijakan nyata di lapangan = Nilai Instrumental + Nilai Praksis Sila 5 (Keadilan Sosial) & Sila 2 (Kemanusiaan).',
       'Keadilan sosial dalam Sila Ke-5 bersifat proporsional (bukan menyamaratakan tanpa melihat hambatan), sehingga negara menyediakan afirmasi pendampingan agar seluruh warga—termasuk disabilitas dan lansia—memperoleh hak pelayanan yang bermartabat (Sila 2).',
       ''
@@ -210,13 +210,13 @@
       'TWK HOTS - Etika Publik & Keteladanan', 'twk56-integritas', 'SKD-TWK-X5613',
       'Aparatur Sipil Negara berasal dari beragam daerah dan golongan yang dipersatukan oleh sumpah jabatan untuk melayani publik secara adil. Alasan paling fundamental mengapa integritas pribadi setiap ASN menentukan keberlangsungan negara adalah...',
       [
-        'A. Menjadi prasyarat kenaikan pangkat otomatis dan perolehan tunjangan kinerja maksimal setiap tahun',
-        'B. Menjaga reputasi media sosial instansi agar selalu memperoleh komentar positif dari warganet',
-        'C. Menopang kepercayaan publik (public trust) sebagai fondasi agar pemerintahan berjalan efektif demi rakyat',
-        'D. Menghindari suasana kerja yang kaku saat dilakukan audit rutin oleh pengawas internal',
-        'E. Menunjukkan kedisiplinan jam kerja pribadi di hadapan atasan langsung menjelang evaluasi tahunan'
+        'A. Menjaga kepercayaan publik (public trust) agar pemerintahan berjalan efektif',
+        'B. Menjadi prasyarat kenaikan pangkat otomatis dan perolehan tunjangan kinerja maksimal pada akhir setiap tahun anggaran',
+        'C. Menjaga reputasi media sosial resmi instansi pemerintah agar senantiasa memperoleh komentar positif dari para warganet',
+        'D. Menghindari suasana kerja yang kaku apabila dilakukan audit berkala oleh aparat pengawas internal pemerintah',
+        'E. Menunjukkan kepatuhan disiplin jam kerja pribadi di hadapan atasan langsung menjelang penilaian kinerja tahunan'
       ],
-      2,
+      0,
       'Bedakan dampak turunan (citra, bebas sanksi, karier) vs akar fundamental integritas ASN = PUBLIC TRUST (kepercayaan rakyat terhadap negara)!',
       'Integritas ASN bukan sekadar moralitas individual atau pencitraan instansi, melainkan pilar penopang kepercayaan publik. Tanpa public trust, kebijakan negara kehilangan legitimasi dan negara gagal berfungsi adil untuk seluruh rakyat.',
       ''
@@ -240,13 +240,13 @@
       'TWK HOTS - Etika Publik & Keteladanan', 'twk56-integritas', 'SKD-TWK-X5615',
       'Saat menjabat sebagai menteri, Jenderal M. Jusuf menolak fasilitas pengawalan protokoler dan kendaraan dinas ketika pulang ke kampung halamannya di Sulawesi Selatan, lalu memilih menaiki angkutan umum biasa dengan alasan ia pulang sebagai warga pribadi, bukan menteri. Sikap beliau paling mendasar mencerminkan...',
       [
-        'A. Keinginan menguji kualitas layanan transportasi darat secara rahasia tanpa sepengetahuan gubernur',
-        'B. Kesadaran etika jabatan untuk memisahkan secara konsisten kepentingan pribadi dari fasilitas yang dibiayai negara',
-        'C. Ketidakpercayaan terhadap kesiapan aparat pengamanan protokoler di wilayah luar Ibu Kota',
-        'D. Keharusan seluruh pejabat tinggi menghindari perjalanan dinas dengan kendaraan milik kementerian',
-        'E. Upaya menunjukkan kesaktian dan keberanian tampil di depan umum tanpa pengawalan resmi'
+        'A. Keinginan menguji kualitas mutu layanan transportasi umum darat secara rahasia tanpa sepengetahuan pemerintah provinsi',
+        'B. Ketidakpercayaan pribadi terhadap kesigapan aparat pengamanan protokoler resmi negara di luar wilayah Ibu Kota Jakarta',
+        'C. Keharusan seluruh pejabat tinggi pemerintahan menghindari perjalanan dinas dengan memakai kendaraan resmi kementerian',
+        'D. Ketegasan etika jabatan untuk memisahkan kepentingan pribadi dari fasilitas negara',
+        'E. Upaya menunjukkan kesaktian dan keberanian tampil sendirian di depan umum tanpa didampingi pengawalan pengamanan resmi'
       ],
-      1,
+      3,
       'Sama seperti Hatta, teladan Jenderal M. Jusuf = pemisahan tegas KEPENTINGAN PRIBADI vs FASILITAS NEGARA, bukan sekadar ingin tampak merakyat!',
       'Pengecoh seperti "merendah hati" atau "memantau angkutan umum" hanya kesan permukaan. Inti integritas birokrasi pada kisah Jenderal M. Jusuf adalah batas tegas kapan seseorang bertindak dalam tugas dinas dan kapan sebagai pribadi.',
       ''
@@ -255,13 +255,13 @@
       'TWK HOTS - Etika Publik & Keteladanan', 'twk56-integritas', 'SKD-TWK-X5616',
       'Menjelang pemungutan suara pilkada, seorang ASN mengunggah ulang kampanye bakal calon beserta komentar dukungan dari akun media sosial pribadinya pada hari Minggu, dengan dalih hak berekspresi di luar jam kerja. Menurut prinsip integritas dan UU ASN No. 20 Tahun 2023, tindakan tersebut keliru karena...',
       [
-        'A. ASN tidak memiliki hak pilih sama sekali baik di dalam maupun di luar bilik suara pemilu',
-        'B. Penggunaan akun media sosial pribadi dilarang total bagi seluruh pegawai negeri sejak awal masa percobaan',
-        'C. Identitas abdi negara melekat penuh waktu sehingga ekspresi dukungan publik merusak kepercayaan atas netralitas dan imparsialitas birokrasi',
-        'D. Komentar dukungan politik hanya sah apabila disampaikan melalui siaran pers resmi instansi pemerintah',
-        'E. Tindakan itu baru menjadi pelanggaran apabila calon yang didukung kalah dalam rekapitulasi suara'
+        'A. Pegawai aparatur sipil negara tidak mempunyai hak memilih sama sekali baik di dalam maupun di luar bilik suara pemilihan',
+        'B. Pemakaian akun media sosial pribadi dilarang total bagi seluruh pegawai negeri sejak awal masa orientasi pengangkatan ASN',
+        'C. Komentar dukungan politik praktis hanya boleh diterbitkan apabila melalui siaran pers resmi humas instansi pemerintah daerah',
+        'D. Tindakan dukungan di media sosial baru menjadi pelanggaran kode etik apabila pasangan calon tersebut mengalami kekalahan suara',
+        'E. Status ASN melekat penuh sehingga dukungan terbuka merusak netralitas birokrasi'
       ],
-      2,
+      4,
       'ASN TETAP punya hak pilih di bilik suara (rahasia), tetapi status abdi negara melekat 24 jam sehingga DILARANG menunjukkan dukungan politik terbuka di medsos pribadi/luar jam kerja!',
       'Pasal 2 dan ketentuan netralitas UU ASN No. 20/2023 menuntut birokrasi netral agar layanan publik adil bagi seluruh golongan. ASN bebas memilih secara rahasia, namun ekspresi dukungan publik—termasuk suka/bagikan ulang di akun pribadi pada hari libur—menggerus kepercayaan netralitas negara.',
       ''
@@ -270,13 +270,13 @@
       'TWK HOTS - Etika Publik & Keteladanan', 'twk56-integritas', 'SKD-TWK-X5617',
       'Seorang pegawai menyaksikan rekan satu bidangnya sering memanipulasi bukti perjalanan dinas, namun ia memilih diam dengan alasan ingin menjaga keharmonisan tim dan "bersikap netral terhadap urusan orang lain." Ditinjau dari nilai integritas pemberantasan korupsi, sikap paling tepat untuk melawan apatisme tersebut adalah...',
       [
-        'A. Memfokuskan diri hanya pada pencapaian target kinerja individu agar terhindar dari pemeriksaan',
-        'B. Membiarkannya tetap berlangsung selama penyimpangan tersebut tidak mengganggu jadwal rapat unit',
-        'C. Mengambil langkah korektif yang berani: mengingatkan rekan secara bertanggung jawab atau melaporkan penyimpangan melalui kanal resmi pengawasan',
-        'D. Membahas dugaan penyimpangan itu secara santai di grup obrolan non-resmi agar rekan lain ikut berhati-hati',
-        'E. Mengurangi interaksi dengan rekan tersebut sampai masa penilaian kinerja tahunan berakhir'
+        'A. Mengambil langkah korektif: mengingatkan rekan atau melaporkan penyimpangan via kanal resmi',
+        'B. Memfokuskan diri hanya pada pencapaian target kinerja individu agar aman dan terhindar dari proses pemeriksaan audit',
+        'C. Membiarkannya terus berlangsung selama penyimpangan tersebut tidak mengganggu kelancaran jadwal rapat internal unit',
+        'D. Membahas dugaan penyimpangan anggaran itu secara santai di grup obrolan non-resmi agar pegawai lain ikut berhati-hati',
+        'E. Mengurangi interaksi sosial dengan rekan tersebut hingga batas akhir masa penilaian sasaran kinerja tahunan pegawai'
       ],
-      2,
+      0,
       'Melawan sikap APATIS terhadap pelanggaran wewenang = tindakan KOREKTIF & BERANI via jalur sah; "diam agar harmonis" justru membiarkan KKN!',
       'Nilai integritas meliputi kejujuran, kepedulian, keberanian, dan tanggung jawab kolektif atas nama baik lembaga. Bersikap "netral" atau diam atas fraud rekan kerja adalah bentuk pembiaran (apatisme) yang melemahkan akuntabilitas negara.',
       ''
@@ -285,11 +285,11 @@
       'TWK HOTS - Etika Publik & Keteladanan', 'twk56-integritas', 'SKD-TWK-X5618',
       'Seorang analis hukum mengetahui draf peraturan dan nilai pagu rahasia lelang yang belum diumumkan resmi, lalu diminta sahabat lamanya memberi bocoran informasi "sekadar untuk persiapan." Landasan integritas paling fundamental yang mendorong ASN menjaga kerahasiaan jabatan dalam situasi tersebut adalah...',
       [
-        'A. Kekhawatiran apabila kebocoran terdeteksi audit forensik teknologi informasi kementerian',
-        'B. Kesadaran bahwa informasi jabatan merupakan amanah negara yang wajib dijaga kerahasiaannya demi keadilan kompetisi dan sumpah ASN',
-        'C. Keinginan menjaga jarak sosial agar sahabat lama tidak merasa berutang budi di kemudian hari',
-        'D. Keyakinan bahwa draf kebijakan selalu berubah sehingga percuma jika diberikan lebih awal',
-        'E. Sekadar menghindari tambahan pekerjaan administrasi klarifikasi apabila muncul spekulasi wartawan'
+        'A. Kekhawatiran apabila kebocoran data terdeteksi oleh tim audit forensik teknologi informasi kementerian pusat',
+        'B. Kesadaran bahwa info jabatan ialah amanah negara yang wajib dijaga demi keadilan sumpah ASN',
+        'C. Keinginan menjaga jarak pergaulan sosial supaya sahabat lama tidak merasa berutang budi pada masa mendatang',
+        'D. Keyakinan bahwa draf naskah kebijakan selalu berubah mendadak sehingga informasi awal dianggap tak lagi berguna',
+        'E. Sekadar menghindari tambahan beban pekerjaan administrasi klarifikasi apabila muncul spekulasi dari wartawan media'
       ],
       1,
       'Pembeda motivasi integritas tertinggi: prinsip bahwa informasi jabatan adalah AMANAH & tanggung jawab sumpah ASN, bukan sekadar takut sanksi atau rumor!',
@@ -300,13 +300,13 @@
       'TWK HOTS - Etika Publik & Keteladanan', 'twk56-integritas', 'SKD-TWK-X5619',
       'Dua kejadian terjadi pada panitia pengadaan: (X) Pemenang lelang meninggalkan amplop uang di meja petugas sebelum penetapan pemenang disertai pesan "mohon bantu kelancaran"; (Y) Enam bulan usai proyek tuntas bersih, vendor mengirim parsel kue Rp900 ribu ke rumah pejabat tanpa kesepakatan apa pun. Pembedaan hukum paling akurat menurut UU Tipikor adalah...',
       [
-        'A. Kejadian X tergolong gratifikasi yang diputihkan dengan melapor ke atasan dalam 60 hari; kejadian Y adalah sumbangan wajar',
-        'B. Kejadian X memenuhi unsur suap transaksional yang langsung dipidana seketika; kejadian Y tergolong gratifikasi terkait jabatan yang wajib ditolak/dilaporkan ke KPK paling lambat 30 hari kerja',
-        'C. Keduanya otomatis gugur unsur pidananya bila nilainya di bawah Rp10 juta dan belum masuk ke rekening pribadi',
-        'D. Kejadian X merupakan pemerasan oleh pegawai; kejadian Y hanya boleh diproses jika ditemukan BPK dalam audit tahun berikutnya',
-        'E. Keduanya wajib dibagikan ke seluruh staf ruangan agar tidak dinikmati pejabat pengadaan seorang diri'
+        'A. Kejadian X tergolong gratifikasi yang diputihkan dengan melapor ke atasan dalam 60 hari; kejadian Y adalah sumbangan wajar yang bebas sanksi',
+        'B. Keduanya otomatis gugur unsur pidananya apabila nilai uang maupun parsel masih di bawah sepuluh juta rupiah sebelum masuk rekening bank',
+        'C. Kejadian X merupakan pemerasan dalam jabatan pegawai; kejadian Y hanya boleh diproses hukum apabila ditemukan BPK saat audit tahun berikutnya',
+        'D. Kejadian X termasuk suap (langsung pidana); kejadian Y tergolong gratifikasi yang wajib dilaporkan <=30 hari kerja',
+        'E. Keduanya wajib dibagikan secara merata kepada seluruh staf ruangan kantor supaya tidak dinikmati pejabat panitia pengadaan seorang diri'
       ],
-      1,
+      3,
       'Ingat rumus UU Tipikor: SUAP = ada meeting of minds/transaksional (pidana seketika, tak bisa dilaporkan untuk hapus pidana); GRATIFIKASI = pasif tanpa kesepakatan -> wajib lapor KPK <= 30 hari kerja (Ps 12B & 12C)!',
       'Pada kejadian X, pemberian dikaitkan langsung dengan maksud memengaruhi keputusan pengadaan (suap aktif/pasif). Pada kejadian Y, tidak ada kesepakatan transaksional, tetapi berhubungan dengan jabatan sehingga berstatus gratifikasi yang wajib dilaporkan ke KPK maksimal 30 hari kerja.',
       ''
@@ -317,13 +317,13 @@
       'TWK HOTS - Geopolitik, Hilirisasi & Soft Power', 'twk56-nasionalisme-bela', 'SKD-TWK-X5620',
       'Pasal 30 ayat (1) UUD NRI 1945 menegaskan hak dan kewajiban warga negara dalam usaha pertahanan dan keamanan negara. Pada era perang informasi nirmiliter saat ini, perilaku sehari-hari warga negara yang berdampak paling langsung memperkuat ketahanan ideologi bangsa adalah...',
       [
-        'A. Membayar pajak daerah tepat waktu menjelang penutupan tahun anggaran pemerintah',
-        'B. Menolak menyebarkan paham radikalisme, ujaran kebencian, dan intoleransi di ruang digital serta memverifikasi fakta',
-        'C. Mengikuti lomba gerak jalan kemerdekaan dengan seragam kantor yang seragam setiap Agustus',
-        'D. Memperbanyak unggahan promosi destinasi wisata lokal agar wisatawan mancanegara berdatangan',
-        'E. Menyimpan seluruh keluhan pelayanan publik untuk diri sendiri agar citra instansi selalu terlihat stabil'
+        'A. Membayar pajak daerah tepat waktu menjelang penutupan tahun anggaran belanja pemerintah setempat',
+        'B. Mengikuti lomba gerak jalan kemerdekaan dengan mengenakan pakaian seragam instansi pemerintah setiap bulan Agustus',
+        'C. Memperbanyak unggahan promosi destinasi wisata unggulan lokal agar kunjungan wisatawan mancanegara meningkat pesat',
+        'D. Menyimpan seluruh keluhan pelayanan publik untuk diri sendiri supaya citra resmi instansi selalu terlihat sangat stabil',
+        'E. Menolak sebaran paham radikal, ujaran kebencian, serta aktif memverifikasi kebenaran fakta'
       ],
-      1,
+      4,
       'Fokus pertanyaan: bela negara non-militer yang berdampak LANGSUNG ke KETAHANAN IDEOLOGI -> memutus penyebaran radikalisme/intoleransi/hoaks ideologis!',
       'Membayar pajak atau mempromosikan wisata berdampak pada ketahanan ekonomi, sedangkan upacara/gerak jalan menguatkan simbol nasionalisme. Ketahanan ideologi secara langsung dijaga dengan membendung infiltrasi intoleransi dan radikalisme di ruang sosial dan media digital.',
       ''
@@ -332,13 +332,13 @@
       'TWK HOTS - Geopolitik, Hilirisasi & Soft Power', 'twk56-nasionalisme-bela', 'SKD-TWK-X5621',
       'Pasal 27 ayat (3) UUD NRI 1945 menyebut bela negara secara bersamaan sebagai "hak dan kewajiban" setiap warga negara. Secara filosofis ketatanegaraan, perumusan ganda "hak sekaligus kewajiban" ini mengandung makna mendalam bahwa membela negara adalah...',
       [
-        'A. Kewajiban mutlak yang meniadakan seluruh hak asasi sipil warga selama negara berdiri',
-        'B. Transaksi sepihak di mana warga menukar kebebasan berpikir demi imbalan perlindungan militer',
-        'C. Mekanisme menjaga "ruang hidup bersama" tempat martabat dan masa depan setiap warga terjamin, yang tak mungkin lestari tanpa partisipasi aktif bersama',
-        'D. Cara seremonial tahunan untuk membalas pengorbanan fisik generasi terdahulu tanpa relevansi kebijakan modern',
-        'E. Wewenang eksklusif komponen cadangan militer yang harus terpisah dari pengabdian profesi sipil'
+        'A. Upaya menjaga "ruang hidup bersama" yang terjamin oleh partisipasi aktif setiap warganya',
+        'B. Kewajiban hukum mutlak yang meniadakan seluruh ruang hak asasi sipil warga negara selama pemerintahan resmi masih berdiri',
+        'C. Transaksi sepihak di mana warga menukar kebebasan berpikir dengan jaminan imbalan perlindungan militer bersenjata lengkap',
+        'D. Cara seremonial tahunan untuk membalas jasa pengorbanan fisik generasi terdahulu tanpa relevansi kebijakan sipil modern',
+        'E. Wewenang eksklusif pasukan komponen cadangan militer yang harus dipisahkan penuh dari pengabdian profesi warga sipil'
       ],
-      2,
+      0,
       'Mengapa HAK sekaligus KEWAJIBAN? HAK = membela masa depan & ruang aman diri sendiri di dalam negara; KEWAJIBAN = ruang hidup bersama itu butuh kontribusi semua warga!',
       'Negara bukanlah entitas asing di luar rakyat, melainkan rumah dan ruang hidup bersama. Membela negara adalah hak karena warga melindungi kepentingannya sendiri atas rasa aman dan keadilan, sekaligus kewajiban karena keberlanjutan rumah bersama menuntut tanggung jawab seluruh warganya.',
       ''
@@ -347,13 +347,13 @@
       'TWK HOTS - Geopolitik, Hilirisasi & Soft Power', 'twk56-nasionalisme-bela', 'SKD-TWK-X5622',
       'Seorang pimpinan pengadaan BUMN strategis dihadapkan pada dilema: membeli komponen kunci impor yang saat ini 12% lebih murah dan siap pakai, atau menggandeng industri manufaktur dalam negeri yang baru merintis teknologi agar mampu memenuhi standar mutu dalam jangka panjang. Kebijakan yang paling mencerminkan Bela Negara yang visioner adalah...',
       [
-        'A. Membeli komponen impor sepenuhnya tanpa pembinaan lokal demi mengejar efisiensi biaya kuartal ini',
-        'B. Menutup akses semua teknologi luar negeri secara total meski proyek infrastruktur vital terhenti lima tahun',
-        'C. Menyusun peta jalan pembinaan dan kemitraan bertahap dengan pemasok domestik sambil melakukan transfer teknologi terukur menuju kemandirian industri',
-        'D. Menunggu industri swasta lokal meniru produk asing sendiri tanpa keterlibatan belanja negara',
-        'E. Meminta pemerintah melarang seluruh impor komponen sejenis secara mendadak esok hari tanpa masa transisi'
+        'A. Membeli komponen impor seluruhnya tanpa pembinaan manufaktur lokal demi mengejar efisiensi biaya jangka pendek kuartal ini',
+        'B. Menutup akses semua teknologi luar negeri secara total meski proyek infrastruktur strategis nasional terhenti selama lima tahun',
+        'C. Menunggu industri swasta lokal meniru produk manufaktur asing secara mandiri tanpa keterlibatan belanja modal negara',
+        'D. Menyusun peta jalan kemitraan bertahap dengan pemasok lokal disertai alih teknologi terukur',
+        'E. Meminta pemerintah melarang seluruh arus impor komponen sejenis secara mendadak esok hari tanpa masa penyesuaian transisi'
       ],
-      2,
+      3,
       'Bela Negara strategis/visioner di sektor industri = investasi pada kemandirian rantai pasok nasional (bina vendor lokal + transfer standar mutu bertahap), bukan pasif atau menutup diri ekstrem!',
       'Memilih produk impor semata membuat ketergantungan strategis berlanjut, sementara menolak impor mendadak melumpuhkan proyek. Membina pemasok lokal lewat peta jalan bertahap menumbuhkan kedaulatan ekonomi dan teknologi nasional jangka panjang.',
       ''
@@ -362,13 +362,13 @@
       'TWK HOTS - Geopolitik, Hilirisasi & Soft Power', 'twk56-nasionalisme-bela', 'SKD-TWK-X5623',
       'Pemerintah melarang ekspor bijih mineral mentah (seperti nikel dan bauksit) dan mewajibkan pengolahan hilirisasi di dalam negeri. Dilihat dari filosofi pertahanan ekonomi dan Bela Negara paling mendasar (di luar kenaikan kas negara semata), tujuan transformasi struktural kebijakan ini adalah...',
       [
-        'A. Menghapus sama sekali peran perdagangan internasional dengan negara mitra manufaktur di kawasan',
-        'B. Melepaskan Indonesia dari jebakan pemasok bahan mentah yang rentan kendali rantai pasok global menuju kedaulatan industri nasional',
-        'C. Memusatkan seluruh kepemilikan tambang hanya di kota besar Pulau Jawa agar pengawasan lebih cepat',
-        'D. Memastikan harga komoditas mentah dunia jatuh sehingga negara lain menghentikan eksplorasi tambang',
-        'E. Menurunkan standar keselamatan pekerja industri berat demi mempercepat ekspor logam olahan'
+        'A. Menghapus sama sekali peran perdagangan bebas internasional bersama seluruh negara mitra manufaktur di kawasan regional',
+        'B. Memusatkan seluruh perizinan kepemilikan tambang hanya pada perusahaan kota besar agar proses pengawasan berjalan lebih cepat',
+        'C. Memastikan harga pasar komoditas mentah dunia jatuh drastis sehingga negara lain menghentikan kegiatan eksplorasi tambang',
+        'D. Menurunkan standar keselamatan pekerja pabrik peleburan berat demi mempercepat kuota ekspor logam olahan ke luar negeri',
+        'E. Melepas ketergantungan ekspor bahan mentah guna mewujudkan kedaulatan industri nasional'
       ],
-      1,
+      4,
       'Filosofi pertahanan ekonomi dari hilirisasi (Pasal 33 UUD 1945) = memutus ketergantungan "pemasok bahan mentah" agar bangsa berdaulat di rantai nilai industri global!',
       'Hilirisasi bukan sekadar menaikkan devisa sesaat, melainkan transformasi struktural: mencegah "kutukan sumber daya alam" di mana bahan mentah dijual murah lalu bangsa membeli produk jadinya dengan harga tinggi. Ini memperkuat kemandirian dan posisi tawar strategis Indonesia.',
       ''
@@ -377,13 +377,13 @@
       'TWK HOTS - Geopolitik, Hilirisasi & Soft Power', 'twk56-nasionalisme-bela', 'SKD-TWK-X5624',
       'Sebuah provinsi kaya hutan hujan tropis menolak tawaran konversi lahan skala besar untuk perkebunan monokultur meski menjanjikan lonjakan PAD jangka pendek, demi menjaga penyangga air, keanekaragaman hayati, dan ekologi warga. Prinsip Bela Negara paling esensial di balik keputusan strategis tersebut adalah...',
       [
-        'A. Sekadar mengejar penghargaan ekowisata internasional agar menarik turis mancanegara',
-        'B. Perlindungan hak atas "ruang hidup" bangsa (kedaulatan sumber daya alam dan ketahanan ekologis) demi kelangsungan hidup generasi mendatang',
-        'C. Penolakan total terhadap segala bentuk kegiatan ekonomi modern di seluruh wilayah provinsi',
-        'D. Pemanfaatan isu lingkungan hidup sebagai alasan administratif untuk menunda investasi lintas kabupaten',
-        'E. Pembatasan hak pengelolaan tanah oleh masyarakat adat setempat agar seluruh hutan ditutup permanen'
+        'A. Perlindungan "ruang hidup" dan ketahanan ekologis bangsa demi generasi mendatang',
+        'B. Sekadar mengejar penghargaan ekowisata taraf internasional supaya mampu menarik lebih banyak wisatawan mancanegara',
+        'C. Penolakan total tanpa pengecualian terhadap seluruh bentuk investasi maupun kegiatan ekonomi modern di wilayah provinsi',
+        'D. Pemanfaatan narasi kelestarian lingkungan sebagai alasan administratif untuk menunda seluruh proyek pembangunan antardaerah',
+        'E. Pembatasan hak kelola tanah bagi masyarakat hukum adat setempat agar kawasan hutan ditutup penuh bagi semua warga'
       ],
-      1,
+      0,
       'Ekologi & kedaulatan SDA berkelanjutan = membela "RUANG HIDUP" bangsa (kedaulatan pangan, air bersih, dan masa depan generasi mendatang)!',
       'Dalam konsepsi pertahanan modern, tanah air adalah "ruang hidup" yang menopang kedaulatan pangan, air, dan kesehatan rakyat. Mengorbankan ekosistem vital demi PAD sesaat justru mengancam ketahanan hidup bangsa dalam jangka panjang.',
       ''
@@ -392,13 +392,13 @@
       'TWK HOTS - Geopolitik, Hilirisasi & Soft Power', 'twk56-nasionalisme-bela', 'SKD-TWK-X5625',
       'Dominasi gelombang budaya populer asing (seperti K-Pop, drama, dan gim global) membuat generasi muda lebih akrab dengan ikon budaya luar dibandingkan cerita rakyat Nusantara. Strategi Bela Negara dan nasionalisme kultural paling konstruktif menghadapi "invasi soft power" tersebut adalah...',
       [
-        'A. Memblokir seluruh platform penayangan konten hiburan luar negeri di jaringan internet nasional',
-        'B. Mewajibkan seluruh anak muda mengenakan busana adat daerah setiap hari selama jam sekolah dan kerja',
-        'C. Mengadaptasi nilai dan kekayaan budaya lokal ke dalam format kreatif modern (animasi, webtoon, gim, audio digital) yang relevan dengan selera muda',
-        'D. Mengejek penggemar budaya pop asing di media sosial sebagai generasi yang kehilangan rasa kebangsaan',
-        'E. Membiarkan tradisi lokal menghilang alami karena dianggap tidak mampu bersaing di era keterbukaan informasi'
+        'A. Memblokir secara permanen seluruh platform penayangan konten hiburan luar negeri di dalam jaringan internet nasional',
+        'B. Mewajibkan seluruh pelajar dan pekerja mengenakan pakaian adat daerah lengkap setiap hari selama jam sekolah dan jam kerja',
+        'C. Mengejek para penggemar budaya pop luar negeri di ruang media sosial sebagai generasi yang kehilangan jati diri kebangsaan',
+        'D. Mengadaptasi kekayaan budaya lokal ke format kreatif modern (animasi, gim, audio) yang digemari muda',
+        'E. Membiarkan tradisi lokal menghilang secara alami karena dinilai tidak lagi mampu bersaing pada era keterbukaan informasi'
       ],
-      2,
+      3,
       'Hadapi soft power global secara konstruktif: bangun SOFT POWER tandingan dari dalam lewat inovasi format modern (bukan sensor ekstrem atau pasif menyerah)!',
       'Sensor mutlak memicu resistensi dan tertinggal dari arus teknologi, sedangkan mengejek generasi muda justru memperlebar jarak budaya. Mengemas ulang legenda dan budaya Nusantara ke medium kreatif modern membuat warisan bangsa tetap hidup dan berdaya saing global.',
       ''
@@ -409,11 +409,11 @@
       'TWK HOTS - EYD V & Penalaran Wacana', 'twk56-bahasa', 'SKD-TWK-X5626',
       'Cermati penggunaan bentuk terikat, imbuhan, dan gabungan kata berikut! Kalimat yang seluruh penulisannya TEPAT sesuai kaidah EYD Edisi V dan KBBI adalah...',
       [
-        'A. Sikap anti Pancasila harus di berantas karena bertentangan dengan tanggungjawab warga negara.',
-        'B. Sikap anti-Pancasila harus diberantas karena mengingkari tanggung jawab kita sebagai warga negara.',
-        'C. Sikap anti-Pancasila harus diberantas karena tidak sesuai tanggungjawab kita sebagai warganegara.',
-        'D. Mahasiswa non aktif itu mempertanggung jawabkan program beasiswa pendidikan di hadapan tim.',
-        'E. Kemerdekaan bangsa terwujud berkat rahmat Tuhan Yang Mahaesa dan kerja keras warga negara.'
+        'A. Sikap anti Pancasila harus di berantas bersama karena jelas bertentangan dengan tanggungjawab warga negara.',
+        'B. Sikap anti-Pancasila harus diberantas karena mengingkari tanggung jawab warga negara.',
+        'C. Sikap anti-Pancasila wajib segera diberantas karena mengingkari tanggungjawab kita sebagai warganegara Indonesia.',
+        'D. Mahasiswa non aktif tersebut wajib mempertanggung jawabkan penggunaan dana beasiswa pendidikan di hadapan tim penilai.',
+        'E. Kemerdekaan bangsa kita terwujud atas berkat rahmat Tuhan Yang Mahaesa serta kerja keras seluruh lapisan warga negara.'
       ],
       1,
       'Cek 4 jebakan EYD V: "anti-" + kapital = pakai hubung (anti-Pancasila); awalan pasif "di-" = serangkai (diberantas); "tanggung jawab" & "warga negara" = terpisah (bukan tanggungjawab/warganegara); "Maha Esa" = terpisah!',
@@ -439,11 +439,11 @@
       'TWK HOTS - EYD V & Penalaran Wacana', 'twk56-bahasa', 'SKD-TWK-X5628',
       'Perhatikan kalimat berikut: "Setiap pejabat publik harus mendahulukan kepentingan umum dan memegang teguh integritas, karena sikap itu merupakan cerminan dari amanah yang diembannya." Apabila dilakukan usulan perbaikan pada kata bentukan di bawah ini, manakah usulan yang SALAH dan justru merusak ketepatan sintaksis kalimat?',
       [
-        'A. Kata "mendahulukan" diganti menjadi bentuk pasif "didahulukan" dengan penyesuaian subjek objek',
-        'B. Kata "kepentingan" diganti menjadi "berkepentingan" sehingga berbunyi "mendahulukan berkepentingan umum"',
-        'C. Kata "memegang" diubah menjadi bentuk pasif "dipegang" jika struktur kalimat dipasifkan',
-        'D. Kata "cerminan" diganti dengan nomina baku "pencerminan" dalam konteks proses',
-        'E. Bentuk pasif "diembannya" diubah menjadi bentuk aktif "mengembannya" disertai perubahan subjek'
+        'A. Kata "mendahulukan" diganti menjadi bentuk pasif "didahulukan" disertai penyesuaian susunan subjek dan objek kalimat',
+        'B. Kata "kepentingan" diubah menjadi bentuk verba intransitif "berkepentingan"',
+        'C. Kata "memegang" diubah menjadi bentuk pasif "dipegang" apabila keseluruhan struktur kalimat dipasifkan secara seimbang',
+        'D. Kata "cerminan" diganti dengan kata benda baku "pencerminan" yang sesuai dengan konteks proses pelaksanaannya',
+        'E. Bentuk pasif "diembannya" diubah menjadi bentuk aktif "mengembannya" disertai penyesuaian posisi subjek pelaku'
       ],
       1,
       'Verba transitif aktif "mendahulukan" WAJIB diikuti objek KATA BENDA (kepentingan), BUKAN verba intransitif "berkepentingan"!',
@@ -455,10 +455,10 @@
       'Cermatilah penerapan huruf kapital, kata depan, dan tanda baca pada kalimat berikut. Penulisan yang PALING SESUAI dengan kaidah EYD V adalah...',
       [
         'A. Presiden bersama Dewan Perwakilan Rakyat berwenang membentuk Undang-Undang yang kedudukannya berada di bawah Undang-Undang Dasar 1945.',
-        'B. Presiden bersama dewan perwakilan rakyat berwenang membentuk undang-undang, yang berkedudukan di bawah Undang-Undang Dasar 1945.',
-        'C. Presiden bersama Dewan Perwakilan Rakyat berwenang membentuk undang-undang, yang kedudukannya berada di bawah Undang-Undang Dasar 1945.',
-        'D. Presiden bersama Dewan Perwakilan Rakyat berwenang membentuk undang-undang; yang berada dibawah Undang-Undang Dasar 1945.',
-        'E. Presiden bersama Dewan Perwakilan Rakyat berwenang membentuk undang-undang, yang berada dibawah Undang-undang Dasar 1945.'
+        'B. Presiden bersama dewan perwakilan rakyat berwenang membentuk peraturan perundang-undangan yang berkedudukan tepat di bawah Undang-Undang Dasar 1945.',
+        'C. Presiden bersama Dewan Perwakilan Rakyat berwenang membentuk undang-undang, yang berada di bawah Undang-Undang Dasar 1945.',
+        'D. Presiden bersama Dewan Perwakilan Rakyat berwenang membentuk produk hukum undang-undang; yang kedudukannya tepat dibawah Undang-Undang Dasar 1945.',
+        'E. Presiden bersama Dewan Perwakilan Rakyat berwenang membentuk undang-undang, yang berada dibawah aturan Undang-undang Dasar Negara Republik Indonesia 1945.'
       ],
       2,
       'Cek 5 kunci: (1) lembaga resmi kapital (Dewan Perwakilan Rakyat); (2) jenis produk umum kecil (undang-undang); (3) nama dokumen spesifik kapital (Undang-Undang Dasar 1945); (4) kata depan tempat pisah (di bawah); (5) koma aposisi, bukan titik koma (;).',
@@ -484,11 +484,11 @@
       'TWK HOTS - EYD V & Penalaran Wacana', 'twk56-bahasa', 'SKD-TWK-X5631',
       'Bacalah paragraf berikut! "Masuknya investasi teknologi sering dipandang sebagai penggerak utama ekonomi dan penciptaan lapangan kerja. Namun di balik manfaat ekonomi itu, muncul tantangan berupa nilai kerja pragmatis yang dapat menggeser nilai luhur bangsa. Oleh sebab itu, sikap bangsa semestinya tidak menutup diri secara membabi buta, melainkan memperkuat ketahanan ideologi sebagai penyaring pembangunan." Simpulan paling tepat atas paragraf tersebut adalah...',
       [
-        'A. Indonesia wajib menolak seluruh investasi teknologi asing agar budaya kerja pragmatis tidak masuk ke masyarakat',
-        'B. Keterbukaan terhadap investasi teknologi perlu diimbangi penguatan ideologi Pancasila sebagai penyaring agar pembangunan tetap selaras jati diri bangsa',
-        'C. Pertumbuhan ekonomi jauh lebih menentukan masa depan bangsa daripada sekadar mempertahankan nilai luhur ideologi',
-        'D. Investasi asing hanya mendatangkan dampak negatif terhadap nilai kerja sehingga perlu diawasi ketat aparat keamanan',
-        'E. Penguatan ketahanan ideologi adalah satu-satunya faktor penghambat investasi asing di era persaingan global'
+        'A. Negara Indonesia wajib menolak seluruh arus investasi teknologi asing agar budaya kerja pragmatis tidak masuk menyebar ke dalam masyarakat luas',
+        'B. Keterbukaan terhadap investasi teknologi diimbangi penguatan ideologi Pancasila sebagai penyaring pembangunan',
+        'C. Laju pertumbuhan ekonomi jauh lebih menentukan masa depan kemajuan bangsa daripada sekadar mempertahankan kemurnian nilai luhur ideologi negara',
+        'D. Masuknya investasi asing hanya mendatangkan dampak negatif bagi etos kerja nasional sehingga harus terus diawasi ketat oleh aparat keamanan negara',
+        'E. Upaya penguatan ketahanan ideologi nasional merupakan satu-satunya faktor utama penghambat arus masuknya investasi asing di kancah global'
       ],
       1,
       'Simpulan yang baik MERANGKUM kalimat penegas tanpa terlalu sempit (hanya menyebut masalahnya) atau melanggar isi teks ("menolak semua / satu-satunya")!',
@@ -499,11 +499,11 @@
       'TWK HOTS - EYD V & Penalaran Wacana', 'twk56-bahasa', 'SKD-TWK-X5632',
       'Bacalah paragraf berikut! "Menjaga integritas nasional di era digital memiliki cakupan yang lebih luas daripada sekadar mempertahankan batas wilayah fisik. Ancaman kini hadir lewat penetrasi ideologi ekstrem di ruang siber, penyebaran disinformasi terstruktur, dan rekayasa algoritma yang memicu konflik sosial. Oleh karena itu, literasi digital dan ketahanan siber menjadi elemen penting bela negara kontemporer." Ide pokok paragraf tersebut adalah...',
       [
-        'A. Penyebaran hoaks dan disinformasi terstruktur merupakan penyebab utama konflik antarwarga di media sosial',
-        'B. Cakupan penjagaan integritas nasional di era digital telah meluas melampaui batas fisik hingga mencakup ancaman non-fisik di ruang siber',
-        'C. Rekayasa algoritma platform digital merupakan bentuk agresi militer gaya baru dari luar negeri',
-        'D. Literasi digital masyarakat lebih penting daripada pertahanan teritorial negara di perbatasan wilayah',
-        'E. Seluruh konflik sosial modern dapat diselesaikan seketika apabila pemerintah menutup akses media sosial'
+        'A. Penyebaran hoaks dan disinformasi terstruktur merupakan penyebab utama munculnya berbagai konflik antarwarga di platform media sosial',
+        'B. Penjagaan integritas nasional era digital meluas dari batas fisik mencakup ancaman ruang siber',
+        'C. Rekayasa algoritma berbagai platform digital komersial merupakan bentuk agresi militer gaya baru dari kekuatan negara luar',
+        'D. Peningkatan literasi digital masyarakat dinilai jauh lebih penting dibanding pertahanan teritorial wilayah perbatasan darat dan laut negara',
+        'E. Seluruh konflik sosial modern di perkotaan dapat diselesaikan seketika apabila pemerintah pusat menutup seluruh akses media sosial'
       ],
       1,
       'Paragraf deduktif menaruh kalimat utama di KALIMAT PERTAMA; kalimat 2 merinci contoh ancaman, kalimat terakhir memberi solusi/simpulan!',
@@ -805,11 +805,11 @@
       'Verbal - Penalaran Analogi HOTS', 'tiu56-analogi', 'SKD-TIU-X5601',
       'TERMOMETER : MENGUKUR SUHU = BAROMETER : ...',
       [
-        'A. Ketinggian awan',
-        'B. Kecepatan angin',
+        'A. Mengatur ketinggian awan',
+        'B. Memantau kecepatan angin',
         'C. Mengukur tekanan udara',
-        'D. Menghasilkan uap air',
-        'E. Menurunkan kelembapan'
+        'D. Menghasilkan aliran uap air',
+        'E. Menurunkan tingkat kelembapan'
       ],
       2,
       'Pola [ALAT : FUNGSI KERJA SPESIFIK]. Pastikan kelas kata paralel ("mengukur suhu" -> "mengukur tekanan udara")!',
@@ -820,11 +820,11 @@
       'Verbal - Penalaran Analogi HOTS', 'tiu56-analogi', 'SKD-TIU-X5602',
       'ASTRONOM : TELESKOP = ... : ...',
       [
-        'A. Guru : Papan tulis',
-        'B. Koki : Sendok',
+        'A. Guru : Papan tulis kelas',
+        'B. Koki : Sendok sayur besi',
         'C. Filatelis : Perangko',
-        'D. Petani : Pasar',
-        'E. Montir : Mobil'
+        'D. Petani : Pasar tradisional',
+        'E. Montir : Mobil penumpang'
       ],
       2,
       'Pola [AHLI/PENELITI KHUSUS : OBJEK/INSTRUMEN YANG SANGAT KHAS]. Papan tulis dan sendok terlalu umum!',
@@ -1052,57 +1052,57 @@
       'TKP HOTS - Dilema Layanan Publik', 'tkp56-pelayanan', 'SKD-TKP-X5601',
       'Layanan konsultasi kesehatan via WhatsApp di puskesmas tempat Anda bekerja mendadak viral hingga ratusan pesan masuk setiap hari termasuk di luar jam kerja, membuat staf kewalahan membalas satu per satu. Usulan kebijakan paling strategis kepada kepala puskesmas adalah...',
       [
-        'A. Menyarankan penerapan sistem balasan otomatis (chatbot) sederhana untuk menjawab pertanyaan umum dan triase awal sebelum ditangani petugas',
-        'B. Menetapkan jam operasional pesan resmi pukul 08.00–14.00 lalu mengumumkannya di seluruh kanal informasi puskesmas',
-        'C. Menjadwalkan giliran seluruh tenaga kesehatan secara merata setiap hari guna membalas semua pesan yang masuk',
-        'D. Membalas pesan yang masuk pada hari kerja berikutnya sesuai urutan tanpa membalas pesan di luar jam kerja',
-        'E. Menghentikan layanan konsultasi WhatsApp sementara waktu karena jumlah petugas tidak sebanding dengan antrean pesan'
+        'A. Menetapkan jam operasional pesan resmi pukul 08.00–14.00 lalu mengumumkannya di seluruh kanal informasi resmi puskesmas agar warga tahu jadwal layanan',
+        'B. Usulkan sistem balasan otomatis (chatbot) untuk FAQ dan triase awal sebelum ditangani petugas',
+        'C. Menjadwalkan giliran seluruh tenaga kesehatan secara bergantian setiap hari kerja guna membalas tuntas semua pesan pertanyaan warga',
+        'D. Membalas seluruh pesan yang masuk pada hari kerja berikutnya sesuai nomor urutan tanpa melayani pesan yang masuk di luar jam kedinasan',
+        'E. Menghentikan sementara layanan konsultasi WhatsApp masyarakat karena jumlah petugas aktif puskesmas tidak sebanding dengan antrean pesan harian'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 5, 3, 2, 1],
       'Inovasi digital atas lonjakan layanan = selesaikan akar beban (chatbot triase/FAQ), bukan hentikan layanan atau lempar giliran semata!',
-      'A (5) memberi solusi sistemik memanfaatkan teknologi untuk menyaring pertanyaan umum & triase. B (4) menata ekspektasi jam kerja tapi tak mengurangi beban puncak. C (3) membagi beban tanpa mengurangi kerja berulang. D (2) pasif menunda. E (1) langkah mundur menghentikan layanan publik.'
+      'B (5) memberi solusi sistemik memanfaatkan teknologi untuk menyaring pertanyaan umum & triase. A (4) menata ekspektasi jam kerja tapi tak mengurangi beban puncak. C (3) membagi beban tanpa mengurangi kerja berulang. D (2) pasif menunda. E (1) langkah mundur menghentikan layanan publik.'
     ],
     [
       'TKP HOTS - Dilema Layanan Publik', 'tkp56-pelayanan', 'SKD-TKP-X5602',
       'Di loket pelayanan pertanahan, seorang lansia dari desa jauh datang menyerahkan berkas tanah warisan, namun surat keterangan warisnya belum dilegalisir camat sesuai SOP wajib. Pemohon memohon kebijakan karena biaya pulang ke desa sangat besar. Sikap Anda...',
       [
-        'A. Menjelaskan kekurangan syarat secara ramah, lalu proaktif menelepon kantor kecamatan menanyakan apakah legalisir dapat difasilitasi secara daring atau diwakilkan sah',
-        'B. Memberikan kartu antrean prioritas kepada beliau agar saat kembali membawa berkas lengkap tidak perlu mengantre dari awal',
-        'C. Menolak berkas dengan santun sambil menegaskan bahwa SOP legalisir camat mutlak dijaga demi kepastian hukum sertifikat',
-        'D. Menyarankan pemohon menghubungi jasa perantara resmi di sekitar kantor kecamatan guna mempercepat urusan legalisirnya',
-        'E. Tetap memproses permohonan dengan membuatkan surat pernyataan menyusul agar warga lansia tersebut tidak kecewa'
+        'A. Memberikan kartu antrean prioritas khusus kepada beliau agar saat kembali membawa berkas lengkap tidak perlu menunggu antre lagi sejak awal',
+        'B. Menolak berkas permohonan dengan santun sambil menegaskan bahwa SOP legalisir camat mutlak dijaga demi kepastian hukum sertifikat tanah warga',
+        'C. Menjelaskan syarat ramah dan menelepon kecamatan apakah legalisir bisa daring atau diwakilkan sah',
+        'D. Menyarankan pemohon menghubungi jasa perantara resmi di sekitar kantor kecamatan setempat guna mempercepat proses urusan legalisir berkasnya',
+        'E. Tetap memproses permohonan hari ini dengan membuatkan surat pernyataan menyusul supaya warga lansia dari desa jauh tersebut tidak merasa kecewa'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 5, 2, 1],
       'Seimbangkan KEPATUHAN SOP (jangan proses berkas cacat hukum!) + SOLUSI PROAKTIF saat itu juga (koordinasi antarunit/kecamatan)!',
-      'A (5) teguh aturan sekaligus kreatif proaktif mencarikan solusi saat itu juga. B (4) empatik tapi reaktif menunggu pulang dulu. C (3) benar secara hukum tapi kaku tanpa solusi bantu. D (2) mendorong pihak perantara luar. E (1) melanggar SOP & menciptakan cacat hukum dokumen.'
+      'C (5) teguh aturan sekaligus kreatif proaktif mencarikan solusi saat itu juga. A (4) empatik tapi reaktif menunggu pulang dulu. B (3) benar secara hukum tapi kaku tanpa solusi bantu. D (2) mendorong pihak perantara luar. E (1) melanggar SOP & menciptakan cacat hukum dokumen.'
     ],
     [
       'TKP HOTS - Dilema Layanan Publik', 'tkp56-pelayanan', 'SKD-TKP-X5603',
       'Saat bertugas di loket pelayanan, seorang ibu melaporkan lantai dekat toilet umum licin karena tumpahan sabun hingga ia hampir terpeleset, padahal area itu ramai dilalui lansia dan anak-anak. Tindakan pertama Anda yang paling sigap adalah...',
       [
-        'A. Segera mengambil papan peringatan "Awas Lantai Licin" dan memasangnya di area itu terlebih dahulu, lalu meminta maaf dan menghubungi petugas kebersihan',
-        'B. Langsung mencari kain pel terdekat untuk membersihkan sendiri area tumpahan tersebut sebelum ada pengunjung lain lewat',
-        'C. Berterima kasih atas laporan ibu tersebut dan segera menelepon petugas kebersihan agar area segera dibersihkan',
-        'D. Menyampaikan kepada ibu tersebut bahwa kebersihan ditangani unit khusus, namun Anda pasti mencatat dan meneruskannya',
-        'E. Meminta ibu tersebut mengadu langsung ke pos satpam atau meja pengaduan karena berada lebih dekat dengan toilet'
+        'A. Langsung mencari kain pel terdekat di gudang kantor untuk membersihkan sendiri area tumpahan sabun sebelum ada pengunjung lain tergelincir',
+        'B. Berterima kasih hangat atas laporan ibu tersebut lalu segera menelepon petugas kebersihan unit agar area licin tersebut segera dipel bersih',
+        'C. Menyampaikan sopan kepada ibu tersebut bahwa kebersihan ditangani unit khusus namun Anda pasti segera mencatat dan meneruskannya ke petugas',
+        'D. Segera pasang papan peringatan "Awas Lantai Licin", minta maaf, lalu hubungi petugas kebersihan',
+        'E. Meminta ibu tersebut mengadu langsung ke pos satuan pengamanan atau meja pengaduan karena berada lebih dekat dengan area ruang toilet'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 5, 1],
       'Standar Keselamatan Kerja (K3): urutan pertama WAJIB mitigasi bahaya segera (pasang rambu "Lantai Licin") sebelum petugas datang membersihkan!',
-      'A (5) memutus risiko kecelakaan detik itu juga lewat papan peringatan sebelum panggil petugas. B (4) proaktif tapi menyalahi alat/keahlian standar dan tinggalkan loket. C (3) masih menyisakan jeda risiko sebelum petugas tiba. D (2) dan E (1) lambat serta melempar beban.'
+      'D (5) memutus risiko kecelakaan detik itu juga lewat papan peringatan sebelum panggil petugas. A (4) proaktif tapi menyalahi alat/keahlian standar dan tinggalkan loket. B (3) masih menyisakan jeda risiko sebelum petugas tiba. C (2) dan E (1) lambat serta melempar beban.'
     ],
     [
       'TKP HOTS - Dilema Layanan Publik', 'tkp56-pelayanan', 'SKD-TKP-X5604',
       'Seorang warga merasa puas lalu mengunggah video pujian yang menyebut nama Anda secara spesifik di media sosial hingga viral, membuat atasan turut senang atas citra baik tersebut. Respons profesional terbaik Anda adalah...',
       [
-        'A. Membalas unggahan tersebut dengan ucapan terima kasih tulus serta menegaskan bahwa pelayanan prima merupakan hasil kerja sama tim dan dukungan sistem instansi',
-        'B. Membalas kolom komentar dengan ucapan terima kasih yang hangat dan menyatakan selalu siap melayani kebutuhan warga',
-        'C. Mengirimkan pesan pribadi kepada warga tersebut untuk berterima kasih agar tetap rendah hati dan tidak menjadi sorotan publik',
-        'D. Membagikan ulang unggahan pujian tersebut ke akun pribadi sebagai portofolio kinerja dan penyemangat rekan sejawat',
-        'E. Mengabaikan unggahan pujian tersebut agar tetap fokus bekerja tanpa terpengaruh komentar media sosial'
+        'A. Membalas kolom komentar video dengan ucapan terima kasih yang hangat dan menyatakan selalu siap melayani kebutuhan seluruh warga masyarakat',
+        'B. Mengirimkan pesan pribadi kepada warga tersebut guna berterima kasih secara langsung agar tetap rendah hati dan tidak menjadi sorotan publik',
+        'C. Membagikan ulang unggahan video pujian tersebut ke akun pribadi Anda sebagai bukti portofolio kinerja pribadi dan penyemangat rekan kerja',
+        'D. Mengabaikan unggahan video pujian tersebut sepenuhnya agar Anda tetap berfokus bekerja melayani di loket tanpa terpengaruh media sosial',
+        'E. Membalas tulus serta menegaskan layanan prima terwujud berkat kerja sama tim dan dukungan sistem'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 1, 5],
       'Terima apresiasi publik secara rendah hati dan arahkan ke KEBERHASILAN TIM/INSTITUSI di ruang publik tempat pujian muncul!',
-      'A (5) responsif sekaligus menguatkan semangat korps/citra institusi. B (4) ramah tapi masih berpusat pada diri sendiri. C (3) melewatkan dampak positif publik lembaga. D (2) terkesan menonjolkan individu. E (1) terkesan kurang responsif.'
+      'E (5) responsif sekaligus menguatkan semangat korps/citra institusi. A (4) ramah tapi masih berpusat pada diri sendiri. B (3) melewatkan dampak positif publik lembaga. C (2) terkesan menonjolkan individu. D (1) terkesan kurang responsif.'
     ],
 
     // Profesionalisme (4)
@@ -1110,11 +1110,11 @@
       'TKP HOTS - Akuntabilitas & Etos Kerja', 'tkp56-profesional', 'SKD-TKP-X5605',
       'Sebagai ketua tim penyusun laporan tahunan gabungan, Anda menemukan banyak data Unit X yang tidak lengkap dan inkonsisten menjelang tenggat akhir. Agar kualitas laporan tetap akurat tepat waktu, tindakan terbaik Anda adalah...',
       [
-        'A. Menghubungi narahubung Unit X dengan tenang, menjelaskan masalah inkonsistensi data, dan mengajak duduk bersama selama satu jam untuk memverifikasi serta melengkapinya',
-        'B. Mengembalikan seluruh berkas kepada Unit X beserta daftar poin revisi tertulis yang jelas dan meminta mereka segera memperbaikinya',
-        'C. Melaporkan kendala kualitas data Unit X kepada atasan agar pimpinan segera menginstruksikan revisi dari Unit X',
-        'D. Menyempurnakan sendiri angka-angka yang janggal berdasarkan rata-rata capaian tahun sebelumnya supaya tenggat terpenuhi',
-        'E. Memasukkan data Unit X apa adanya ke dalam laporan tahunan sambil memberi catatan kaki bahwa sumber data tersebut belum valid'
+        'A. Menghubungi narahubung Unit X dengan tenang dan mengajak duduk bersama satu jam guna verifikasi data',
+        'B. Mengembalikan seluruh berkas data kepada Unit X disertai daftar catatan poin revisi tertulis lengkap agar mereka segera memperbaikinya sendiri',
+        'C. Melaporkan kendala kualitas kelengkapan data Unit X kepada atasan langsung supaya pimpinan segera mengeluarkan instruksi revisi kepada Unit X',
+        'D. Menyempurnakan sendiri seluruh angka laporan yang tampak janggal menggunakan rata-rata capaian tahun sebelumnya agar tenggat terpenuhi',
+        'E. Memasukkan data Unit X apa adanya ke dalam laporan tahunan gabungan sambil menyisipkan catatan kaki bahwa sumber data tersebut belum valid'
       ],
       [5, 4, 3, 2, 1],
       'Kolaborasi + Akuntabilitas: tawarkan duduk bersama memverifikasi data (cepat + akurat + jaga hubungan unit), bukan merekayasa asumsi atau menyalahkan di laporan!',
@@ -1124,43 +1124,43 @@
       'TKP HOTS - Akuntabilitas & Etos Kerja', 'tkp56-profesional', 'SKD-TKP-X5606',
       'Saat reviu akhir sebagai analis anggaran, Anda mendapati kekeliruan hitung pribadi yang menurunkan efektivitas program 0,5% dan mustahil diketahui pihak lain bila didiamkan, sementara jadwal revisi sistem sudah tertutup kecuali atas izin tertulis pimpinan. Sikap Anda...',
       [
-        'A. Segera menghadap atasan, memaparkan detail kekeliruan perhitungan secara jujur, mengajukan opsi koreksi prosedural, dan siap menerima konsekuensinya',
-        'B. Berjanji memperketat daftar periksa ketelitian diri sendiri di masa depan dan memastikan program berjalan optimal agar selisih 0,5% tertutup',
-        'C. Mencatat temuan kesalahan hitung itu dalam arsip pribadi sebagai bahan pembelajaran internal unit pada audit tahun depan',
-        'D. Mencari pos anggaran cadangan internal lain untuk digeser diam-diam menutupi selisih 0,5% tanpa mengubah dokumen resmi',
-        'E. Membiarkannya karena selisih 0,5% sangat minor dibandingkan kerugian penundaan pencairan jika dibuka lagi'
+        'A. Berjanji memperketat daftar periksa ketelitian diri sendiri di masa depan dan memastikan program berjalan optimal agar selisih 0,5% tertutup',
+        'B. Menghadap atasan segera memaparkan kekeliruan secara jujur dan mengajukan koreksi sesuai prosedur',
+        'C. Mencatat temuan kesalahan hitung tersebut di dalam arsip pribadi sebagai bahan pembelajaran internal unit pada evaluasi audit tahun depan',
+        'D. Mencari pos anggaran cadangan internal lain untuk digeser secara diam-diam menutupi selisih angka 0,5% tanpa mengubah dokumen resmi',
+        'E. Membiarkannya tetap berjalan apa adanya sebab selisih 0,5% sangat kecil dibanding potensi penundaan pencairan jika dibuka lagi'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 5, 3, 2, 1],
       'Integritas tak mengenal "kesalahan kecil tak terdeteksi": transparan akui + lapor atasan untuk koreksi sah, HARAM menggeser anggaran diam-diam!',
-      'A (5) menegakkan integritas penuh dan akuntabilitas keuangan negara. B (4) & C (3) gagal memperbaiki kesalahan berjalan. D (2) melanggar aturan pengelolaan anggaran secara sepihak. E (1) mengabaikan akuntabilitas.'
+      'B (5) menegakkan integritas penuh dan akuntabilitas keuangan negara. A (4) & C (3) gagal memperbaiki kesalahan berjalan. D (2) melanggar aturan pengelolaan anggaran secara sepihak. E (1) mengabaikan akuntabilitas.'
     ],
     [
       'TKP HOTS - Akuntabilitas & Etos Kerja', 'tkp56-profesional', 'SKD-TKP-X5607',
       'Tim Anda diberi proyek kompleks dengan tenggat waktu sangat singkat hingga seluruh anggota tampak pesimis dan kewalahan. Kontribusi profesional utama yang akan Anda ambil sebagai anggota tim adalah...',
       [
-        'A. Mengambil inisiatif memetakan tugas besar menjadi langkah-langkah kecil prioritas yang terukur lalu membagikannya ke tim sebagai usulan alur kerja',
-        'B. Menyemangati rekan-rekan tim agar tetap optimistis dan fokus mengerjakan upaya terbaik meski kondisi waktunya menantang',
-        'C. Melaporkan kepada atasan di awal proyek bahwa target tersebut terlalu berat agar ekspektasi pimpinan disesuaikan realistis',
-        'D. Fokus menyelesaikan tugas bagian sendiri dengan cepat dan rapi terlebih dahulu tanpa terlalu mencampuri bagian anggota lain',
-        'E. Mengajukan protes resmi bersama anggota tim mengenai pembagian beban kerja dan tenggat yang tidak masuk akal'
+        'A. Menyemangati rekan-rekan tim kerja agar tetap optimistis menjaga kekompakan dan fokus mengerjakan upaya terbaik meski tenggat menantang',
+        'B. Melaporkan kepada atasan langsung di awal proyek bahwa target tersebut dinilai terlalu berat agar ekspektasi pimpinan disesuaikan realistis',
+        'C. Memecah beban proyek menjadi langkah prioritas terukur dan mengusulkan alur kerja kepada tim',
+        'D. Berfokus menyelesaikan tugas bagian pribadi Anda dengan cepat dan rapi terlebih dahulu tanpa mencampuri beban pekerjaan anggota tim yang lain',
+        'E. Mengajukan nota keberatan resmi bersama seluruh anggota tim mengenai ketidakadilan pembagian beban kerja serta tenggat waktu yang singkat'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 5, 2, 1],
       'Solusi kepemimpinan di situasi krisis = ciptakan STRUKTUR NYATA (pecah tugas menjadi sub-target terkelola), bukan sekadar menyemangati atau protes!',
-      'A (5) mengubah beban abstrak menjadi peta kerja konkret sehingga tim kembali bergerak efektif. B (4) baik secara moral tapi belum menyelesaikan kebuntuan teknis. C (3) cepat menyerah sebelum berupaya. D (2) individualistis. E (1) destruktif.'
+      'C (5) mengubah beban abstrak menjadi peta kerja konkret sehingga tim kembali bergerak efektif. A (4) baik secara moral tapi belum menyelesaikan kebuntuan teknis. B (3) cepat menyerah sebelum berupaya. D (2) individualistis. E (1) destruktif.'
     ],
     [
       'TKP HOTS - Akuntabilitas & Etos Kerja', 'tkp56-profesional', 'SKD-TKP-X5608',
       'Setelah program selesai dilaksanakan, Anda menyadari ada beberapa pos kegiatan kecil yang kuitansi/foto dokumentasinya hilang saat menyusun laporan pertanggungjawaban. Tindakan Anda yang paling mencerminkan integritas ASN adalah...',
       [
-        'A. Tetap melaporkan seluruh kegiatan sesuai fakta di lapangan serta mencantumkan keterangan jujur bahwa dokumentasi pos terkait hilang pada bagian tersebut',
-        'B. Meminta rekan-rekan panitia pelaksana menandatangani berita acara pernyataan bersama yang memverifikasi kegiatan benar-benar terlaksana',
-        'C. Menghapus beberapa pos kegiatan kecil yang tak punya bukti fisik dari laporan agar keseluruhan pertanggungjawaban terlihat rapi',
-        'D. Menggunakan foto dokumentasi dari kegiatan sejenis pada bulan sebelumnya yang sangat mirip agar kelengkapan administrasi terpenuhi',
-        'E. Membuatkan ulang kuitansi pengganti sendiri secukupnya sesuai ingatan harga agar angka realisasi anggaran cocok di audit'
+        'A. Meminta rekan-rekan panitia pelaksana menandatangani surat berita acara pernyataan bersama guna memverifikasi kegiatan benar-benar terlaksana',
+        'B. Menghapus beberapa item pos kegiatan kecil yang tidak memiliki bukti fisik foto dari draf laporan akhir supaya dokumen tampak rapi',
+        'C. Menggunakan foto dokumentasi cadangan dari kegiatan sejenis bulan sebelumnya yang sangat mirip agar seluruh kelengkapan dokumen terpenuhi',
+        'D. Melaporkan kegiatan sesuai fakta di lapangan serta mencantumkan keterangan jujur kekurangan bukti',
+        'E. Membuatkan ulang salinan kuitansi pengganti sendiri secukupnya sesuai perkiraan ingatan harga agar angka realisasi biaya cocok diperiksa audit'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 5, 1],
       'Kejujuran pelaporan: laporkan FAKTA apa adanya dan terbuka atas kekurangan bukti fisik; JANGAN pernah memalsukan kuitansi/foto atau menghapus fakta!',
-      'A (5) paling jujur dan akuntabel mengungkapkan kondisi faktual apa adanya. B (4) beritikad baik mengonfirmasi, namun tetap bukan pengganti dokumen primer jika tanpa catatan kehilangan bukti asli. C (3) menyembunyikan realisasi. D (2) dan E (1) termasuk manipulasi/pemalsuan dokumen audit.'
+      'D (5) paling jujur dan akuntabel mengungkapkan kondisi faktual apa adanya. A (4) beritikad baik mengonfirmasi, namun tetap bukan pengganti dokumen primer jika tanpa catatan kehilangan bukti asli. B (3) menyembunyikan realisasi. C (2) dan E (1) termasuk manipulasi/pemalsuan dokumen audit.'
     ],
 
     // Jejaring Kerja (3)
@@ -1168,43 +1168,43 @@
       'TKP HOTS - Sinergi & Kepemimpinan Tim', 'tkp56-jejaring', 'SKD-TKP-X5609',
       'Anda dan Budi (rekan dari unit lain) sama-sama mengajukan usulan inovasi perbaikan layanan kepada pimpinan. Setelah evaluasi, pimpinan memilih usulan Budi dan menolak usulan Anda. Sikap yang paling menunjukkan kematangan jejaring kerja adalah...',
       [
-        'A. Menemui Budi untuk memberi selamat secara tulus dan menawarkan bantuan tenaga atau ide bila dibutuhkan dalam implementasi gagasannya',
-        'B. Menerima keputusan pimpinan dengan lapang dada serta langsung merancang usulan inovasi lain untuk periode berikutnya',
-        'C. Mempelajari ulang poin keunggulan gagasan Budi sebagai bahan evaluasi untuk meningkatkan mutu usulan Anda ke depan',
-        'D. Menghadap pimpinan guna menanyakan detail kekurangan usulan Anda secara objektif demi perbaikan kinerja mendatang',
-        'E. Menerima keputusan tersebut sesuai aturan birokrasi sambil memilih menjaga jarak profesional dengan Budi sementara waktu'
+        'A. Menerima keputusan pimpinan dengan lapang dada serta langsung merancang kerangka usulan inovasi layanan lain untuk periode triwulan depan',
+        'B. Mempelajari ulang aspek keunggulan gagasan Budi sebagai bahan evaluasi konstruktif untuk meningkatkan kualitas usulan Anda di masa mendatang',
+        'C. Menghadap pimpinan guna menanyakan detail kekurangan konsep usulan Anda secara objektif demi perbaikan mutu kinerja di waktu mendatang',
+        'D. Menerima keputusan tersebut sesuai tata tertib birokrasi sambil memilih menjaga jarak interaksi profesional dengan Budi untuk sementara waktu',
+        'E. Menemui Budi memberi selamat tulus serta menawarkan bantuan untuk menyukseskan gagasannya'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 1, 5],
       'Kolaboratif lintas unit: ubah kompetisi menjadi kemitraan—ucapkan selamat + dukung eksekusi ide rekan demi keberhasilan organisasi!',
-      'A (5) mengutamakan keberhasilan organisasi di atas ego pribadi dan memperkuat aliansi lintas unit. B (4) & C (3) positif tapi fokus pada diri sendiri. D (2) berisiko terkesan mempermasalahkan keputusan. E (1) mencampuradukkan kompetisi kerja menjadi jarak personal.'
+      'E (5) mengutamakan keberhasilan organisasi di atas ego pribadi dan memperkuat aliansi lintas unit. A (4) & B (3) positif tapi fokus pada diri sendiri. C (2) berisiko terkesan mempermasalahkan keputusan. D (1) mencampuradukkan kompetisi kerja menjadi jarak personal.'
     ],
     [
       'TKP HOTS - Sinergi & Kepemimpinan Tim', 'tkp56-jejaring', 'SKD-TKP-X5610',
       'Sebagai koordinator tim proyek, Anda memiliki seorang anggota yang sangat andal secara teknis, namun bertipe "lone wolf" yang senang bekerja sendiri dan jarang berbagi progres ke tim sehingga menghambat sinkronisasi antarbagian. Tindakan kepemimpinan paling efektif Anda...',
       [
-        'A. Mengajaknya berdiskusi empat mata, mengapresiasi tinggi keahlian teknisnya, dan menjelaskan dampak vital sinkronisasi informasi bagi kesuksesan proyek tim',
-        'B. Menerapkan sistem papan pelaporan progres harian ringkas yang wajib diisi seluruh anggota tim demi transparansi bersama',
-        'C. Mengingatkannya secara tegas dalam rapat evaluasi tim mingguan agar segera mengubah kebiasaan tertutupnya demi tim',
-        'D. Membiarkannya menyesuaikan diri seiring berjalannya proyek agar kreativitas teknisnya tidak tertekan aturan baru',
-        'E. Menyalurkan hanya tugas-tugas mandiri yang terisolasi kepadanya supaya ketidakterbukaannya tidak menghambat tim lain'
+        'A. Menerapkan sistem papan pelaporan perkembangan tugas harian ringkas yang wajib diperbarui seluruh anggota tim demi kelancaran transparansi',
+        'B. Mengajaknya diskusi empat mata, mengapresiasi keahliannya, dan menekankan pentingnya sinkronisasi tim',
+        'C. Mengingatkannya secara tegas dalam rapat evaluasi tim mingguan agar segera mengubah kebiasaan kerja tertutupnya demi kepentingan proyek',
+        'D. Membiarkannya menyesuaikan gaya kerja sendiri seiring berjalannya waktu proyek supaya kreativitas teknisnya tidak tertekan aturan baru',
+        'E. Menyalurkan khusus hanya tugas-tugas teknis mandiri yang terisolasi kepadanya agar ketertutupannya tidak mengganggu alur komunikasi tim'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 5, 3, 2, 1],
       'Kelola individu andal tapi penyendiri: rangkul personal dulu (akui keahliannya!) + bangun kesadaran sinergi tim, bukan memisahkannya terus!',
-      'A (5) menyentuh akar perilaku lewat pendekatan persuasif yang menghargai keahliannya. B (4) solusi sistemik tapi belum menyelesaikan resistensi personal. C (3) mempermalukan di depan forum. D (2) pasif membiarkan hambatan. E (1) melegalkan perilaku kerja silo.'
+      'B (5) menyentuh akar perilaku lewat pendekatan persuasif yang menghargai keahliannya. A (4) solusi sistemik tapi belum menyelesaikan resistensi personal. C (3) mempermalukan di depan forum. D (2) pasif membiarkan hambatan. E (1) melegalkan perilaku kerja silo.'
     ],
     [
       'TKP HOTS - Sinergi & Kepemimpinan Tim', 'tkp56-jejaring', 'SKD-TKP-X5611',
       'Pada proyek kolaborasi antarlembaga, Anda mengetahui seorang pegawai muda dari instansi mitra memiliki gagasan sangat brilian, tetapi ia tampak pendiam dan ragu berbicara di rapat besar penuh pejabat senior. Tindakan Anda yang paling tepat adalah...',
       [
-        'A. Mendekatinya secara personal, mendiskusikan gagasannya bersama, lalu menawarkan bantuan mempresentasikan bersama atau membawakan idenya di forum dengan kredit penuh atas namanya',
-        'B. Memberi tahu pimpinan rapat bahwa rekan tersebut tampaknya punya ide bagus agar pimpinan yang mengundangnya berbicara',
-        'C. Memberinya semangat singkat di kursi sebelahnya agar segera berani mengangkat tangan saat sesi tanya jawab dibuka',
-        'D. Tetap diam menghormati kenyamanan pribadinya karena menyampaikan pendapat di rapat merupakan tanggung jawab masing-masing peserta',
-        'E. Menyampaikan gagasannya sebagai usulan Anda sendiri sesudah disempurnakan agar proyek tetap memetik manfaat terbaiknya'
+        'A. Memberi tahu pimpinan rapat bahwa rekan muda mitra tersebut tampaknya memiliki ide bagus sehingga pimpinan rapat yang mengundangnya bicara',
+        'B. Memberinya dorongan semangat singkat di kursi sebelahnya agar ia segera berani mengangkat tangan ketika sesi tanya jawab rapat dibuka',
+        'C. Berdiskusi empat mata dan membawakan atau mendampinginya memaparkan ide dengan kredit penuh atas namanya',
+        'D. Tetap diam menghormati kenyamanan pribadinya karena menyampaikan pendapat dalam forum rapat merupakan tanggung jawab masing-masing peserta',
+        'E. Menyampaikan gagasannya sebagai usulan pribadi Anda sesudah disempurnakan sedikit agar rapat proyek tetap mendapatkan manfaat terbaiknya'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 5, 2, 1],
       'Kolaborasi sejati = berdayakan potensi rekan yang ragu secara nyaman + WAJIB beri pengakuan/kredit penuh atas idenya!',
-      'A (5) memfasilitasi kontribusi hebat untuk tim sekaligus menjaga etika kredit gagasan. B (4) & C (3) kurang nyaman bagi pribadi pemalu jika tiba-tiba disorot. D (2) melewatkan manfaat besar tim. E (1) plagiarisme ide.'
+      'C (5) memfasilitasi kontribusi hebat untuk tim sekaligus menjaga etika kredit gagasan. A (4) & B (3) kurang nyaman bagi pribadi pemalu jika tiba-tiba disorot. D (2) melewatkan manfaat besar tim. E (1) plagiarisme ide.'
     ],
 
     // TIK (2)
@@ -1212,25 +1212,25 @@
       'TKP HOTS - TIK & Sistem Digital', 'tkp56-tik', 'SKD-TKP-X5612',
       'Rapat koordinasi mingguan tim Anda kerap memakan waktu berjam-jam hanya untuk membaca ulang progres tugas rutin. Sebagai pimpinan tim yang ingin mengoptimalkan TIK untuk efisiensi kerja, solusi paling transformatif adalah...',
       [
-        'A. Menerapkan platform manajemen proyek kolaboratif (seperti Kanban/Trello/Asana) agar progres terpantau real-time sehingga rapat hanya membahas kendala dan keputusan',
-        'B. Mewajibkan tiap anggota mengirim laporan progres tertulis via email sehari sebelum rapat supaya waktu pertemuan lebih terarah',
-        'C. Membuat grup pesan singkat khusus pembaruan harian tugas agar setiap anggota bisa membaca perkembangan tanpa rapat panjang',
-        'D. Mempersingkat durasi rapat dengan agenda yang lebih ketat serta menugaskan moderator membatasi waktu bicara',
-        'E. Langsung memotong durasi rapat menjadi separuh waktu dan meminta anggota berbicara langsung pada poin inti saja'
+        'A. Mewajibkan tiap anggota mengirim laporan perkembangan pekerjaan tertulis via surat elektronik sehari sebelum jadwal rapat rutin digelar',
+        'B. Membuat grup pesan singkat khusus pembaruan harian tugas supaya seluruh anggota membaca kemajuan proyek tanpa rapat tatap muka panjang',
+        'C. Mempersingkat durasi waktu rapat rutin memakai agenda lebih ketat serta menugaskan seorang moderator untuk membatasi durasi giliran bicara',
+        'D. Menggunakan papan manajemen proyek kolaboratif real-time sehingga rapat berfokus pada solusi kendala',
+        'E. Langsung memotong setengah jatah durasi waktu rapat tim dan mewajibkan setiap anggota menyampaikan paparan langsung pada poin intinya saja'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 5, 1],
       'Pemanfaatan TIK terbaik = transformasi alur kerja kolaboratif real-time, bukan sekadar email menumpuk atau obrolan chat yang tenggelam!',
-      'A (5) mengubah tata kelola kerja menjadi terstruktur dan real-time. B (4) digital tapi statis menumpuk. C (3) pesan chat mudah tercecer tidak terstruktur. D (2) dan E (1) tidak memanfaatkan solusi TIK.'
+      'D (5) mengubah tata kelola kerja menjadi terstruktur dan real-time. A (4) digital tapi statis menumpuk. B (3) pesan chat mudah tercecer tidak terstruktur. C (2) dan E (1) tidak memanfaatkan solusi TIK.'
     ],
     [
       'TKP HOTS - TIK & Sistem Digital', 'tkp56-tik', 'SKD-TKP-X5613',
       'Sebagai ASN bidang komunikasi dan informatika, Anda mencermati algoritma rekomendasi media sosial kerap mengurung pengguna ke dalam "gelembung informasi" (filter bubble) yang memperkuat pandangan ekstrem dan intoleran. Usulan kebijakan strategis paling mendasar yang tepat adalah...',
       [
-        'A. Mendorong regulasi transparansi algoritma yang mewajibkan platform menyediakan opsi kendali bagi pengguna untuk mematikan personalisasi feed',
-        'B. Meluncurkan kampanye masif literasi digital nasional mengenai bahaya filter bubble dan cara menyeimbangkan sumber bacaan',
-        'C. Menggandeng kreator konten untuk membanjiri linimasa warga dengan narasi moderat dan beragam',
-        'D. Mengembangkan platform media sosial alternatif milik pemerintah sebagai ruang diskusi yang bebas algoritma komersial',
-        'E. Mengusulkan pemblokiran seluruh platform media sosial global yang terindikasi memicu polarisasi opini warga'
+        'A. Mendorong aturan transparansi algoritma agar pengguna bebas menonaktifkan personalisasi umpan',
+        'B. Meluncurkan kampanye masif literasi digital nasional mengenai bahaya filter bubble dan cara menyeimbangkan berbagai sumber berita harian',
+        'C. Menggandeng para kreator konten muda populer untuk membanjiri linimasa warga digital dengan narasi konten moderat serta beragam sudut pandang',
+        'D. Mengembangkan platform media sosial alternatif khusus milik pemerintah daerah sebagai ruang diskusi publik yang terbebas dari iklan komersial',
+        'E. Mengusulkan pemblokiran permanen seluruh platform media sosial global berbayar ataupun gratis yang terindikasi memicu polarisasi opini warga'
       ],
       [5, 4, 3, 2, 1],
       'Kebijakan TIK strategis menyasar AKAR SISTEM (kontrol pengguna atas algoritma personalisasi) sekaligus memberdayakan warga secara demokratis!',
@@ -1242,29 +1242,29 @@
       'TKP HOTS - Harmoni & Anti-Gentrifikasi', 'tkp56-sosbud', 'SKD-TKP-X5614',
       'Revitalisasi kawasan kampung tua menjadikan kawasan itu ramai kafe wisata modern, tetapi lonjakan harga sewa membuat perajin dan seniman asli kampung tersingkir keluar kota (gentrifikasi). Sebagai perencana di dinas tata kota, usulan paling berkelanjutan adalah...',
       [
-        'A. Mengusulkan regulasi skema insentif keringanan sewa dan ruang usaha terproteksi khusus bagi perajin lokal agar ekosistem budaya kampung tetap hidup',
-        'B. Mengajak pemilik kafe dan pengelola wisata modern berkolaborasi memajang dan menjual karya para perajin setempat',
-        'C. Mendata seluruh perajin terdampak lalu merelokasi mereka ke sentra kerajinan terpadu baru di pinggiran kota',
-        'D. Memandang fenomena itu sebagai mekanisme wajar dinamika ekonomi perkotaan yang tidak perlu dicampuri kebijakan',
-        'E. Menyesalkan kondisi tersebut namun menyerahkan pemecahannya pada daya saing pasar bebas'
+        'A. Mengajak seluruh pemilik kafe dan pengelola objek wisata modern berkolaborasi rutin memajang serta memasarkan karya buatan perajin setempat',
+        'B. Mendata seluruh perajin terdampak kenaikan tarif sewa lalu merelokasi usaha mereka ke sentra kerajinan terpadu baru di wilayah pinggiran kota',
+        'C. Memandang lonjakan harga sewa bangunan sebagai mekanisme wajar dinamika ekonomi perkotaan yang tidak perlu dicampuri kebijakan pemerintah',
+        'D. Menyesalkan tersisihnya komunitas perajin asli kampung tua sambil menyerahkan pemecahan masalah sepenuhnya kepada daya saing pasar bebas',
+        'E. Merancang insentif keringanan sewa dan zonasi ruang usaha terproteksi bagi perajin asli lokal'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 1, 5],
       'Lawan gentrifikasi budaya lewat INTERVENSI KEBIJAKAN STRUKTURAL yang melindungi warga asli di kawasan asalnya, bukan merelokasi mereka keluar!',
-      'A (5) menggunakan instrumen kebijakan pemerintah menjaga keberlanjutan manusia & budaya lokal. B (4) positif namun bergantung itikad swasta. C (3) memutus "jiwa" otentik kampung. D (2) & E (1) abai atas fungsi keadilan sosial tata kota.'
+      'E (5) menggunakan instrumen kebijakan pemerintah menjaga keberlanjutan manusia & budaya lokal. A (4) positif namun bergantung itikad swasta. B (3) memutus "jiwa" otentik kampung. C (2) & D (1) abai atas fungsi keadilan sosial tata kota.'
     ],
     [
       'TKP HOTS - Harmoni & Anti-Gentrifikasi', 'tkp56-sosbud', 'SKD-TKP-X5615',
       'Seorang tokoh politik lokal berpengaruh mendesak tim Anda memprioritaskan pembangunan balai kerja di kecamatannya (asal suku mayoritas), padahal data objektif menunjukkan kecamatan lain yang dihuni kelompok minoritas dan lebih miskin jauh lebih membutuhkan. Sebagai ketua tim, sikap Anda...',
       [
-        'A. Tetap merekomendasikan lokasi prioritas berdasarkan analisis data kebutuhan objektif demi keadilan sosial, sambil menyiapkan bukti pendukung dan siap menerima risiko',
-        'B. Berdiskusi mencari opsi kompromi membagi anggaran proyek ke dua lokasi agar kepentingan warga miskin dan tokoh lokal sama-sama terakomodasi',
-        'C. Melaporkan tekanan politik tersebut secara langsung kepada atasan tertinggi dan menyerahkan penentuan lokasi sepenuhnya kepada pimpinan',
-        'D. Menyesuaikan sebagian bobot rekomendasi agar usulan tokoh politik tetap terakomodasi demi keamanan jalannya proyek di daerah',
-        'E. Mengubah angka indikator survei kemiskinan di lapangan supaya kecamatan pilihan sang tokoh tampak paling layak'
+        'A. Berdiskusi aktif mencari opsi kompromi pembagian pagu anggaran proyek ke dua lokasi agar kepentingan warga miskin dan tokoh lokal terpenuhi',
+        'B. Melaporkan adanya tekanan politik tersebut secara langsung kepada atasan tertinggi lalu menyerahkan penentuan lokasi proyek sepenuhnya kepada pimpinan',
+        'C. Menyesuaikan sebagian bobot skor rekomendasi lokasi agar usulan tokoh politik daerah ikut terakomodasi demi kelancaran suasana proyek wilayah',
+        'D. Tetap merekomendasikan lokasi prioritas berbasis data objektif demi keadilan sosial sambil menyiapkan buktinya',
+        'E. Mengubah angka indikator survei kemiskinan di lapangan supaya wilayah kecamatan pilihan sang tokoh berpengaruh tampak paling layak mendapat proyek'
       ],
-      [5, 4, 3, 2, 1],
+      [4, 3, 2, 5, 1],
       'Tekanan politik vs Kebutuhan objektif warga rentan = berdiri tegak di atas DATA & KEADILAN SOSIAL; haram mengubah data atau mengorbankan warga termiskin!',
-      'A (5) menunjukkan integritas sosial tinggi berpihak pada data kebutuhan riil. B (4) pragmatis namun menurunkan efisiensi dampak optimal. C (3) menghindari pendirian tegas di level teknis tim. D (2) tunduk sebagian pada tekanan. E (1) kecurangan data berat.'
+      'D (5) menunjukkan integritas sosial tinggi berpihak pada data kebutuhan riil. A (4) pragmatis namun menurunkan efisiensi dampak optimal. B (3) menghindari pendirian tegas di level teknis tim. C (2) tunduk sebagian pada tekanan. E (1) kecurangan data berat.'
     ],
 
     // Anti Radikalisme (1 pelengkap -> gabung di modul TKP HOTS!)
@@ -1272,11 +1272,11 @@
       'TKP HOTS - Moderasi & Pencegahan Dini', 'tkp56-radikal', 'SKD-TKP-X5616',
       'Anda melihat seorang pemuda cerdas namun tertutup di lingkungan sekitar mulai aktif mengunjungi situs kajian eksklusif serta mengunggah pandangan merendahkan kelompok agama lain. Upaya pencegahan dini (soft approach) paling bijaksana adalah...',
       [
-        'A. Mengajaknya terlibat aktif dalam kegiatan positif inklusif seperti karang taruna, komunitas hobi, atau bakti sosial agar wawasan sosialnya kembali terbuka',
-        'B. Mendekatinya berdiskusi santai empat mata tentang bahaya pemikiran intoleran dan pentingnya menghargai perbedaan',
-        'C. Menasihati orang tuanya secara baik-baik agar lebih memantau pergaulan serta aktivitas akses internet anaknya',
-        'D. Segera melaporkannya kepada aparat penegak hukum sebagai langkah antisipasi pengawasan keamanan lingkungan',
-        'E. Mengingatkan warga sekitar agar menjaga jarak dengan pemuda tersebut supaya tidak terpengaruh narasinya'
+        'A. Mengajaknya ikut aktif di karang taruna atau bakti sosial inklusif agar wawasan sosialnya terbuka',
+        'B. Mendekatinya guna berdiskusi santai empat mata tentang bahaya pemikiran intoleran serta pentingnya sikap saling menghormati keragaman warga',
+        'C. Menasihati kedua orang tuanya secara baik-baik agar lebih memantau lingkar pergaulan harian serta aktivitas akses internet anaknya di rumah',
+        'D. Segera melaporkannya kepada aparat penegak hukum setempat sebagai langkah antisipasi pengawasan keamanan lingkungan di wilayah permukiman',
+        'E. Mengingatkan seluruh warga lingkungan sekitar agar menjaga jarak sosial dengan pemuda tersebut supaya tidak terpengaruh narasi intoleransinya'
       ],
       [5, 4, 3, 2, 1],
       'Pencegahan dini paparan ekstremisme (soft approach): RANGKUL kembali ke komunitas positif inklusif agar tembok eksklusivitasnya runtuh tanpa memicu defensif!',
