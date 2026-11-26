@@ -3308,6 +3308,17 @@ function tick() {
     if (exam.remaining <= 0) { finishExam(true); return; }
   } else paintTimer();
 }
+function paceHtml() {
+  if (!exam || exam.finished) return '';
+  const q = exam.qs[exam.idx];
+  if (!q) return '';
+  const sec = exam.spent[exam.idx] || 0;
+  const lim = q.category === 'TIU' ? 90 : 60;
+  if (sec >= lim) {
+    return `<span class="ml-1.5 inline-flex items-center rounded-md bg-warning/20 px-1.5 py-0.5 font-semibold text-warning-content tabular-nums">⏱️ ${fmtClock(sec)} · Lewati dulu?</span>`;
+  }
+  return sec >= 5 ? `<span class="ml-1.5 text-base-content/60 tabular-nums">⏱️ ${fmtClock(sec)}</span>` : '';
+}
 function paintTimer() {
   const el = $('#x-timer');
   if (!el || !exam) return;
@@ -3315,6 +3326,8 @@ function paintTimer() {
   el.innerHTML = `${icon('clock', 'h-4 w-4')}<span class="font-mono">${fmtClock(Math.max(0, sec))}</span>`;
   const urgent = exam.remaining != null && exam.remaining <= 600 && !exam.finished;
   el.className = 'badge badge-lg shrink-0 gap-2 border-0 ' + (exam.finished ? 'badge-ghost' : urgent ? 'badge-error text-white' : 'bg-base-200 text-neutral');
+  const p = $('#x-pace');
+  if (p) p.innerHTML = paceHtml();
 }
 const showKey = () => exam.finished || exam.instant;
 
@@ -3330,6 +3343,7 @@ function renderExam() {
           <div class="break-words text-xs leading-tight text-base-content/60" id="x-sub"></div>
         </div>
         <div id="x-timer" class="badge badge-lg shrink-0 gap-2 border-0 bg-base-200" role="timer" aria-label="Sisa waktu"></div>
+        <button id="x-fs-btn" type="button" class="btn btn-ghost btn-sm hidden shrink-0 px-2 sm:inline-flex" onclick="App.toggleFullscreen()" aria-label="Mode fokus layar penuh" title="Mode fokus layar penuh">⛶ Fokus</button>
         <button class="btn btn-ghost btn-sm btn-square shrink-0" onclick="App.openMenu()" aria-label="Menu ujian">${icon('dots', 'h-5 w-5')}</button>
         <button class="btn btn-primary btn-sm hidden sm:inline-flex" id="x-finish" onclick="App.finish()"></button>
       </div>
@@ -3469,7 +3483,7 @@ function paintQuestion() {
         <span class="badge badge-lg border-0 font-semibold ${cs.badge}">${catLabel}</span>
         <span class="badge badge-ghost h-auto min-h-[1.25rem] max-w-full whitespace-normal break-words py-1 text-left">${esc(q.sub)}</span>
         <button type="button" class="rk-bm-btn${bmOn ? ' on' : ''}" onclick="App.toggleBookmarkCurrent()">${bmOn ? '★ Tersimpan' : '☆ Simpan sulit'}</button>
-        <span class="w-full text-xs text-base-content/60 sm:ml-auto sm:w-auto sm:text-base-content/50">${rule}${exam.finished && q.category === 'TIU' && exam.spent[exam.idx] ? ` · Waktu ${fmtClock(exam.spent[exam.idx])}` : ''}</span>
+        <span class="w-full text-xs text-base-content/60 sm:ml-auto sm:w-auto sm:text-base-content/50">${rule}<span id="x-pace">${paceHtml()}</span>${exam.finished && q.category === 'TIU' && exam.spent[exam.idx] ? ` · Waktu ${fmtClock(exam.spent[exam.idx])}` : ''}</span>
       </div>
       <div class="whitespace-pre-line break-words text-[1.08rem] font-medium leading-relaxed text-neutral sm:text-[1.05rem]">${escQ(q)}</div>
       ${q.svg ? `<div class="q-svg overflow-auto rounded-xl bg-base-200/60 p-3">${q.svg}</div>` : ''}
@@ -3979,6 +3993,7 @@ function openResult() {
       ${reviewSummary('sesi')}
       <div class="flex flex-wrap gap-2">
         ${(full || exam.pack.mode === 'SKB') ? `<button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openCalc(${full ? r.total : ''})">📊 Hitung Nilai Akhir 40:60</button>` : ''}
+        ${(full || exam.pack.mode === 'SKB') ? `<button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openNonCat('wawancara')">🎙️ Lab Non-CAT (Wawancara &amp; LGD)</button>` : ''}
         <button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openAnalytics('${full ? 'SKD_FULL' : esc(field.startsWith('SKB_') ? field : 'SKD_FULL')}')">📈 Analitik Tren</button>
         <button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openVault()">🔖 Soal Salah &amp; Bookmark</button>
         <button type="button" class="btn btn-outline btn-sm" onclick="$('#dlg-result').close(); App.openReport()">🖨️ Cetak PDF</button>
@@ -4230,6 +4245,12 @@ const App = {
     arr[i] = !arr[i];
     if (arr[i] && exam.answers[exam.idx] === i) exam.answers[exam.idx] = null;
     paintScores(); paintQuestion(); paintSide();
+  },
+  toggleFullscreen() {
+    try {
+      if (document.fullscreenElement) document.exitFullscreen?.();
+      else document.documentElement?.requestFullscreen?.();
+    } catch (_) {}
   },
   openNonCat(tab) { window.KemenSuite?.openNonCat(tab); },
   openCalc(skdScore) { window.KemenSuite?.openCalc(skdScore); },
